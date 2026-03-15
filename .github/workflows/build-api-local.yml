@@ -33,6 +33,12 @@ jobs:
           uname -a
           docker version
 
+      - name: Test registry connectivity
+        run: |
+          getent hosts registry || true
+          ping -c 2 registry || true
+          wget -qO- http://registry:5000/v2/_catalog || true
+
       - name: Build test image
         run: |
           IMAGE=registry:5000/test-image:${GITHUB_SHA}
