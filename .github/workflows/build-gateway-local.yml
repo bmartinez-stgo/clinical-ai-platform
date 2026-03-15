@@ -14,6 +14,10 @@ jobs:
   build-image:
     runs-on: clinical-ai-local
 
+    env:
+      IMAGE_REPOSITORY: registry:5000/gateway
+      IMAGE_NAME: gateway
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -31,6 +35,19 @@ jobs:
           done
           docker info
 
+      - name: Define image tags
+        id: vars
+        run: |
+          BUILD_TAG=build-${GITHUB_RUN_NUMBER}
+          STABLE_TAG=dev-latest
+
+          echo "build_tag=${BUILD_TAG}" >> $GITHUB_OUTPUT
+          echo "stable_tag=${STABLE_TAG}" >> $GITHUB_OUTPUT
+
+          echo "Using tags:"
+          echo "  ${BUILD_TAG}"
+          echo "  ${STABLE_TAG}"
+
       - name: Check runner
         run: |
           echo "Runner working"
@@ -39,7 +56,98 @@ jobs:
 
       - name: Build gateway image
         run: |
-          IMAGE=registry:5000/gateway:${GITHUB_SHA}
-          echo "Building ${IMAGE}"
-          docker build -t ${IMAGE} ./services/gateway
-          docker push ${IMAGE}
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          echo "Building ${IMAGE_REPOSITORY}:${BUILD_TAG}"
+          echo "Building ${IMAGE_REPOSITORY}:${STABLE_TAG}"
+
+          docker build \
+            -t ${IMAGE_REPOSITORY}:${BUILD_TAG} \
+            -t ${IMAGE_REPOSITORY}:${STABLE_TAG} \
+            ./services/gateway
+
+      - name: Push gateway image tags
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          docker push ${IMAGE_REPOSITORY}:${BUILD_TAG}
+          docker push ${IMAGE_REPOSITORY}:${STABLE_TAG}
+
+      - name: Postcheck registry catalog and tags
+        id: postcheck
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          echo "Checking registry catalog..."
+          CATALOG_JSON=$(curl -fsS http://registry:5000/v2/_catalog)
+          echo "${CATALOG_JSON}"
+
+          echo "Checking tags for ${IMAGE_NAME}..."
+          TAGS_JSON=$(curl -fsS http://registry:5000/v2/${IMAGE_NAME}/tags/list)
+          echo "${TAGS_JSON}"
+
+          echo "catalog_json<<EOF" >> $GITHUB_OUTPUT
+          echo "${CATALOG_JSON}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "tags_json<<EOF" >> $GITHUB_OUTPUT
+          echo "${TAGS_JSON}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          if echo "${TAGS_JSON}" | grep -q "\"${BUILD_TAG}\""; then
+            echo "build_tag_found=true" >> $GITHUB_OUTPUT
+          else
+            echo "build_tag_found=false" >> $GITHUB_OUTPUT
+            echo "ERROR: build tag not found in registry tag list"
+            exit 1
+          fi
+
+          if echo "${TAGS_JSON}" | grep -q "\"${STABLE_TAG}\""; then
+            echo "stable_tag_found=true" >> $GITHUB_OUTPUT
+          else
+            echo "stable_tag_found=false" >> $GITHUB_OUTPUT
+            echo "ERROR: stable tag not found in registry tag list"
+            exit 1
+          fi
+
+      - name: Publish workflow summary
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          {
+            echo "# Gateway image build summary"
+            echo ""
+            echo "## Image repository"
+            echo "\`registry:5000/gateway\`"
+            echo ""
+            echo "## Published tags"
+            echo "- \`${BUILD_TAG}\`"
+            echo "- \`${STABLE_TAG}\`"
+            echo ""
+            echo "## Registry checks"
+            echo "- Build tag present: \`${{ steps.postcheck.outputs.build_tag_found }}\`"
+            echo "- Stable tag present: \`${{ steps.postcheck.outputs.stable_tag_found }}\`"
+            echo ""
+            echo "## Registry catalog response"
+            echo '```json'
+            echo '${{ steps.postcheck.outputs.catalog_json }}'
+            echo '```'
+            echo ""
+            echo "## Registry tags response"
+            echo '```json'
+            echo '${{ steps.postcheck.outputs.tags_json }}'
+            echo '```'
+            echo ""
+            echo "## Manual deploy command"
+            echo '```bash'
+            echo 'helm upgrade --install gateway ./charts/gateway \'
+            echo '  --namespace clinical-ai-platform \'
+            echo '  --create-namespace \'
+            echo '  --set image.repository=registry:5000/gateway \'
+            echo '  --set image.tag=dev-latest'
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
