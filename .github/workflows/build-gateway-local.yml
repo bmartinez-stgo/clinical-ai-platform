@@ -1,0 +1,45 @@
+name: Build Gateway Local
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "services/gateway/**"
+      - "charts/gateway/**"
+      - ".github/workflows/build-gateway-local.yml"
+  workflow_dispatch:
+
+jobs:
+  build-image:
+    runs-on: clinical-ai-local
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Wait for Docker daemon
+        run: |
+          echo "Waiting for Docker to be ready..."
+          for i in $(seq 1 60); do
+            if docker info >/dev/null 2>&1; then
+              echo "Docker is ready"
+              break
+            fi
+            echo "Docker not ready yet, retry $i/60"
+            sleep 2
+          done
+          docker info
+
+      - name: Check runner
+        run: |
+          echo "Runner working"
+          uname -a
+          docker version
+
+      - name: Build gateway image
+        run: |
+          IMAGE=registry:5000/gateway:${GITHUB_SHA}
+          echo "Building ${IMAGE}"
+          docker build -t ${IMAGE} ./services/gateway
+          docker push ${IMAGE}

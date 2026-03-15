@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: dcgm-exporter
+  namespace: observability
+  labels:
+    release: kube-prometheus-stack
+spec:
+  namespaceSelector:
+    matchNames:
+      - observability
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: dcgm-exporter
+      app.kubernetes.io/name: dcgm-exporter
+  endpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
