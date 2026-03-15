@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-image:
-    runs-on: self-hosted
+    runs-on: clinical-ai-local
 
     container:
       image: gcr.io/kaniko-project/executor:latest
