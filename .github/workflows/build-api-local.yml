@@ -1,0 +1,30 @@
+name: Build API Local
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test-push:
+    runs-on: clinical-ai-local
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check runner
+        run: |
+          echo "Github runner working"
+          uname -a
+          docker version
+
+      - name: Build test image
+        run: |
+          IMAGE=registry.cicd.svc.cluster.local:5000/test-image:${GITHUB_SHA}
+          docker build -t ${IMAGE} -<<EOF
+          FROM alpine:3.19
+          RUN echo "hello from clinical ai platform"
+          EOF
+          docker push ${IMAGE}
