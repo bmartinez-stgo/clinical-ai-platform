@@ -39,18 +39,13 @@ jobs:
         id: vars
         run: |
           BUILD_TAG=build-${GITHUB_RUN_NUMBER}
-          STABLE_TAG=dev-latest
+          STABLE_TAG=prod-latest
 
           echo "build_tag=${BUILD_TAG}" >> $GITHUB_OUTPUT
           echo "stable_tag=${STABLE_TAG}" >> $GITHUB_OUTPUT
 
-          echo "Using tags:"
-          echo "  ${BUILD_TAG}"
-          echo "  ${STABLE_TAG}"
-
       - name: Check runner
         run: |
-          echo "Runner working"
           uname -a
           docker version
 
@@ -58,9 +53,6 @@ jobs:
         run: |
           BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
           STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
-
-          echo "Building ${IMAGE_REPOSITORY}:${BUILD_TAG}"
-          echo "Building ${IMAGE_REPOSITORY}:${STABLE_TAG}"
 
           docker build \
             -t ${IMAGE_REPOSITORY}:${BUILD_TAG} \
@@ -81,13 +73,8 @@ jobs:
           BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
           STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
 
-          echo "Checking registry catalog..."
           CATALOG_JSON=$(curl -fsS http://registry:5000/v2/_catalog)
-          echo "${CATALOG_JSON}"
-
-          echo "Checking tags for ${IMAGE_NAME}..."
           TAGS_JSON=$(curl -fsS http://registry:5000/v2/${IMAGE_NAME}/tags/list)
-          echo "${TAGS_JSON}"
 
           echo "catalog_json<<EOF" >> $GITHUB_OUTPUT
           echo "${CATALOG_JSON}" >> $GITHUB_OUTPUT
@@ -101,7 +88,6 @@ jobs:
             echo "build_tag_found=true" >> $GITHUB_OUTPUT
           else
             echo "build_tag_found=false" >> $GITHUB_OUTPUT
-            echo "ERROR: build tag not found in registry tag list"
             exit 1
           fi
 
@@ -109,7 +95,6 @@ jobs:
             echo "stable_tag_found=true" >> $GITHUB_OUTPUT
           else
             echo "stable_tag_found=false" >> $GITHUB_OUTPUT
-            echo "ERROR: stable tag not found in registry tag list"
             exit 1
           fi
 
@@ -132,11 +117,6 @@ jobs:
             echo "- Build tag present: \`${{ steps.postcheck.outputs.build_tag_found }}\`"
             echo "- Stable tag present: \`${{ steps.postcheck.outputs.stable_tag_found }}\`"
             echo ""
-            echo "## Registry catalog response"
-            echo '```json'
-            echo '${{ steps.postcheck.outputs.catalog_json }}'
-            echo '```'
-            echo ""
             echo "## Registry tags response"
             echo '```json'
             echo '${{ steps.postcheck.outputs.tags_json }}'
@@ -145,9 +125,7 @@ jobs:
             echo "## Manual deploy command"
             echo '```bash'
             echo 'helm upgrade --install gateway ./charts/gateway \'
-            echo '  --namespace clinical-ai-platform \'
-            echo '  --create-namespace \'
-            echo '  --set image.repository=registry:5000/gateway \'
-            echo '  --set image.tag=dev-latest'
+            echo '  --namespace cap-prod-gateway \'
+            echo '  --create-namespace'
             echo '```'
           } >> $GITHUB_STEP_SUMMARY
