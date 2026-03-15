@@ -1,0 +1,22 @@
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "gateway.fullname" . }}
+  labels:
+    release: kube-prometheus-stack
+    app.kubernetes.io/name: gateway
+    app.kubernetes.io/part-of: clinical-ai-platform
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: gateway
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace }}
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: {{ .Values.serviceMonitor.interval }}
+{{- end }}

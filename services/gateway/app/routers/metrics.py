@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+
 from app.observability import metrics_response
 
 router = APIRouter()
