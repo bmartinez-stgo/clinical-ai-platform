@@ -17,12 +17,12 @@ jobs:
       - name: Wait for Docker daemon
         run: |
           echo "Waiting for Docker to be ready..."
-          for i in $(seq 1 30); do
+          for i in $(seq 1 60); do
             if docker info >/dev/null 2>&1; then
               echo "Docker is ready"
               break
             fi
-            echo "Docker not ready yet, retry $i/30"
+            echo "Docker not ready yet, retry $i/60"
             sleep 2
           done
           docker info
