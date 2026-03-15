@@ -10,18 +10,34 @@ jobs:
   build-image:
     runs-on: clinical-ai-local
 
-    container:
-      image: gcr.io/kaniko-project/executor:latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build and push image
+      - name: Wait for Docker daemon
         run: |
-          /kaniko/executor \
-            --context $GITHUB_WORKSPACE \
-            --dockerfile Dockerfile \
-            --destination registry:5000/test-api:latest \
-            --insecure \
-            --skip-tls-verify
+          echo "Waiting for Docker to be ready..."
+          for i in $(seq 1 30); do
+            if docker info >/dev/null 2>&1; then
+              echo "Docker is ready"
+              break
+            fi
+            echo "Docker not ready yet, retry $i/30"
+            sleep 2
+          done
+          docker info
+
+      - name: Check runner
+        run: |
+          echo "Runner working"
+          uname -a
+          docker version
+
+      - name: Build test image
+        run: |
+          IMAGE=registry:5000/test-image:${GITHUB_SHA}
+          docker build -t ${IMAGE} -<<EOF
+          FROM alpine:3.19
+          RUN echo "hello from clinical ai platform"
+          EOF
+          docker push ${IMAGE}
