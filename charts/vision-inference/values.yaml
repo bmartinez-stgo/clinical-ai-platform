@@ -1,0 +1,43 @@
+replicaCount: 1
+
+image:
+  repository: registry:5000/vision-inference
+  tag: prod-latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8090
+  targetPort: 8090
+
+app:
+  name: vision-inference
+  namespace: cap-prod-vision-inference
+  port: 8090
+  logLevel: INFO
+  serviceVersion: "0.1.0"
+  environment: prod
+  engineBackend: transformers
+  engineId: Qwen/Qwen2.5-VL-3B-Instruct
+  maxNewTokens: "4096"
+  temperature: "0"
+  devicePreference: cuda
+
+gpu:
+  enabled: true
+  count: 1
+
+resources:
+  requests:
+    cpu: "1"
+    memory: 6Gi
+  limits:
+    cpu: "4"
+    memory: 16Gi
+
+podLabels: {}
+podAnnotations: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

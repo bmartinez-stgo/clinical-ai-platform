@@ -1,45 +1,37 @@
 from __future__ import annotations
 
-from typing import Any
-
 from app.core.document_profile import detect_document_profile
-from app.core.lab_parser import build_normalized_lab_result
+from app.core.lab_normalization import build_normalized_response
+from app.core.vision_client import extract_laboratory_observations
 
 
-def normalize_lab_document(document_payload: dict[str, Any]) -> dict[str, Any]:
+async def normalize_lab_document(document_payload: dict) -> dict:
     profile = detect_document_profile(document_payload)
-
-    if profile.requires_ocr:
-        return {
+    extraction_payload = await extract_laboratory_observations(
+        {
             "document_id": document_payload["document_id"],
             "filename": document_payload["filename"],
-            "document_type": "lab_report",
-            "extraction_profile": profile.profile_name,
-            "confidence": 0.0,
-            "requires_ocr": True,
-            "patient": {"external_id": None, "name": None},
-            "observation_count": 0,
-            "observations": [],
-            "unmapped_items": [],
-            "warnings": ["document requires OCR-capable extraction"],
-            "source": {
-                "page_count": document_payload["page_count"],
-                "character_count": document_payload["character_count"],
-                "content_type": document_payload["content_type"],
-                "text_density": round(profile.text_density, 2),
-            },
+            "content_type": document_payload["content_type"],
+            "pages": [
+                {
+                    "page_number": page["page_number"],
+                    "mime_type": page["mime_type"],
+                    "image_base64": page["image_base64"],
+                }
+                for page in document_payload["pages"]
+            ],
         }
-
-    result = build_normalized_lab_result(document_payload)
+    )
+    result = build_normalized_response(document_payload, extraction_payload)
     result["extraction_profile"] = profile.profile_name
-    result["requires_ocr"] = False
+    result["requires_ocr"] = profile.requires_ocr
     result["confidence"] = calculate_result_confidence(result, profile.profile_name)
-    result["source"]["text_density"] = round(profile.text_density, 2)
+    result["source"]["text_density"] = round(profile.text_density, 2) if document_payload["character_count"] else None
     return result
 
 
-def calculate_result_confidence(result: dict[str, Any], profile_name: str) -> float:
-    observation_count = result.get("observation_count", 0)
+def calculate_result_confidence(result: dict, profile_name: str) -> float:
+    observation_count = len(result.get("observations", []))
     warnings = result.get("warnings", [])
     mapped = len([item for item in result.get("observations", []) if item.get("loinc_code")])
 
