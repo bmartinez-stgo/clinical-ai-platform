@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "vision-inference.fullname" . }}
+  labels:
+    {{- include "vision-inference.labels" . | nindent 4 }}
+data:
+  APP_NAME: {{ .Values.app.name | quote }}
+  APP_NAMESPACE: {{ .Values.app.namespace | quote }}
+  APP_PORT: {{ .Values.app.port | quote }}
+  LOG_LEVEL: {{ .Values.app.logLevel | quote }}
+  SERVICE_VERSION: {{ .Values.app.serviceVersion | quote }}
+  ENVIRONMENT: {{ .Values.app.environment | quote }}
+  ENGINE_BACKEND: {{ .Values.app.engineBackend | quote }}
+  ENGINE_ID: {{ .Values.app.engineId | quote }}
+  MAX_NEW_TOKENS: {{ .Values.app.maxNewTokens | quote }}
+  TEMPERATURE: {{ .Values.app.temperature | quote }}
+  DEVICE_PREFERENCE: {{ .Values.app.devicePreference | quote }}

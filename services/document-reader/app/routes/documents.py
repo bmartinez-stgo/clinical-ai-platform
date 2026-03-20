@@ -2,18 +2,41 @@ from fastapi import APIRouter, File, HTTPException, UploadFile, status
 
 from app.core.config import get_settings
 from app.core.lab_service import normalize_lab_document
-from app.core.pdf_parser import extract_document_payload
+from app.core.pdf_parser import extract_document_payload, extract_image_payload
 
 router = APIRouter()
 settings = get_settings()
 
 
+SUPPORTED_CONTENT_TYPES = {
+    "application/pdf",
+    "image/png",
+    "image/jpeg",
+    "image/jpg",
+    "image/webp",
+}
+
+
+def build_document_payload(file_bytes: bytes, filename: str, content_type: str) -> dict:
+    if content_type == "application/pdf":
+        return extract_document_payload(
+            file_bytes=file_bytes,
+            filename=filename,
+            content_type=content_type,
+        )
+    return extract_image_payload(
+        file_bytes=file_bytes,
+        filename=filename,
+        content_type=content_type,
+    )
+
+
 @router.post("/parse")
 async def parse_document(file: UploadFile = File(...)):
-    if file.content_type != "application/pdf":
+    if file.content_type not in SUPPORTED_CONTENT_TYPES:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="only application/pdf files are supported",
+            detail="only pdf and common image formats are supported",
         )
 
     file_bytes = await file.read()
@@ -30,10 +53,10 @@ async def parse_document(file: UploadFile = File(...)):
         )
 
     try:
-        return extract_document_payload(
+        return build_document_payload(
             file_bytes=file_bytes,
-            filename=file.filename or "document.pdf",
-            content_type=file.content_type,
+            filename=file.filename or "document",
+            content_type=file.content_type or "application/pdf",
         )
     except Exception as exc:
         raise HTTPException(
@@ -44,10 +67,10 @@ async def parse_document(file: UploadFile = File(...)):
 
 @router.post("/labs/parse")
 async def parse_laboratory_report(file: UploadFile = File(...)):
-    if file.content_type != "application/pdf":
+    if file.content_type not in SUPPORTED_CONTENT_TYPES:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="only application/pdf files are supported",
+            detail="only pdf and common image formats are supported",
         )
 
     file_bytes = await file.read()
@@ -64,12 +87,12 @@ async def parse_laboratory_report(file: UploadFile = File(...)):
         )
 
     try:
-        document_payload = extract_document_payload(
+        document_payload = build_document_payload(
             file_bytes=file_bytes,
-            filename=file.filename or "document.pdf",
-            content_type=file.content_type,
+            filename=file.filename or "document",
+            content_type=file.content_type or "application/pdf",
         )
-        return normalize_lab_document(document_payload)
+        return await normalize_lab_document(document_payload)
     except Exception as exc:
         raise HTTPException(
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,

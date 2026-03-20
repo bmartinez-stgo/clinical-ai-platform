@@ -2,8 +2,56 @@ from __future__ import annotations
 
 from typing import Any
 from uuid import uuid4
+import base64
 
 import fitz
+
+
+def build_layout_lines(page: fitz.Page) -> list[str]:
+    words = page.get_text("words", sort=True)
+    if not words:
+        return []
+
+    rows: list[list[tuple[float, float, str]]] = []
+    current_row: list[tuple[float, float, str]] = []
+    current_y: float | None = None
+
+    for x0, y0, x1, _y1, text, *_rest in words:
+        if current_y is None or abs(y0 - current_y) <= 2.5:
+            current_row.append((x0, x1, text))
+            current_y = y0 if current_y is None else current_y
+            continue
+
+        rows.append(current_row)
+        current_row = [(x0, x1, text)]
+        current_y = y0
+
+    if current_row:
+        rows.append(current_row)
+
+    layout_lines: list[str] = []
+    for row in rows:
+        row = sorted(row, key=lambda item: item[0])
+        parts: list[str] = []
+        previous_x1: float | None = None
+
+        for x0, x1, text in row:
+            if previous_x1 is not None:
+                gap = x0 - previous_x1
+                if gap > 70:
+                    parts.append("        ")
+                elif gap > 28:
+                    parts.append("    ")
+                else:
+                    parts.append(" ")
+            parts.append(text)
+            previous_x1 = x1
+
+        line = "".join(parts).strip()
+        if line:
+            layout_lines.append(line)
+
+    return layout_lines
 
 
 def extract_document_payload(file_bytes: bytes, filename: str, content_type: str | None) -> dict[str, Any]:
@@ -16,6 +64,7 @@ def extract_document_payload(file_bytes: bytes, filename: str, content_type: str
         sorted_blocks = sorted(raw_blocks, key=lambda item: (round(item[1], 2), round(item[0], 2)))
         blocks = []
         page_lines: list[str] = []
+        layout_lines = build_layout_lines(page)
 
         for block in sorted_blocks:
             block_text = block[4].strip()
@@ -36,12 +85,16 @@ def extract_document_payload(file_bytes: bytes, filename: str, content_type: str
             page_lines.extend(block_lines)
 
         page_text = "\n".join(page_lines).strip()
+        pixmap = page.get_pixmap(dpi=180, alpha=False)
 
         pages.append(
             {
                 "page_number": index,
                 "text": page_text,
                 "lines": page_lines,
+                "layout_lines": layout_lines,
+                "image_base64": base64.b64encode(pixmap.tobytes("png")).decode("ascii"),
+                "mime_type": "image/png",
                 "blocks": blocks,
             }
         )
@@ -65,4 +118,29 @@ def extract_document_payload(file_bytes: bytes, filename: str, content_type: str
             "producer": metadata.get("producer") or None,
         },
         "pages": pages,
+    }
+
+
+def extract_image_payload(file_bytes: bytes, filename: str, content_type: str) -> dict[str, Any]:
+    encoded = base64.b64encode(file_bytes).decode("ascii")
+    return {
+        "document_id": str(uuid4()),
+        "filename": filename,
+        "content_type": content_type,
+        "page_count": 1,
+        "character_count": 0,
+        "full_text": "",
+        "lines": [],
+        "metadata": {},
+        "pages": [
+            {
+                "page_number": 1,
+                "text": "",
+                "lines": [],
+                "layout_lines": [],
+                "image_base64": encoded,
+                "mime_type": content_type,
+                "blocks": [],
+            }
+        ],
     }
