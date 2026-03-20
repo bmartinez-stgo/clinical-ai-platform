@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "auth.fullname" . }}
+  labels:
+    {{- include "auth.labels" . | nindent 4 }}
+data:
+  APP_NAME: {{ .Values.app.name | quote }}
+  APP_NAMESPACE: {{ .Values.app.namespace | quote }}
+  APP_PORT: {{ .Values.app.port | quote }}
+  LOG_LEVEL: {{ .Values.app.logLevel | quote }}
+  SERVICE_VERSION: {{ .Values.app.serviceVersion | quote }}
+  ENVIRONMENT: {{ .Values.app.environment | quote }}
+  TOKEN_EXPIRATION_SECONDS: {{ .Values.auth.tokenExpirationSeconds | quote }}
+  JWT_ISSUER: {{ .Values.auth.jwtIssuer | quote }}
+  JWT_AUDIENCE: {{ .Values.auth.jwtAudience | quote }}
+  AUTH_USERS_JSON: {{ .Values.auth.usersJson | quote }}
+  OTEL_ENABLED: {{ .Values.otel.enabled | quote }}
+  OTEL_SERVICE_NAME: {{ .Values.otel.serviceName | quote }}
+  OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.otel.exporterOtlpEndpoint | quote }}
