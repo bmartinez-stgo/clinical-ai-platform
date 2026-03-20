@@ -16,6 +16,10 @@ resources:
     cpu: 500m
     memory: 256Mi
 
+ingress:
+  enabled: true
+  host: gateway.local
+
 env:
   APP_NAME: gateway
   APP_NAMESPACE: cap-prod-gateway
