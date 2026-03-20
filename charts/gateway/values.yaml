@@ -23,6 +23,8 @@ ingress:
 proxyRoutes:
   - prefix: /auth
     upstream: http://auth.cap-prod-auth.svc.cluster.local:8081
+  - prefix: /documents
+    upstream: http://document-reader.cap-prod-document-reader.svc.cluster.local:8082
 
 env:
   APP_NAME: gateway
