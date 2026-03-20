@@ -15,7 +15,7 @@ class Settings:
     render_dpi: int = int(os.getenv("RENDER_DPI", "180"))
     vision_inference_url: str = os.getenv(
         "VISION_INFERENCE_URL",
-        "http://vision-inference.cap-prod-vision-inference.svc.cluster.local:8090/extract/lab-report",
+        "http://vision-inference.cap-prod-document-reader.svc.cluster.local:8090/extract/lab-report",
     )
     vision_inference_timeout_seconds: int = int(os.getenv("VISION_INFERENCE_TIMEOUT_SECONDS", "120"))
 

@@ -12,7 +12,7 @@ service:
 
 app:
   name: vision-inference
-  namespace: cap-prod-vision-inference
+  namespace: cap-prod-document-reader
   port: 8090
   logLevel: INFO
   serviceVersion: "0.1.0"
