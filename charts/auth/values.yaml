@@ -2,8 +2,8 @@ replicaCount: 1
 
 image:
   repository: registry:5000/auth
-  tag: "0.1.0"
-  pullPolicy: IfNotPresent
+  tag: prod-latest
+  pullPolicy: Always
 
 service:
   type: ClusterIP
