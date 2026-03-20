@@ -1,0 +1,131 @@
+name: Build Document Reader Local
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "services/document-reader/**"
+      - "charts/document-reader/**"
+      - ".github/workflows/build-document-reader-local.yml"
+  workflow_dispatch:
+
+jobs:
+  build-image:
+    runs-on: clinical-ai-local
+
+    env:
+      IMAGE_REPOSITORY: registry:5000/document-reader
+      IMAGE_NAME: document-reader
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Wait for Docker daemon
+        run: |
+          echo "Waiting for Docker to be ready..."
+          for i in $(seq 1 60); do
+            if docker info >/dev/null 2>&1; then
+              echo "Docker is ready"
+              break
+            fi
+            echo "Docker not ready yet, retry $i/60"
+            sleep 2
+          done
+          docker info
+
+      - name: Define image tags
+        id: vars
+        run: |
+          BUILD_TAG=build-${GITHUB_RUN_NUMBER}
+          STABLE_TAG=prod-latest
+
+          echo "build_tag=${BUILD_TAG}" >> $GITHUB_OUTPUT
+          echo "stable_tag=${STABLE_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Check runner
+        run: |
+          uname -a
+          docker version
+
+      - name: Build document-reader image
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          docker build \
+            -t ${IMAGE_REPOSITORY}:${BUILD_TAG} \
+            -t ${IMAGE_REPOSITORY}:${STABLE_TAG} \
+            ./services/document-reader
+
+      - name: Push document-reader image tags
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          docker push ${IMAGE_REPOSITORY}:${BUILD_TAG}
+          docker push ${IMAGE_REPOSITORY}:${STABLE_TAG}
+
+      - name: Postcheck registry catalog and tags
+        id: postcheck
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          CATALOG_JSON=$(curl -fsS http://registry:5000/v2/_catalog)
+          TAGS_JSON=$(curl -fsS http://registry:5000/v2/${IMAGE_NAME}/tags/list)
+
+          echo "catalog_json<<EOF" >> $GITHUB_OUTPUT
+          echo "${CATALOG_JSON}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          echo "tags_json<<EOF" >> $GITHUB_OUTPUT
+          echo "${TAGS_JSON}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          if echo "${TAGS_JSON}" | grep -q "\"${BUILD_TAG}\""; then
+            echo "build_tag_found=true" >> $GITHUB_OUTPUT
+          else
+            echo "build_tag_found=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+          if echo "${TAGS_JSON}" | grep -q "\"${STABLE_TAG}\""; then
+            echo "stable_tag_found=true" >> $GITHUB_OUTPUT
+          else
+            echo "stable_tag_found=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+
+      - name: Publish workflow summary
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          {
+            echo "# Document reader image build summary"
+            echo ""
+            echo "## Image repository"
+            echo "\`registry:5000/document-reader\`"
+            echo ""
+            echo "## Published tags"
+            echo "- \`${BUILD_TAG}\`"
+            echo "- \`${STABLE_TAG}\`"
+            echo ""
+            echo "## Registry checks"
+            echo "- Build tag present: \`${{ steps.postcheck.outputs.build_tag_found }}\`"
+            echo "- Stable tag present: \`${{ steps.postcheck.outputs.stable_tag_found }}\`"
+            echo ""
+            echo "## Registry tags response"
+            echo '```json'
+            echo '${{ steps.postcheck.outputs.tags_json }}'
+            echo '```'
+            echo ""
+            echo "## Manual deploy command"
+            echo '```bash'
+            echo 'helm upgrade --install document-reader ./charts/document-reader \'
+            echo '  --namespace cap-prod-document-reader \'
+            echo '  --create-namespace'
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY

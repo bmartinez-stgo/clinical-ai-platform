@@ -1,0 +1,39 @@
+replicaCount: 1
+
+image:
+  repository: registry:5000/document-reader
+  tag: prod-latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8082
+  targetPort: 8082
+
+app:
+  name: document-reader
+  namespace: cap-prod-document-reader
+  port: 8082
+  logLevel: INFO
+  serviceVersion: "0.1.0"
+  environment: prod
+  maxUploadSizeBytes: "20971520"
+
+gpu:
+  enabled: false
+  count: 1
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: "1"
+    memory: 1Gi
+
+podLabels: {}
+podAnnotations: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
