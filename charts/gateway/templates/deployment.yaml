@@ -27,10 +27,18 @@ spec:
         app.kubernetes.io/managed-by: Helm
         observability.platform.io/enabled: "true"
     spec:
+      volumes:
+        - name: proxy-routes
+          configMap:
+            name: gateway-proxy-routes
       containers:
         - name: gateway
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: proxy-routes
+              mountPath: /app/config
+              readOnly: true
           ports:
             - name: http
               containerPort: 8080

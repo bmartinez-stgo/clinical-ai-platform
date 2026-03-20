@@ -5,6 +5,8 @@ ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
+RUN mkdir -p /app/config
+
 RUN addgroup --system app && adduser --system --ingroup app app
 
 COPY requirements.txt .
