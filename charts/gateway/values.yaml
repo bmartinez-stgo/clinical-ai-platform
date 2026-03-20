@@ -20,6 +20,10 @@ ingress:
   enabled: true
   host: gateway.local
 
+proxyRoutes:
+  - prefix: /auth
+    upstream: http://auth.cap-prod-auth.svc.cluster.local:8081
+
 env:
   APP_NAME: gateway
   APP_NAMESPACE: cap-prod-gateway

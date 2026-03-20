@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-proxy-routes
+  labels:
+    app.kubernetes.io/name: gateway
+data:
+  routes.yaml: |
+    routes:
+    {{- range .Values.proxyRoutes }}
+      - prefix: {{ .prefix | quote }}
+        upstream: {{ .upstream | quote }}
+    {{- end }}
