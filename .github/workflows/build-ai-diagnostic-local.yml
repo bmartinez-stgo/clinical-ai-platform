@@ -1,0 +1,86 @@
+name: Build AI Diagnostic Local
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "services/ai-diagnostic/**"
+      - "charts/ai-diagnostic/**"
+      - ".github/workflows/build-ai-diagnostic-local.yml"
+  workflow_dispatch:
+
+jobs:
+  build-image:
+    runs-on: clinical-ai-local
+
+    env:
+      IMAGE_REPOSITORY: registry:5000/ai-diagnostic
+      IMAGE_NAME: ai-diagnostic
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Wait for Docker daemon
+        run: |
+          echo "Waiting for Docker to be ready..."
+          for i in $(seq 1 60); do
+            if docker info >/dev/null 2>&1; then
+              echo "Docker is ready"
+              break
+            fi
+            echo "Docker not ready yet, retry $i/60"
+            sleep 2
+          done
+          docker info
+
+      - name: Define image tags
+        id: vars
+        run: |
+          BUILD_TAG=build-${GITHUB_RUN_NUMBER}
+          STABLE_TAG=prod-latest
+
+          echo "build_tag=${BUILD_TAG}" >> $GITHUB_OUTPUT
+          echo "stable_tag=${STABLE_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Build ai-diagnostic image
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          docker build \
+            -t ${IMAGE_REPOSITORY}:${BUILD_TAG} \
+            -t ${IMAGE_REPOSITORY}:${STABLE_TAG} \
+            ./services/ai-diagnostic
+
+      - name: Push ai-diagnostic image tags
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          docker push ${IMAGE_REPOSITORY}:${BUILD_TAG}
+          docker push ${IMAGE_REPOSITORY}:${STABLE_TAG}
+
+      - name: Publish workflow summary
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          {
+            echo "# AI diagnostic image build summary"
+            echo ""
+            echo "## Image repository"
+            echo "\`registry:5000/ai-diagnostic\`"
+            echo ""
+            echo "## Published tags"
+            echo "- \`${BUILD_TAG}\`"
+            echo "- \`${STABLE_TAG}\`"
+            echo ""
+            echo "## Manual deploy command"
+            echo '```bash'
+            echo 'helm upgrade --install ai-diagnostic ./charts/ai-diagnostic \'
+            echo '  --namespace cap-prod-ai-diagnostic \'
+            echo '  --create-namespace'
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY

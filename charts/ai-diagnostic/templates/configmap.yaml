@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ai-diagnostic.fullname" . }}
+  labels:
+    {{- include "ai-diagnostic.labels" . | nindent 4 }}
+data:
+  APP_NAME: {{ .Values.app.name | quote }}
+  APP_NAMESPACE: {{ .Values.app.namespace | quote }}
+  APP_PORT: {{ .Values.app.port | quote }}
+  LOG_LEVEL: {{ .Values.app.logLevel | quote }}
+  SERVICE_VERSION: {{ .Values.app.serviceVersion | quote }}
+  ENVIRONMENT: {{ .Values.app.environment | quote }}
+  AI_ENGINE_URL: {{ .Values.app.aiEngineUrl | quote }}
+  AI_ENGINE_TIMEOUT_SECONDS: {{ .Values.app.aiEngineTimeoutSeconds | quote }}

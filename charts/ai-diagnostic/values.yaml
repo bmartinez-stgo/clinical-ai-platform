@@ -1,30 +1,24 @@
 replicaCount: 1
 
 image:
-  repository: registry:5000/document-reader
+  repository: registry:5000/ai-diagnostic
   tag: prod-latest
   pullPolicy: Always
 
 service:
   type: ClusterIP
-  port: 8082
-  targetPort: 8082
+  port: 8083
+  targetPort: 8083
 
 app:
-  name: document-reader
-  namespace: cap-prod-document-reader
-  port: 8082
+  name: ai-diagnostic
+  namespace: cap-prod-ai-diagnostic
+  port: 8083
   logLevel: INFO
   serviceVersion: "0.1.0"
   environment: prod
-  maxUploadSizeBytes: "20971520"
-  renderDpi: "180"
-  aiEngineUrl: http://ai-engine.cap-prod-ai-engine.svc.cluster.local:8090/extract/lab-report
+  aiEngineUrl: http://ai-engine.cap-prod-ai-engine.svc.cluster.local:8090/infer/clinical
   aiEngineTimeoutSeconds: "120"
-
-gpu:
-  enabled: false
-  count: 1
 
 resources:
   requests:
