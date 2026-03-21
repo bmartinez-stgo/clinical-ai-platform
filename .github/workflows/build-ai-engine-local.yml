@@ -120,7 +120,7 @@ jobs:
             echo "## Manual deploy command"
             echo '```bash'
             echo 'helm upgrade --install ai-engine ./charts/ai-engine \'
-            echo '  --namespace cap-prod-document-reader \'
+            echo '  --namespace cap-prod-ai-engine \'
             echo '  --create-namespace'
             echo '```'
           } >> $GITHUB_STEP_SUMMARY

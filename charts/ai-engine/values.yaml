@@ -12,7 +12,7 @@ service:
 
 app:
   name: ai-engine
-  namespace: cap-prod-document-reader
+  namespace: cap-prod-ai-engine
   port: 8090
   logLevel: INFO
   serviceVersion: "0.1.0"
