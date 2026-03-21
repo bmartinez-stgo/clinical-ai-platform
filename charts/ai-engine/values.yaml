@@ -31,11 +31,11 @@ gpu:
 
 resources:
   requests:
-    cpu: "1"
-    memory: 6Gi
+    cpu: "2"
+    memory: 12Gi
   limits:
-    cpu: "4"
-    memory: 16Gi
+    cpu: "6"
+    memory: 32Gi
 
 cache:
   mountPath: /var/cache/huggingface

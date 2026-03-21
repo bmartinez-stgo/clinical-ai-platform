@@ -6,6 +6,8 @@ metadata:
     {{- include "ai-engine.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       {{- include "ai-engine.selectorLabels" . | nindent 6 }}
