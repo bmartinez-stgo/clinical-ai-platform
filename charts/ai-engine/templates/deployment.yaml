@@ -21,6 +21,9 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
     spec:
+      volumes:
+        - name: model-cache
+          emptyDir: {}
       containers:
         - name: ai-engine
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -32,18 +35,25 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "ai-engine.fullname" . }}
+          volumeMounts:
+            - name: model-cache
+              mountPath: {{ .Values.cache.mountPath }}
           readinessProbe:
             httpGet:
               path: /ready
               port: http
-            initialDelaySeconds: 10
+            initialDelaySeconds: 120
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 18
           livenessProbe:
             httpGet:
               path: /health
               port: http
-            initialDelaySeconds: 20
+            initialDelaySeconds: 180
             periodSeconds: 20
+            timeoutSeconds: 5
+            failureThreshold: 9
           resources:
             limits:
               {{- toYaml .Values.resources.limits | nindent 14 }}

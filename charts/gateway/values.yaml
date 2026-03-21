@@ -36,7 +36,7 @@ env:
   LOG_LEVEL: INFO
   SERVICE_VERSION: "0.1.0"
   AUTH_SERVICE_URL: http://auth.cap-prod-auth.svc.cluster.local:8081
-  REQUEST_TIMEOUT_SECONDS: "5"
+  REQUEST_TIMEOUT_SECONDS: "180"
   METRICS_ENABLED: "true"
   METRICS_PATH: "/metrics"
   READINESS_CHECK_AUTH: "false"

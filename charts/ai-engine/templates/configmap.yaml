@@ -16,3 +16,5 @@ data:
   MAX_NEW_TOKENS: {{ .Values.app.maxNewTokens | quote }}
   TEMPERATURE: {{ .Values.app.temperature | quote }}
   DEVICE_PREFERENCE: {{ .Values.app.devicePreference | quote }}
+  HF_HOME: {{ .Values.app.hfHome | quote }}
+  TRANSFORMERS_CACHE: {{ .Values.app.transformersCache | quote }}
