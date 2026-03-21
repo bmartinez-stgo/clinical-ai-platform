@@ -43,6 +43,7 @@ cache:
 podLabels: {}
 podAnnotations: {}
 
+runtimeClassName: nvidia
 nodeSelector: {}
 tolerations: []
 affinity: {}
