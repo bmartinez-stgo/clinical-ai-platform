@@ -22,6 +22,8 @@ app:
   maxNewTokens: "4096"
   temperature: "0"
   devicePreference: cuda
+  hfHome: /var/cache/huggingface
+  transformersCache: /var/cache/huggingface/transformers
 
 gpu:
   enabled: true
@@ -34,6 +36,9 @@ resources:
   limits:
     cpu: "4"
     memory: 16Gi
+
+cache:
+  mountPath: /var/cache/huggingface
 
 podLabels: {}
 podAnnotations: {}

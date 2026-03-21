@@ -16,6 +16,8 @@ class Settings:
     max_new_tokens: int = int(os.getenv("MAX_NEW_TOKENS", "4096"))
     temperature: float = float(os.getenv("TEMPERATURE", "0"))
     device_preference: str = os.getenv("DEVICE_PREFERENCE", "cuda")
+    hf_home: str = os.getenv("HF_HOME", "/var/cache/huggingface")
+    transformers_cache: str = os.getenv("TRANSFORMERS_CACHE", "/var/cache/huggingface/transformers")
 
 
 @lru_cache

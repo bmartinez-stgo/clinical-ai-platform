@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import base64
 import json
+import logging
+import os
 from io import BytesIO
 from typing import Any
 
@@ -14,6 +16,7 @@ from app.core.schema import ExtractionInput, ExtractionOutput
 
 settings = get_settings()
 _PIPELINE = None
+logger = logging.getLogger(__name__)
 
 INSTRUCTION_TEXT = """
 Read every page image of this clinical laboratory report and return only valid JSON.
@@ -54,15 +57,30 @@ Do not add explanations outside JSON.
 def _get_pipeline():
     global _PIPELINE
     if _PIPELINE is None:
+        os.environ.setdefault("HF_HOME", settings.hf_home)
+        os.environ.setdefault("TRANSFORMERS_CACHE", settings.transformers_cache)
         torch_dtype = torch.bfloat16 if settings.device_preference == "cuda" and torch.cuda.is_available() else torch.float32
         device_map = "auto" if settings.device_preference == "cuda" and torch.cuda.is_available() else "cpu"
+        logger.info(
+            "loading inference pipeline",
+            extra={
+                "engine_id": settings.engine_id,
+                "device_preference": settings.device_preference,
+                "device_map": device_map,
+            },
+        )
         _PIPELINE = pipeline(
             task="image-text-to-text",
             model=settings.engine_id,
             device_map=device_map,
             torch_dtype=torch_dtype,
         )
+        logger.info("inference pipeline loaded")
     return _PIPELINE
+
+
+def warmup_pipeline() -> None:
+    _get_pipeline()
 
 
 def _decode_pages(payload: ExtractionInput) -> list[Image.Image]:
@@ -93,6 +111,13 @@ def _extract_json(text: str) -> dict[str, Any]:
 
 
 def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
+    logger.info(
+        "starting extraction request",
+        extra={
+            "document_id": payload.document_id,
+            "page_count": len(payload.pages),
+        },
+    )
     extractor = _get_pipeline()
     images = _decode_pages(payload)
     generated = extractor(
@@ -116,4 +141,11 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
 
     parsed = _extract_json(generated_text)
     parsed["document_id"] = payload.document_id
+    logger.info(
+        "completed extraction request",
+        extra={
+            "document_id": payload.document_id,
+            "observation_count": len(parsed.get("observations", [])),
+        },
+    )
     return ExtractionOutput.model_validate(parsed)
