@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: registry:5000/vision-inference
+  repository: registry:5000/ai-engine
   tag: prod-latest
   pullPolicy: Always
 
@@ -11,7 +11,7 @@ service:
   targetPort: 8090
 
 app:
-  name: vision-inference
+  name: ai-engine
   namespace: cap-prod-document-reader
   port: 8090
   logLevel: INFO

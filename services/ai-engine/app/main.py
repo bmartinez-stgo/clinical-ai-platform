@@ -7,7 +7,7 @@ from app.routes.health import router as health_router
 settings = get_settings()
 
 app = FastAPI(
-    title="vision-inference",
+    title="ai-engine",
     version=settings.service_version,
 )
 

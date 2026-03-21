@@ -19,8 +19,8 @@ app:
   environment: prod
   maxUploadSizeBytes: "20971520"
   renderDpi: "180"
-  visionInferenceUrl: http://vision-inference.cap-prod-document-reader.svc.cluster.local:8090/extract/lab-report
-  visionInferenceTimeoutSeconds: "120"
+  aiEngineUrl: http://ai-engine.cap-prod-document-reader.svc.cluster.local:8090/extract/lab-report
+  aiEngineTimeoutSeconds: "120"
 
 gpu:
   enabled: false

@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "vision-inference.fullname" . }}
+  name: {{ include "ai-engine.fullname" . }}
   labels:
-    {{- include "vision-inference.labels" . | nindent 4 }}
+    {{- include "ai-engine.labels" . | nindent 4 }}
 data:
   APP_NAME: {{ .Values.app.name | quote }}
   APP_NAMESPACE: {{ .Values.app.namespace | quote }}

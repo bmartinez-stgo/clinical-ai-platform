@@ -1,18 +1,18 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "vision-inference.fullname" . }}
+  name: {{ include "ai-engine.fullname" . }}
   labels:
-    {{- include "vision-inference.labels" . | nindent 4 }}
+    {{- include "ai-engine.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      {{- include "vision-inference.selectorLabels" . | nindent 6 }}
+      {{- include "ai-engine.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       labels:
-        {{- include "vision-inference.selectorLabels" . | nindent 8 }}
+        {{- include "ai-engine.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -22,7 +22,7 @@ spec:
       {{- end }}
     spec:
       containers:
-        - name: vision-inference
+        - name: ai-engine
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -31,7 +31,7 @@ spec:
               protocol: TCP
           envFrom:
             - configMapRef:
-                name: {{ include "vision-inference.fullname" . }}
+                name: {{ include "ai-engine.fullname" . }}
           readinessProbe:
             httpGet:
               path: /ready

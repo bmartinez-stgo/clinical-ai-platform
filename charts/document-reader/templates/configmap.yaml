@@ -13,5 +13,5 @@ data:
   ENVIRONMENT: {{ .Values.app.environment | quote }}
   MAX_UPLOAD_SIZE_BYTES: {{ .Values.app.maxUploadSizeBytes | quote }}
   RENDER_DPI: {{ .Values.app.renderDpi | quote }}
-  VISION_INFERENCE_URL: {{ .Values.app.visionInferenceUrl | quote }}
-  VISION_INFERENCE_TIMEOUT_SECONDS: {{ .Values.app.visionInferenceTimeoutSeconds | quote }}
+  AI_ENGINE_URL: {{ .Values.app.aiEngineUrl | quote }}
+  AI_ENGINE_TIMEOUT_SECONDS: {{ .Values.app.aiEngineTimeoutSeconds | quote }}
