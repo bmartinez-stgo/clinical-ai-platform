@@ -97,6 +97,29 @@ def _decode_pages(payload: ExtractionInput) -> list[Image.Image]:
     return images
 
 
+def _build_messages(images: list[Image.Image]) -> list[dict[str, Any]]:
+    content: list[dict[str, Any]] = []
+    for image in images:
+        content.append(
+            {
+                "type": "image",
+                "image": image,
+            }
+        )
+    content.append(
+        {
+            "type": "text",
+            "text": INSTRUCTION_TEXT,
+        }
+    )
+    return [
+        {
+            "role": "user",
+            "content": content,
+        }
+    ]
+
+
 def _extract_json(text: str) -> dict[str, Any]:
     candidate = text.strip()
     if "```" in candidate:
@@ -125,11 +148,10 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
     )
     extractor = _get_pipeline()
     images = _decode_pages(payload)
+    messages = _build_messages(images)
     generated = extractor(
-        images=images,
-        text=INSTRUCTION_TEXT,
+        text=messages,
         max_new_tokens=settings.max_new_tokens,
-        temperature=settings.temperature,
         return_full_text=False,
     )
 
@@ -144,7 +166,28 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
     else:
         generated_text = str(generated)
 
-    parsed = _extract_json(generated_text)
+    if isinstance(generated_text, list):
+        assistant_messages = [item for item in generated_text if isinstance(item, dict) and item.get("role") == "assistant"]
+        if not assistant_messages:
+            raise ValueError("inference engine did not return assistant content")
+        assistant_content = assistant_messages[-1].get("content", [])
+        text_fragments = []
+        for item in assistant_content:
+            if isinstance(item, dict) and item.get("type") == "text":
+                text_fragments.append(item.get("text", ""))
+        generated_text = "\n".join(fragment for fragment in text_fragments if fragment)
+
+    try:
+        parsed = _extract_json(generated_text)
+    except Exception as exc:
+        logger.exception(
+            "failed to parse extraction output",
+            extra={
+                "document_id": payload.document_id,
+                "generated_preview": str(generated_text)[:1000],
+            },
+        )
+        raise ValueError(f"failed to parse model output: {exc}") from exc
     parsed["document_id"] = payload.document_id
     logger.info(
         "completed extraction request",
@@ -153,4 +196,14 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
             "observation_count": len(parsed.get("observations", [])),
         },
     )
-    return ExtractionOutput.model_validate(parsed)
+    try:
+        return ExtractionOutput.model_validate(parsed)
+    except Exception as exc:
+        logger.exception(
+            "failed to validate extraction output",
+            extra={
+                "document_id": payload.document_id,
+                "parsed_preview": str(parsed)[:1000],
+            },
+        )
+        raise ValueError(f"failed to validate model output: {exc}") from exc
