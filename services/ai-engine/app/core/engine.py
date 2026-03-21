@@ -59,14 +59,19 @@ def _get_pipeline():
     if _PIPELINE is None:
         os.environ.setdefault("HF_HOME", settings.hf_home)
         os.environ.setdefault("TRANSFORMERS_CACHE", settings.transformers_cache)
-        torch_dtype = torch.bfloat16 if settings.device_preference == "cuda" and torch.cuda.is_available() else torch.float32
-        device_map = "auto" if settings.device_preference == "cuda" and torch.cuda.is_available() else "cpu"
+        cuda_available = torch.cuda.is_available()
+        if settings.device_preference == "cuda" and not cuda_available:
+            raise RuntimeError("CUDA was requested for ai-engine but no GPU is available inside the container")
+        torch_dtype = torch.bfloat16 if settings.device_preference == "cuda" and cuda_available else torch.float32
+        device_map = "auto" if settings.device_preference == "cuda" and cuda_available else "cpu"
         logger.info(
             "loading inference pipeline",
             extra={
                 "engine_id": settings.engine_id,
                 "device_preference": settings.device_preference,
                 "device_map": device_map,
+                "cuda_available": cuda_available,
+                "cuda_device_count": torch.cuda.device_count(),
             },
         )
         _PIPELINE = pipeline(
