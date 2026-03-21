@@ -13,11 +13,11 @@ class Settings:
     environment: str = os.getenv("ENVIRONMENT", "prod")
     max_upload_size_bytes: int = int(os.getenv("MAX_UPLOAD_SIZE_BYTES", "20971520"))
     render_dpi: int = int(os.getenv("RENDER_DPI", "180"))
-    vision_inference_url: str = os.getenv(
-        "VISION_INFERENCE_URL",
-        "http://vision-inference.cap-prod-document-reader.svc.cluster.local:8090/extract/lab-report",
+    ai_engine_url: str = os.getenv(
+        "AI_ENGINE_URL",
+        "http://ai-engine.cap-prod-document-reader.svc.cluster.local:8090/extract/lab-report",
     )
-    vision_inference_timeout_seconds: int = int(os.getenv("VISION_INFERENCE_TIMEOUT_SECONDS", "120"))
+    ai_engine_timeout_seconds: int = int(os.getenv("AI_ENGINE_TIMEOUT_SECONDS", "120"))
 
 
 @lru_cache

@@ -5,7 +5,7 @@ from functools import lru_cache
 
 @dataclass
 class Settings:
-    app_name: str = os.getenv("APP_NAME", "vision-inference")
+    app_name: str = os.getenv("APP_NAME", "ai-engine")
     app_namespace: str = os.getenv("APP_NAMESPACE", "cap-prod-document-reader")
     app_port: int = int(os.getenv("APP_PORT", "8090"))
     log_level: str = os.getenv("LOG_LEVEL", "INFO")

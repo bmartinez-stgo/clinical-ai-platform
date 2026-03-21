@@ -1,13 +1,13 @@
-name: Build Vision Inference Local
+name: Build AI Engine Local
 
 on:
   push:
     branches:
       - main
     paths:
-      - "services/vision-inference/**"
-      - "charts/vision-inference/**"
-      - ".github/workflows/build-vision-inference-local.yml"
+      - "services/ai-engine/**"
+      - "charts/ai-engine/**"
+      - ".github/workflows/build-ai-engine-local.yml"
   workflow_dispatch:
 
 jobs:
@@ -15,8 +15,8 @@ jobs:
     runs-on: clinical-ai-local
 
     env:
-      IMAGE_REPOSITORY: registry:5000/vision-inference
-      IMAGE_NAME: vision-inference
+      IMAGE_REPOSITORY: registry:5000/ai-engine
+      IMAGE_NAME: ai-engine
 
     steps:
       - name: Checkout repository
@@ -49,7 +49,7 @@ jobs:
           uname -a
           docker version
 
-      - name: Build vision-inference image
+      - name: Build ai-engine image
         run: |
           BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
           STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
@@ -57,9 +57,9 @@ jobs:
           docker build \
             -t ${IMAGE_REPOSITORY}:${BUILD_TAG} \
             -t ${IMAGE_REPOSITORY}:${STABLE_TAG} \
-            ./services/vision-inference
+            ./services/ai-engine
 
-      - name: Push vision-inference image tags
+      - name: Push ai-engine image tags
         run: |
           BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
           STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
@@ -104,10 +104,10 @@ jobs:
           STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
 
           {
-            echo "# Vision inference image build summary"
+            echo "# AI engine image build summary"
             echo ""
             echo "## Image repository"
-            echo "\`registry:5000/vision-inference\`"
+            echo "\`registry:5000/ai-engine\`"
             echo ""
             echo "## Published tags"
             echo "- \`${BUILD_TAG}\`"
@@ -119,8 +119,8 @@ jobs:
             echo ""
             echo "## Manual deploy command"
             echo '```bash'
-            echo 'helm upgrade --install vision-inference ./charts/vision-inference \'
-            echo '  --namespace cap-prod-vision-inference \'
+            echo 'helm upgrade --install ai-engine ./charts/ai-engine \'
+            echo '  --namespace cap-prod-document-reader \'
             echo '  --create-namespace'
             echo '```'
           } >> $GITHUB_STEP_SUMMARY
