@@ -4,6 +4,7 @@ import base64
 import json
 import logging
 import os
+import traceback
 from io import BytesIO
 from typing import Any
 
@@ -146,6 +147,11 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
             "page_count": len(payload.pages),
         },
     )
+    print(
+        f"[ai-engine] starting extraction document_id={payload.document_id} "
+        f"page_count={len(payload.pages)}",
+        flush=True,
+    )
     extractor = _get_pipeline()
     images = _decode_pages(payload)
     messages = _build_messages(images)
@@ -177,6 +183,12 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
                 text_fragments.append(item.get("text", ""))
         generated_text = "\n".join(fragment for fragment in text_fragments if fragment)
 
+    print(
+        f"[ai-engine] model output preview document_id={payload.document_id}: "
+        f"{str(generated_text)[:1000]}",
+        flush=True,
+    )
+
     try:
         parsed = _extract_json(generated_text)
     except Exception as exc:
@@ -187,6 +199,11 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
                 "generated_preview": str(generated_text)[:1000],
             },
         )
+        print(
+            f"[ai-engine] failed to parse extraction output document_id={payload.document_id}: {exc}",
+            flush=True,
+        )
+        print(traceback.format_exc(), flush=True)
         raise ValueError(f"failed to parse model output: {exc}") from exc
     parsed["document_id"] = payload.document_id
     logger.info(
@@ -206,4 +223,10 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
                 "parsed_preview": str(parsed)[:1000],
             },
         )
+        print(
+            f"[ai-engine] failed to validate extraction output document_id={payload.document_id}: {exc}",
+            flush=True,
+        )
+        print(f"[ai-engine] parsed preview: {str(parsed)[:1000]}", flush=True)
+        print(traceback.format_exc(), flush=True)
         raise ValueError(f"failed to validate model output: {exc}") from exc
