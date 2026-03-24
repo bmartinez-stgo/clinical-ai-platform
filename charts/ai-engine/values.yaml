@@ -14,7 +14,8 @@ app:
   name: ai-engine
   namespace: cap-prod-ai-engine
   port: 8090
-  logLevel: INFO
+  logLevel: DEBUG
+  debugLogging: "true"
   serviceVersion: "0.1.0"
   environment: prod
   engineBackend: transformers
@@ -24,6 +25,7 @@ app:
   devicePreference: cuda
   hfHome: /var/cache/huggingface
   transformersCache: /var/cache/huggingface/transformers
+  generatedPreviewChars: "2000"
 
 gpu:
   enabled: true

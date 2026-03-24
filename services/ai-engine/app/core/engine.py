@@ -94,6 +94,17 @@ def _decode_pages(payload: ExtractionInput) -> list[Image.Image]:
     for page in payload.pages:
         image_bytes = base64.b64decode(page.image_base64)
         image = Image.open(BytesIO(image_bytes)).convert("RGB")
+        if settings.debug_logging:
+            logger.debug(
+                "decoded page image",
+                extra={
+                    "document_id": payload.document_id,
+                    "page_number": page.page_number,
+                    "mime_type": page.mime_type,
+                    "width": image.width,
+                    "height": image.height,
+                },
+            )
         images.append(image)
     return images
 
@@ -147,19 +158,68 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
             "page_count": len(payload.pages),
         },
     )
-    print(
-        f"[ai-engine] starting extraction document_id={payload.document_id} "
-        f"page_count={len(payload.pages)}",
-        flush=True,
+    logger.info(
+        "starting extraction request",
+        extra={
+            "document_id": payload.document_id,
+            "filename": payload.filename,
+            "content_type": payload.content_type,
+            "page_count": len(payload.pages),
+        },
     )
-    extractor = _get_pipeline()
-    images = _decode_pages(payload)
-    messages = _build_messages(images)
-    generated = extractor(
-        text=messages,
-        max_new_tokens=settings.max_new_tokens,
-        return_full_text=False,
-    )
+    try:
+        extractor = _get_pipeline()
+    except Exception as exc:
+        logger.exception("failed to get inference pipeline")
+        raise ValueError(f"failed to initialize inference pipeline: {exc}") from exc
+
+    try:
+        images = _decode_pages(payload)
+    except Exception as exc:
+        logger.exception(
+            "failed to decode input pages",
+            extra={"document_id": payload.document_id},
+        )
+        raise ValueError(f"failed to decode input pages: {exc}") from exc
+
+    try:
+        messages = _build_messages(images)
+        if settings.debug_logging:
+            logger.debug(
+                "built multimodal messages",
+                extra={
+                    "document_id": payload.document_id,
+                    "message_count": len(messages),
+                    "content_items": len(messages[0].get("content", [])) if messages else 0,
+                },
+            )
+    except Exception as exc:
+        logger.exception(
+            "failed to build multimodal messages",
+            extra={"document_id": payload.document_id},
+        )
+        raise ValueError(f"failed to build multimodal messages: {exc}") from exc
+
+    try:
+        logger.info(
+            "invoking multimodal model",
+            extra={
+                "document_id": payload.document_id,
+                "engine_id": settings.engine_id,
+                "max_new_tokens": settings.max_new_tokens,
+            },
+        )
+        generated = extractor(
+            text=messages,
+            max_new_tokens=settings.max_new_tokens,
+            return_full_text=False,
+        )
+    except Exception as exc:
+        logger.exception(
+            "model invocation failed",
+            extra={"document_id": payload.document_id},
+        )
+        raise ValueError(f"model invocation failed: {exc}") from exc
 
     if not generated:
         raise ValueError("inference engine returned no content")
@@ -183,11 +243,21 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
                 text_fragments.append(item.get("text", ""))
         generated_text = "\n".join(fragment for fragment in text_fragments if fragment)
 
-    print(
-        f"[ai-engine] model output preview document_id={payload.document_id}: "
-        f"{str(generated_text)[:1000]}",
-        flush=True,
+    logger.info(
+        "received model output",
+        extra={
+            "document_id": payload.document_id,
+            "generated_type": type(generated_text).__name__,
+        },
     )
+    if settings.debug_logging:
+        logger.debug(
+            "model output preview",
+            extra={
+                "document_id": payload.document_id,
+                "generated_preview": str(generated_text)[: settings.generated_preview_chars],
+            },
+        )
 
     try:
         parsed = _extract_json(generated_text)
@@ -199,11 +269,13 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
                 "generated_preview": str(generated_text)[:1000],
             },
         )
-        print(
-            f"[ai-engine] failed to parse extraction output document_id={payload.document_id}: {exc}",
-            flush=True,
+        logger.error(
+            "failed to parse extraction output trace",
+            extra={
+                "document_id": payload.document_id,
+                "traceback": traceback.format_exc(),
+            },
         )
-        print(traceback.format_exc(), flush=True)
         raise ValueError(f"failed to parse model output: {exc}") from exc
     parsed["document_id"] = payload.document_id
     logger.info(
@@ -223,10 +295,12 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
                 "parsed_preview": str(parsed)[:1000],
             },
         )
-        print(
-            f"[ai-engine] failed to validate extraction output document_id={payload.document_id}: {exc}",
-            flush=True,
+        logger.error(
+            "failed to validate extraction output trace",
+            extra={
+                "document_id": payload.document_id,
+                "parsed_preview": str(parsed)[: settings.generated_preview_chars],
+                "traceback": traceback.format_exc(),
+            },
         )
-        print(f"[ai-engine] parsed preview: {str(parsed)[:1000]}", flush=True)
-        print(traceback.format_exc(), flush=True)
         raise ValueError(f"failed to validate model output: {exc}") from exc

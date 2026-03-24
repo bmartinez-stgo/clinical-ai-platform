@@ -9,6 +9,7 @@ class Settings:
     app_namespace: str = os.getenv("APP_NAMESPACE", "cap-prod-ai-engine")
     app_port: int = int(os.getenv("APP_PORT", "8090"))
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
+    debug_logging: bool = os.getenv("DEBUG_LOGGING", "false").lower() == "true"
     service_version: str = os.getenv("SERVICE_VERSION", "0.1.0")
     environment: str = os.getenv("ENVIRONMENT", "prod")
     engine_backend: str = os.getenv("ENGINE_BACKEND", "transformers")
@@ -18,6 +19,7 @@ class Settings:
     device_preference: str = os.getenv("DEVICE_PREFERENCE", "cuda")
     hf_home: str = os.getenv("HF_HOME", "/var/cache/huggingface")
     transformers_cache: str = os.getenv("TRANSFORMERS_CACHE", "/var/cache/huggingface/transformers")
+    generated_preview_chars: int = int(os.getenv("GENERATED_PREVIEW_CHARS", "2000"))
 
 
 @lru_cache
