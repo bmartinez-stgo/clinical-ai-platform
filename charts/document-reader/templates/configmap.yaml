@@ -13,6 +13,7 @@ data:
   ENVIRONMENT: {{ .Values.app.environment | quote }}
   MAX_UPLOAD_SIZE_BYTES: {{ .Values.app.maxUploadSizeBytes | quote }}
   RENDER_DPI: {{ .Values.app.renderDpi | quote }}
+  MAX_IMAGE_DIMENSION: {{ .Values.app.maxImageDimension | quote }}
   AI_ENGINE_URL: {{ .Values.app.aiEngineUrl | quote }}
   AI_ENGINE_TIMEOUT_SECONDS: {{ .Values.app.aiEngineTimeoutSeconds | quote }}
   AI_ENGINE_PAGE_BATCH_SIZE: {{ .Values.app.aiEnginePageBatchSize | quote }}
