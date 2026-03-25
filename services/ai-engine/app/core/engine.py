@@ -5,6 +5,7 @@ import json
 import logging
 import os
 import traceback
+import re
 from io import BytesIO
 from typing import Any
 
@@ -161,18 +162,23 @@ def sanitize_json_candidate(candidate: str) -> str:
     sanitized = candidate
     sanitized = sanitized.replace("\u201c", '"').replace("\u201d", '"')
     sanitized = sanitized.replace("\u2018", "'").replace("\u2019", "'")
-    sanitized = sanitized.replace(",}", "}").replace(",]", "]")
+    sanitized = sanitized.replace("\r\n", "\n")
+    sanitized = sanitized.replace("\t", " ")
+    sanitized = re.sub(r",\s*}", "}", sanitized)
+    sanitized = re.sub(r",\s*]", "]", sanitized)
     return sanitized
 
 
+def _json_error_context(text: str, position: int, radius: int = 120) -> str:
+    start = max(0, position - radius)
+    end = min(len(text), position + radius)
+    snippet = text[start:end]
+    pointer_offset = position - start
+    pointer = " " * max(0, pointer_offset) + "^"
+    return f"{snippet}\n{pointer}"
+
+
 def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
-    logger.info(
-        "starting extraction request",
-        extra={
-            "document_id": payload.document_id,
-            "page_count": len(payload.pages),
-        },
-    )
     logger.info(
         "starting extraction request",
         extra={
@@ -293,30 +299,32 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
     )
     if settings.debug_logging:
         logger.debug(
-            "model output preview",
-            extra={
-                "document_id": payload.document_id,
-                "generated_preview": str(generated_text)[: settings.generated_preview_chars],
-            },
+            "model output preview document_id=%s preview=%s",
+            payload.document_id,
+            str(generated_text)[: settings.generated_preview_chars],
         )
 
     try:
         parsed = _extract_json(generated_text)
     except Exception as exc:
+        generated_preview = str(generated_text)[: settings.generated_preview_chars]
         logger.exception(
             "failed to parse extraction output",
             extra={
                 "document_id": payload.document_id,
-                "generated_preview": str(generated_text)[:1000],
             },
         )
-        logger.error(
-            "failed to parse extraction output trace",
-            extra={
-                "document_id": payload.document_id,
-                "traceback": traceback.format_exc(),
-            },
-        )
+        logger.error("failed to parse extraction output preview document_id=%s preview=%s", payload.document_id, generated_preview)
+        if isinstance(exc, json.JSONDecodeError):
+            logger.error(
+                "failed to parse extraction output context document_id=%s line=%s column=%s position=%s context=%s",
+                payload.document_id,
+                exc.lineno,
+                exc.colno,
+                exc.pos,
+                _json_error_context(str(generated_text), exc.pos),
+            )
+        logger.error("failed to parse extraction output trace document_id=%s traceback=%s", payload.document_id, traceback.format_exc())
         raise ValueError(f"failed to parse model output: {exc}") from exc
     parsed["document_id"] = payload.document_id
     logger.info(
@@ -333,15 +341,12 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
             "failed to validate extraction output",
             extra={
                 "document_id": payload.document_id,
-                "parsed_preview": str(parsed)[:1000],
             },
         )
         logger.error(
-            "failed to validate extraction output trace",
-            extra={
-                "document_id": payload.document_id,
-                "parsed_preview": str(parsed)[: settings.generated_preview_chars],
-                "traceback": traceback.format_exc(),
-            },
+            "failed to validate extraction output preview document_id=%s parsed=%s",
+            payload.document_id,
+            str(parsed)[: settings.generated_preview_chars],
         )
+        logger.error("failed to validate extraction output trace document_id=%s traceback=%s", payload.document_id, traceback.format_exc())
         raise ValueError(f"failed to validate model output: {exc}") from exc
