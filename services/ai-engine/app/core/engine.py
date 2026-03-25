@@ -20,7 +20,7 @@ _PIPELINE = None
 logger = logging.getLogger(__name__)
 
 INSTRUCTION_TEXT = """
-Read every page image of this clinical laboratory report and return only valid JSON.
+Read this page image of a clinical laboratory report and return only valid JSON.
 
 Return this structure:
 {
@@ -50,8 +50,13 @@ Return this structure:
   "warnings": [string]
 }
 
-Do not omit observations that appear in tables, scanned sections, or mixed layouts.
-Do not add explanations outside JSON.
+Rules:
+- Return one JSON object only.
+- Do not use markdown fences.
+- Do not add explanations outside JSON.
+- If a field is missing, use null.
+- If there are no observations on this page, return an empty list.
+- Extract only what is visible on this page.
 """.strip()
 
 
@@ -147,7 +152,17 @@ def _extract_json(text: str) -> dict[str, Any]:
     end = candidate.rfind("}")
     if start == -1 or end == -1 or end <= start:
         raise ValueError("inference engine did not return a JSON object")
-    return json.loads(candidate[start : end + 1])
+    candidate = candidate[start : end + 1]
+    candidate = sanitize_json_candidate(candidate)
+    return json.loads(candidate)
+
+
+def sanitize_json_candidate(candidate: str) -> str:
+    sanitized = candidate
+    sanitized = sanitized.replace("\u201c", '"').replace("\u201d", '"')
+    sanitized = sanitized.replace("\u2018", "'").replace("\u2019", "'")
+    sanitized = sanitized.replace(",}", "}").replace(",]", "]")
+    return sanitized
 
 
 def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
