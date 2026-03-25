@@ -18,9 +18,10 @@ app:
   serviceVersion: "0.1.0"
   environment: prod
   maxUploadSizeBytes: "20971520"
-  renderDpi: "180"
+  renderDpi: "120"
   aiEngineUrl: http://ai-engine.cap-prod-ai-engine.svc.cluster.local:8090/extract/lab-report
   aiEngineTimeoutSeconds: "120"
+  aiEnginePageBatchSize: "1"
 
 gpu:
   enabled: false
