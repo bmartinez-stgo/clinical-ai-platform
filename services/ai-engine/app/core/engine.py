@@ -167,14 +167,23 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
             "page_count": len(payload.pages),
         },
     )
+    logger.info("stage=get_pipeline", extra={"document_id": payload.document_id})
     try:
         extractor = _get_pipeline()
     except Exception as exc:
         logger.exception("failed to get inference pipeline")
         raise ValueError(f"failed to initialize inference pipeline: {exc}") from exc
 
+    logger.info("stage=decode_pages_start", extra={"document_id": payload.document_id})
     try:
         images = _decode_pages(payload)
+        logger.info(
+            "stage=decode_pages_done",
+            extra={
+                "document_id": payload.document_id,
+                "image_count": len(images),
+            },
+        )
     except Exception as exc:
         logger.exception(
             "failed to decode input pages",
@@ -182,8 +191,17 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
         )
         raise ValueError(f"failed to decode input pages: {exc}") from exc
 
+    logger.info("stage=build_messages_start", extra={"document_id": payload.document_id})
     try:
         messages = _build_messages(images)
+        logger.info(
+            "stage=build_messages_done",
+            extra={
+                "document_id": payload.document_id,
+                "message_count": len(messages),
+                "content_items": len(messages[0].get("content", [])) if messages else 0,
+            },
+        )
         if settings.debug_logging:
             logger.debug(
                 "built multimodal messages",
@@ -202,6 +220,10 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
 
     try:
         logger.info(
+            "stage=model_invoke_start",
+            extra={"document_id": payload.document_id},
+        )
+        logger.info(
             "invoking multimodal model",
             extra={
                 "document_id": payload.document_id,
@@ -213,6 +235,10 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
             text=messages,
             max_new_tokens=settings.max_new_tokens,
             return_full_text=False,
+        )
+        logger.info(
+            "stage=model_invoke_done",
+            extra={"document_id": payload.document_id},
         )
     except Exception as exc:
         logger.exception(
