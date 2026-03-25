@@ -18,7 +18,7 @@ async def extract_lab_report(payload: ExtractionInput):
             "extract_lab_report failed",
             extra={
                 "document_id": payload.document_id,
-                "filename": payload.filename,
+                "document_filename": payload.filename,
                 "page_count": len(payload.pages),
             },
         )

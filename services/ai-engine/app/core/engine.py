@@ -162,7 +162,7 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
         "starting extraction request",
         extra={
             "document_id": payload.document_id,
-            "filename": payload.filename,
+            "document_filename": payload.filename,
             "content_type": payload.content_type,
             "page_count": len(payload.pages),
         },
