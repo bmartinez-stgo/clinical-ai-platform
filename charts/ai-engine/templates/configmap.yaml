@@ -20,3 +20,4 @@ data:
   HF_HOME: {{ .Values.app.hfHome | quote }}
   TRANSFORMERS_CACHE: {{ .Values.app.transformersCache | quote }}
   GENERATED_PREVIEW_CHARS: {{ .Values.app.generatedPreviewChars | quote }}
+  PYTORCH_CUDA_ALLOC_CONF: {{ .Values.app.pytorchCudaAllocConf | quote }}

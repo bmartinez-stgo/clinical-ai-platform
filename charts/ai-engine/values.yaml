@@ -26,6 +26,7 @@ app:
   hfHome: /var/cache/huggingface
   transformersCache: /var/cache/huggingface/transformers
   generatedPreviewChars: "2000"
+  pytorchCudaAllocConf: expandable_segments:True
 
 gpu:
   enabled: true
