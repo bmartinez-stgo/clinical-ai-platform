@@ -59,6 +59,7 @@ async def normalize_lab_document(document_payload: dict) -> dict:
                     "document_id": document_payload["document_id"],
                     "filename": document_payload["filename"],
                     "content_type": document_payload["content_type"],
+                    "include_metadata": any(page["page_number"] == 1 for page in batch),
                     "pages": batch,
                 }
             )
