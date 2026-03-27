@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ai-engine-portal.fullname" . }}
+  labels:
+    {{- include "ai-engine-portal.labels" . | nindent 4 }}
+data:
+  APP_NAME: {{ .Values.app.name | quote }}
+  APP_NAMESPACE: {{ .Values.app.namespace | quote }}
+  APP_PORT: {{ .Values.app.port | quote }}

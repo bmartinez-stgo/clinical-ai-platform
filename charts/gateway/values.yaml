@@ -25,6 +25,8 @@ ingress:
     secretName: nahui-ai-tls
 
 proxyRoutes:
+  - prefix: /portal
+    upstream: http://ai-engine-portal.cap-prod-ai-engine-portal.svc.cluster.local:8084
   - prefix: /auth
     upstream: http://auth.cap-prod-auth.svc.cluster.local:8081
   - prefix: /documents

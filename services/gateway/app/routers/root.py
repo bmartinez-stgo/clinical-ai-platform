@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.responses import RedirectResponse
 
 from app.config import settings
 
@@ -7,13 +8,7 @@ router = APIRouter()
 
 @router.get("/")
 async def root():
-    return {
-        "service": settings.app_name,
-        "namespace": settings.app_namespace,
-        "version": settings.service_version,
-        "environment": settings.app_env,
-        "status": "running",
-    }
+    return RedirectResponse(url="/portal", status_code=307)
 
 
 @router.get("/api/v1/status")

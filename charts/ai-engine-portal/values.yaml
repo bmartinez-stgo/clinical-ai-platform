@@ -1,0 +1,30 @@
+replicaCount: 1
+
+image:
+  repository: registry:5000/ai-engine-portal
+  tag: prod-latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8084
+  targetPort: 8084
+
+app:
+  name: ai-engine-portal
+  namespace: cap-prod-ai-engine-portal
+  port: 8084
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+podLabels: {}
+podAnnotations: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
