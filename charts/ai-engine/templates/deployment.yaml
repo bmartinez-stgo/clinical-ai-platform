@@ -27,7 +27,8 @@ spec:
       runtimeClassName: {{ .Values.runtimeClassName | quote }}
       volumes:
         - name: model-cache
-          emptyDir: {}
+          persistentVolumeClaim:
+            claimName: {{ default (include "ai-engine.fullname" .) .Values.cache.persistence.existingClaim }}
       containers:
         - name: ai-engine
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
