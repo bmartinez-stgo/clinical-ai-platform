@@ -1,0 +1,17 @@
+{{- if and .Values.cache.persistence.enabled (not .Values.cache.persistence.existingClaim) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "ai-engine.fullname" . }}
+  labels:
+    {{- include "ai-engine.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.cache.persistence.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.cache.persistence.size }}
+  {{- if .Values.cache.persistence.storageClassName }}
+  storageClassName: {{ .Values.cache.persistence.storageClassName }}
+  {{- end }}
+{{- end }}

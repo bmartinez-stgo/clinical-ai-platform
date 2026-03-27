@@ -42,6 +42,13 @@ resources:
 
 cache:
   mountPath: /var/cache/huggingface
+  persistence:
+    enabled: true
+    existingClaim: ""
+    storageClassName: local-path
+    accessModes:
+      - ReadWriteOnce
+    size: 30Gi
 
 podLabels: {}
 podAnnotations: {}
