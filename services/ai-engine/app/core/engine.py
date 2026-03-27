@@ -325,6 +325,38 @@ def _recover_partial_payload(text: str, include_metadata: bool) -> dict[str, Any
     return recovered
 
 
+def _normalize_confidence_value(value: Any) -> float:
+    try:
+        confidence = float(value)
+    except (TypeError, ValueError):
+        return 0.0
+
+    if confidence > 1.0:
+        confidence = confidence / 10.0
+    return max(0.0, min(confidence, 1.0))
+
+
+def _normalize_parsed_payload(parsed: dict[str, Any], include_metadata: bool) -> dict[str, Any]:
+    normalized_patient = parsed.get("patient", {}) if include_metadata else {}
+    normalized_report = parsed.get("report", {}) if include_metadata else {}
+    normalized_warnings = parsed.get("warnings", [])
+    normalized_observations: list[dict[str, Any]] = []
+
+    for item in parsed.get("observations", []):
+        if not isinstance(item, dict):
+            continue
+        normalized_item = dict(item)
+        normalized_item["confidence"] = _normalize_confidence_value(item.get("confidence"))
+        normalized_observations.append(normalized_item)
+
+    return {
+        "patient": normalized_patient if isinstance(normalized_patient, dict) else {},
+        "report": normalized_report if isinstance(normalized_report, dict) else {},
+        "observations": normalized_observations,
+        "warnings": [warning for warning in normalized_warnings if isinstance(warning, str)] if isinstance(normalized_warnings, list) else [],
+    }
+
+
 def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
     logger.info(
         "starting extraction request",
@@ -484,10 +516,7 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
             parsed = recovered
         else:
             raise ValueError(f"failed to parse model output: {exc}") from exc
-    parsed.setdefault("patient", {})
-    parsed.setdefault("report", {})
-    parsed.setdefault("observations", [])
-    parsed.setdefault("warnings", [])
+    parsed = _normalize_parsed_payload(parsed, payload.include_metadata)
     parsed["document_id"] = payload.document_id
     logger.info(
         "completed extraction request",
