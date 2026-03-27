@@ -19,7 +19,7 @@ resources:
 ingress:
   enabled: true
   host: nahui-ai.ddns.net
-  clusterIssuer: letsencrypt-staging
+  clusterIssuer: letsencrypt-prod
   tls:
     enabled: true
     secretName: nahui-ai-tls

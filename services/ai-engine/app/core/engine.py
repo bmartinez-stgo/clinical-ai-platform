@@ -20,7 +20,7 @@ settings = get_settings()
 _PIPELINE = None
 logger = logging.getLogger(__name__)
 
-INSTRUCTION_TEXT = """
+FIRST_PAGE_INSTRUCTION_TEXT = """
 Read this page image of a clinical laboratory report and return only valid JSON.
 
 Return this structure:
@@ -56,6 +56,35 @@ Rules:
 - Do not use markdown fences.
 - Do not add explanations outside JSON.
 - If a field is missing, use null.
+- If there are no observations on this page, return an empty list.
+- Extract only what is visible on this page.
+""".strip()
+
+CONTINUATION_PAGE_INSTRUCTION_TEXT = """
+Read this page image of a clinical laboratory report and return only valid JSON.
+
+Return this structure:
+{
+  "observations": [
+    {
+      "panel_raw": string or null,
+      "test_name_raw": string,
+      "value_raw": string or null,
+      "unit_raw": string or null,
+      "reference_range_raw": string or null,
+      "specimen_raw": string or null,
+      "page": integer,
+      "confidence": number
+    }
+  ],
+  "warnings": [string]
+}
+
+Rules:
+- Return one JSON object only.
+- Do not use markdown fences.
+- Do not add explanations outside JSON.
+- Do not include patient or report metadata on continuation pages.
 - If there are no observations on this page, return an empty list.
 - Extract only what is visible on this page.
 """.strip()
@@ -115,7 +144,7 @@ def _decode_pages(payload: ExtractionInput) -> list[Image.Image]:
     return images
 
 
-def _build_messages(images: list[Image.Image]) -> list[dict[str, Any]]:
+def _build_messages(images: list[Image.Image], instruction_text: str) -> list[dict[str, Any]]:
     content: list[dict[str, Any]] = []
     for image in images:
         content.append(
@@ -127,7 +156,7 @@ def _build_messages(images: list[Image.Image]) -> list[dict[str, Any]]:
     content.append(
         {
             "type": "text",
-            "text": INSTRUCTION_TEXT,
+            "text": instruction_text,
         }
     )
     return [
@@ -138,7 +167,7 @@ def _build_messages(images: list[Image.Image]) -> list[dict[str, Any]]:
     ]
 
 
-def _extract_json(text: str) -> dict[str, Any]:
+def _prepare_json_candidate(text: str) -> str:
     candidate = text.strip()
     if "```" in candidate:
         fragments = [fragment.strip() for fragment in candidate.split("```") if fragment.strip()]
@@ -153,9 +182,11 @@ def _extract_json(text: str) -> dict[str, Any]:
     end = candidate.rfind("}")
     if start == -1 or end == -1 or end <= start:
         raise ValueError("inference engine did not return a JSON object")
-    candidate = candidate[start : end + 1]
-    candidate = sanitize_json_candidate(candidate)
-    return json.loads(candidate)
+    return sanitize_json_candidate(candidate[start : end + 1])
+
+
+def _extract_json(text: str) -> dict[str, Any]:
+    return json.loads(_prepare_json_candidate(text))
 
 
 def sanitize_json_candidate(candidate: str) -> str:
@@ -176,6 +207,122 @@ def _json_error_context(text: str, position: int, radius: int = 120) -> str:
     pointer_offset = position - start
     pointer = " " * max(0, pointer_offset) + "^"
     return f"{snippet}\n{pointer}"
+
+
+def _extract_balanced_segment(text: str, start_index: int, open_char: str, close_char: str) -> tuple[str | None, int]:
+    depth = 0
+    in_string = False
+    escape = False
+
+    for index in range(start_index, len(text)):
+        char = text[index]
+        if in_string:
+            if escape:
+                escape = False
+            elif char == "\\":
+                escape = True
+            elif char == '"':
+                in_string = False
+            continue
+
+        if char == '"':
+            in_string = True
+            continue
+        if char == open_char:
+            depth += 1
+        elif char == close_char:
+            depth -= 1
+            if depth == 0:
+                return text[start_index : index + 1], index + 1
+
+    return None, start_index
+
+
+def _extract_named_object(candidate: str, key: str) -> dict[str, Any] | None:
+    marker = f'"{key}"'
+    key_index = candidate.find(marker)
+    if key_index == -1:
+        return None
+    object_start = candidate.find("{", key_index)
+    if object_start == -1:
+        return None
+    segment, _ = _extract_balanced_segment(candidate, object_start, "{", "}")
+    if not segment:
+        return None
+    return json.loads(sanitize_json_candidate(segment))
+
+
+def _extract_named_array(candidate: str, key: str) -> list[Any] | None:
+    marker = f'"{key}"'
+    key_index = candidate.find(marker)
+    if key_index == -1:
+        return None
+    array_start = candidate.find("[", key_index)
+    if array_start == -1:
+        return None
+    segment, _ = _extract_balanced_segment(candidate, array_start, "[", "]")
+    if not segment:
+        return None
+    return json.loads(sanitize_json_candidate(segment))
+
+
+def _extract_observations_array(candidate: str) -> list[dict[str, Any]]:
+    marker = '"observations"'
+    key_index = candidate.find(marker)
+    if key_index == -1:
+        return []
+
+    array_start = candidate.find("[", key_index)
+    if array_start == -1:
+        return []
+
+    observations: list[dict[str, Any]] = []
+    cursor = array_start + 1
+    while cursor < len(candidate):
+        next_object = candidate.find("{", cursor)
+        next_array_end = candidate.find("]", cursor)
+
+        if next_array_end != -1 and (next_object == -1 or next_array_end < next_object):
+            break
+        if next_object == -1:
+            break
+
+        segment, next_cursor = _extract_balanced_segment(candidate, next_object, "{", "}")
+        if not segment:
+            break
+
+        try:
+            observations.append(json.loads(sanitize_json_candidate(segment)))
+        except Exception:
+            pass
+        cursor = next_cursor
+
+    return observations
+
+
+def _recover_partial_payload(text: str, include_metadata: bool) -> dict[str, Any]:
+    candidate = sanitize_json_candidate(text)
+    recovered: dict[str, Any] = {
+        "patient": {},
+        "report": {},
+        "observations": [],
+        "warnings": [],
+    }
+
+    if include_metadata:
+        patient = _extract_named_object(candidate, "patient")
+        report = _extract_named_object(candidate, "report")
+        if patient is not None:
+            recovered["patient"] = patient
+        if report is not None:
+            recovered["report"] = report
+
+    warnings = _extract_named_array(candidate, "warnings")
+    if isinstance(warnings, list):
+        recovered["warnings"] = [item for item in warnings if isinstance(item, str)]
+
+    recovered["observations"] = _extract_observations_array(candidate)
+    return recovered
 
 
 def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
@@ -214,7 +361,8 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
 
     logger.info("stage=build_messages_start", extra={"document_id": payload.document_id})
     try:
-        messages = _build_messages(images)
+        instruction_text = FIRST_PAGE_INSTRUCTION_TEXT if payload.include_metadata else CONTINUATION_PAGE_INSTRUCTION_TEXT
+        messages = _build_messages(images, instruction_text)
         logger.info(
             "stage=build_messages_done",
             extra={
@@ -325,7 +473,21 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
                 _json_error_context(str(generated_text), exc.pos),
             )
         logger.error("failed to parse extraction output trace document_id=%s traceback=%s", payload.document_id, traceback.format_exc())
-        raise ValueError(f"failed to parse model output: {exc}") from exc
+        recovered = _recover_partial_payload(str(generated_text), payload.include_metadata)
+        if recovered.get("observations"):
+            logger.warning(
+                "recovered partial extraction output document_id=%s observation_count=%s include_metadata=%s",
+                payload.document_id,
+                len(recovered["observations"]),
+                payload.include_metadata,
+            )
+            parsed = recovered
+        else:
+            raise ValueError(f"failed to parse model output: {exc}") from exc
+    parsed.setdefault("patient", {})
+    parsed.setdefault("report", {})
+    parsed.setdefault("observations", [])
+    parsed.setdefault("warnings", [])
     parsed["document_id"] = payload.document_id
     logger.info(
         "completed extraction request",

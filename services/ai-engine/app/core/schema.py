@@ -13,6 +13,7 @@ class ExtractionInput(BaseModel):
     document_id: str
     filename: str
     content_type: str
+    include_metadata: bool = True
     pages: list[PageInput]
 
 
