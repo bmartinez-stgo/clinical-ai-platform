@@ -95,6 +95,35 @@ def parse_value(raw_value: str | None) -> tuple[Any, str]:
     return (stripped, "text")
 
 
+def calculate_range_delta(value: Any, reference_range: dict[str, Any] | None) -> dict[str, Any] | None:
+    if reference_range is None or not isinstance(value, (int, float)):
+        return None
+
+    low = reference_range.get("low")
+    high = reference_range.get("high")
+    unit_ucum = reference_range.get("unit_ucum")
+
+    if low is not None and value < low:
+        delta = low - value
+        return {
+            "direction": "below",
+            "absolute": round(delta, 4),
+            "relative_to_lower": round(delta / low, 4) if low else None,
+            "unit_ucum": unit_ucum,
+        }
+
+    if high is not None and value > high:
+        delta = value - high
+        return {
+            "direction": "above",
+            "absolute": round(delta, 4),
+            "relative_to_upper": round(delta / high, 4) if high else None,
+            "unit_ucum": unit_ucum,
+        }
+
+    return None
+
+
 def determine_interpretation(value: Any, reference_range: dict[str, Any] | None) -> str | None:
     if reference_range is None or not isinstance(value, (int, float)):
         return None
@@ -110,7 +139,29 @@ def determine_interpretation(value: Any, reference_range: dict[str, Any] | None)
     return None
 
 
-def normalize_observation(raw_observation: dict[str, Any]) -> tuple[dict[str, Any], bool]:
+def build_review_issue(
+    *,
+    stage: str,
+    reason: str,
+    message: str,
+    raw_observation: dict[str, Any],
+) -> dict[str, Any]:
+    return {
+        "stage": stage,
+        "reason": reason,
+        "message": message,
+        "page": raw_observation.get("page"),
+        "panel_raw": raw_observation.get("panel_raw"),
+        "test_name_raw": raw_observation.get("test_name_raw"),
+        "value_raw": raw_observation.get("value_raw"),
+        "unit_raw": raw_observation.get("unit_raw"),
+        "reference_range_raw": raw_observation.get("reference_range_raw"),
+        "specimen_raw": raw_observation.get("specimen_raw"),
+        "confidence": raw_observation.get("confidence", 0.0),
+    }
+
+
+def normalize_observation(raw_observation: dict[str, Any]) -> tuple[dict[str, Any], bool, list[dict[str, Any]]]:
     definition = find_definition(raw_observation.get("test_name_raw", ""))
     raw_value, value_type = parse_value(raw_observation.get("value_raw"))
     reference_range = parse_reference_range(
@@ -136,23 +187,88 @@ def normalize_observation(raw_observation: dict[str, Any]) -> tuple[dict[str, An
         "reference_range_raw": raw_observation.get("reference_range_raw"),
         "reference_range": reference_range,
         "interpretation": determine_interpretation(raw_value, reference_range),
+        "delta_from_range": calculate_range_delta(raw_value, reference_range),
         "specimen": raw_observation.get("specimen_raw"),
         "page": raw_observation.get("page"),
         "confidence": raw_observation.get("confidence", 0.0),
     }
 
-    requires_review = normalized["loinc_code"] is None or (value_type == "numeric" and normalized["unit_ucum"] is None)
-    return normalized, requires_review
+    review_items: list[dict[str, Any]] = []
+
+    if normalized["loinc_code"] is None:
+        review_items.append(
+            build_review_issue(
+                stage="normalization",
+                reason="unmapped_test_name",
+                message="Could not map the test name to a known canonical test or LOINC code.",
+                raw_observation=raw_observation,
+            )
+        )
+
+    if value_type == "numeric" and normalized["unit_ucum"] is None:
+        review_items.append(
+            build_review_issue(
+                stage="normalization",
+                reason="unit_unmapped",
+                message="Numeric value extracted, but the measurement unit could not be normalized.",
+                raw_observation=raw_observation,
+            )
+        )
+
+    if raw_observation.get("reference_range_raw") and reference_range is None:
+        review_items.append(
+            build_review_issue(
+                stage="interpretation",
+                reason="reference_range_unparsed",
+                message="A reference range was present, but it could not be parsed into structured low/high bounds.",
+                raw_observation=raw_observation,
+            )
+        )
+
+    if value_type == "text" and raw_observation.get("value_raw"):
+        raw_value_text = str(raw_observation.get("value_raw")).strip()
+        normalized_value = normalize_text(raw_value_text)
+        if any(character.isdigit() for character in raw_value_text) and not NUMERIC_PATTERN.match(raw_value_text):
+            review_items.append(
+                build_review_issue(
+                    stage="normalization",
+                    reason="ocr_numeric_noise",
+                    message="The value appears to contain OCR noise or mixed numeric text and could not be normalized safely.",
+                    raw_observation=raw_observation,
+                )
+            )
+        elif normalized_value in {"serie blanca", "serie roja"}:
+            review_items.append(
+                build_review_issue(
+                    stage="extraction",
+                    reason="possible_section_header",
+                    message="This item may represent a section header rather than a final laboratory observation.",
+                    raw_observation=raw_observation,
+                )
+            )
+
+    requires_review = bool(review_items)
+    return normalized, requires_review, review_items
 
 
 def build_normalized_response(document_payload: dict[str, Any], extraction_payload: dict[str, Any]) -> dict[str, Any]:
     observations: list[dict[str, Any]] = []
     unmapped_items: list[str] = []
     requires_manual_review = False
+    review_items: list[dict[str, Any]] = []
+    extraction_issues = [
+        {
+            "stage": "extraction",
+            "reason": "warning",
+            "message": warning,
+        }
+        for warning in extraction_payload.get("warnings", [])
+    ]
 
     for raw_observation in extraction_payload.get("observations", []):
-        normalized_observation, review_required = normalize_observation(raw_observation)
+        normalized_observation, review_required, observation_issues = normalize_observation(raw_observation)
         observations.append(normalized_observation)
+        review_items.extend(observation_issues)
         if review_required:
             unmapped_items.append(normalized_observation["test_name_raw"])
             requires_manual_review = True
@@ -186,8 +302,14 @@ def build_normalized_response(document_payload: dict[str, Any], extraction_paylo
         },
         "observation_count": len(observations),
         "observations": observations,
+        "review_items": review_items,
+        "processing_issues": {
+            "extraction": extraction_issues + [item for item in review_items if item["stage"] == "extraction"],
+            "normalization": [item for item in review_items if item["stage"] == "normalization"],
+            "interpretation": [item for item in review_items if item["stage"] == "interpretation"],
+        },
         "unmapped_items": sorted(set(unmapped_items)),
         "warnings": extraction_payload.get("warnings", []),
         "confidence": average_confidence,
-        "requires_manual_review": requires_manual_review,
+        "requires_manual_review": requires_manual_review or bool(extraction_issues),
     }
