@@ -19,6 +19,7 @@ HTML = """<!doctype html>
         --brand: #0d7a5f;
         --brand-dark: #0a5d49;
         --accent: #d66b2d;
+        --danger: #a33d2a;
         --shadow: 0 14px 34px rgba(24, 33, 31, 0.08);
       }
       * { box-sizing: border-box; }
@@ -52,7 +53,7 @@ HTML = """<!doctype html>
         margin: 0;
         font-size: clamp(2rem, 5vw, 3.8rem);
         line-height: 0.95;
-        max-width: 11ch;
+        max-width: 12ch;
       }
       .lead {
         max-width: 760px;
@@ -81,9 +82,23 @@ HTML = """<!doctype html>
         margin: 0 0 16px;
         color: var(--muted);
       }
-      .auth { grid-column: span 4; }
-      .docs { grid-column: span 8; }
-      .diag { grid-column: span 12; }
+      .docs { grid-column: span 7; }
+      .diag { grid-column: span 5; }
+      .session { grid-column: span 12; }
+      .login-shell {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+      .login-card {
+        width: min(100%, 460px);
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        box-shadow: var(--shadow);
+        padding: 28px;
+      }
       .row {
         display: grid;
         gap: 12px;
@@ -121,6 +136,9 @@ HTML = """<!doctype html>
       button.secondary {
         background: var(--brand-dark);
       }
+      button.danger {
+        background: var(--danger);
+      }
       button:disabled {
         opacity: 0.55;
         cursor: wait;
@@ -134,6 +152,9 @@ HTML = """<!doctype html>
         margin-top: 12px;
         font-size: 0.9rem;
         color: var(--muted);
+      }
+      .status.error {
+        color: var(--danger);
       }
       pre {
         margin: 0;
@@ -160,41 +181,71 @@ HTML = """<!doctype html>
         font-weight: 700;
         font-size: 0.85rem;
       }
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        gap: 16px;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+      .toolbar-meta {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      [hidden] { display: none !important; }
+      code {
+        font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+      }
       @media (max-width: 920px) {
-        .auth, .docs, .diag { grid-column: span 12; }
+        .docs, .diag, .session { grid-column: span 12; }
+        .toolbar {
+          align-items: flex-start;
+          flex-direction: column;
+        }
       }
     </style>
   </head>
   <body>
-    <main class="shell">
+    <main id="loginView" class="login-shell">
+      <section class="login-card">
+        <div class="kicker">Clinical AI Platform</div>
+        <h1 style="max-width: 10ch; margin-top: 10px;">AI Engine Portal</h1>
+        <p class="lead" style="max-width: none; margin-top: 10px;">
+          Sign in to access document parsing and diagnostic workflows through the production gateway.
+        </p>
+        <div class="row" style="margin-top: 18px;">
+          <label>Username<input id="username" type="text" value="admin" autocomplete="username" /></label>
+          <label>Password<input id="password" type="password" value="admin123" autocomplete="current-password" /></label>
+        </div>
+        <div class="actions">
+          <button id="loginBtn">Sign In</button>
+        </div>
+        <div class="status" id="loginStatus">Waiting for credentials.</div>
+      </section>
+    </main>
+
+    <main id="portalView" class="shell" hidden>
       <section class="hero">
         <div class="kicker">Clinical AI Platform</div>
-        <h1>AI Engine Portal for auth, parsing, and inference.</h1>
+        <h1>AI Engine Portal</h1>
         <p class="lead">
-          This portal talks to the same public routes exposed through the gateway. Use it to get a token, upload a PDF,
-          and send normalized observations to diagnostics without jumping between tools.
+          Operate the production parsing and inference services from one place after authentication.
         </p>
       </section>
 
-      <section class="grid">
-        <article class="card auth">
-          <h2>Auth</h2>
-          <p>Get a bearer token and keep it in local storage for the next requests.</p>
-          <div class="row">
-            <label>Username<input id="username" type="text" value="admin" /></label>
-            <label>Password<input id="password" type="password" value="admin123" /></label>
-          </div>
-          <div class="actions">
-            <button id="loginBtn">Get Token</button>
-            <button id="clearTokenBtn" class="secondary" type="button">Clear Token</button>
-          </div>
-          <div class="status" id="authStatus">No token loaded.</div>
-          <div class="result" style="margin-top: 14px;">
-            <div class="pill" id="tokenState">Token missing</div>
-            <pre id="tokenOutput">{"token": null}</pre>
-          </div>
-        </article>
+      <section class="toolbar">
+        <div>
+          <div class="pill" id="sessionState">Session active</div>
+        </div>
+        <div class="toolbar-meta">
+          <div class="status" id="sessionStatus">Authenticated.</div>
+          <button id="logoutBtn" class="danger" type="button">Sign Out</button>
+        </div>
+      </section>
 
+      <section class="grid">
         <article class="card docs">
           <h2>Document Reader</h2>
           <p>Upload a PDF or image to <code>/documents/labs/parse</code> through the public gateway.</p>
@@ -231,14 +282,25 @@ HTML = """<!doctype html>
             <pre id="diagnosticOutput">{}</pre>
           </div>
         </article>
+
+        <article class="card session">
+          <h2>Session</h2>
+          <p>The portal keeps the bearer token in local storage and validates it before exposing production functions.</p>
+          <div class="result">
+            <pre id="tokenOutput">{"token": null}</pre>
+          </div>
+        </article>
       </section>
     </main>
 
     <script>
       const tokenKey = "clinical-ai-engine-portal-token";
+      const loginView = document.getElementById("loginView");
+      const portalView = document.getElementById("portalView");
+      const loginStatus = document.getElementById("loginStatus");
+      const sessionState = document.getElementById("sessionState");
+      const sessionStatus = document.getElementById("sessionStatus");
       const tokenOutput = document.getElementById("tokenOutput");
-      const tokenState = document.getElementById("tokenState");
-      const authStatus = document.getElementById("authStatus");
       const parseOutput = document.getElementById("parseOutput");
       const parseStatus = document.getElementById("parseStatus");
       const diagnosticOutput = document.getElementById("diagnosticOutput");
@@ -261,14 +323,41 @@ HTML = """<!doctype html>
         } else {
           window.localStorage.removeItem(tokenKey);
         }
-        renderTokenState();
       }
 
-      function renderTokenState() {
-        const token = readToken();
-        tokenState.textContent = token ? "Token loaded" : "Token missing";
-        authStatus.textContent = token ? "Bearer token ready for requests." : "No token loaded.";
+      function setLoginMessage(message, isError = false) {
+        loginStatus.textContent = message;
+        loginStatus.className = isError ? "status error" : "status";
+      }
+
+      function setSessionMessage(message, isError = false) {
+        sessionStatus.textContent = message;
+        sessionStatus.className = isError ? "status error" : "status";
+      }
+
+      function showLogin() {
+        loginView.hidden = false;
+        portalView.hidden = true;
+      }
+
+      function showPortal() {
+        loginView.hidden = true;
+        portalView.hidden = false;
+      }
+
+      function clearSession() {
+        writeToken(null);
+        sessionState.textContent = "Session inactive";
+        setSessionMessage("Authentication required.");
+        tokenOutput.textContent = pretty({ token: null });
+        showLogin();
+      }
+
+      function renderSession(token) {
+        sessionState.textContent = "Session active";
+        setSessionMessage("Authenticated.");
         tokenOutput.textContent = pretty({ token });
+        showPortal();
       }
 
       async function requestJson(url, options) {
@@ -286,10 +375,37 @@ HTML = """<!doctype html>
         return body;
       }
 
+      async function validateToken(token) {
+        return requestJson("/auth/validate", {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+      }
+
+      async function bootstrapSession() {
+        const token = readToken();
+        if (!token) {
+          clearSession();
+          return;
+        }
+
+        setLoginMessage("Validating existing session...");
+        try {
+          const payload = await validateToken(token);
+          renderSession(token);
+          setSessionMessage(`Authenticated as ${payload.subject}. Expires at epoch ${payload.expires_at}.`);
+        } catch (error) {
+          clearSession();
+          setLoginMessage("Session expired. Sign in again.", true);
+        }
+      }
+
       document.getElementById("loginBtn").addEventListener("click", async () => {
         const username = document.getElementById("username").value.trim();
         const password = document.getElementById("password").value;
-        authStatus.textContent = "Requesting token...";
+        setLoginMessage("Signing in...");
         try {
           const payload = await requestJson("/auth/login", {
             method: "POST",
@@ -297,15 +413,17 @@ HTML = """<!doctype html>
             body: JSON.stringify({ username, password }),
           });
           writeToken(payload.access_token || null);
-          authStatus.textContent = "Token retrieved.";
+          renderSession(payload.access_token || null);
+          setSessionMessage(`Authenticated. Token lifetime: ${payload.expires_in} seconds.`);
         } catch (error) {
-          authStatus.textContent = "Login failed.";
+          setLoginMessage("Sign-in failed.", true);
           tokenOutput.textContent = String(error.message || error);
         }
       });
 
-      document.getElementById("clearTokenBtn").addEventListener("click", () => {
-        writeToken(null);
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        clearSession();
+        setLoginMessage("Signed out.");
       });
 
       document.getElementById("parseBtn").addEventListener("click", async () => {
@@ -313,7 +431,7 @@ HTML = """<!doctype html>
         const fileInput = document.getElementById("labFile");
         const file = fileInput.files[0];
         if (!token) {
-          parseStatus.textContent = "Load a bearer token first.";
+          clearSession();
           return;
         }
         if (!file) {
@@ -360,7 +478,7 @@ HTML = """<!doctype html>
       document.getElementById("diagnosticsBtn").addEventListener("click", async () => {
         const token = readToken();
         if (!token) {
-          diagnosticStatus.textContent = "Load a bearer token first.";
+          clearSession();
           return;
         }
         diagnosticStatus.textContent = "Running diagnostics...";
@@ -382,7 +500,7 @@ HTML = """<!doctype html>
         }
       });
 
-      renderTokenState();
+      bootstrapSession();
     </script>
   </body>
 </html>
