@@ -20,6 +20,12 @@ class Settings:
     )
     ai_engine_timeout_seconds: int = int(os.getenv("AI_ENGINE_TIMEOUT_SECONDS", "120"))
     ai_engine_page_batch_size: int = int(os.getenv("AI_ENGINE_PAGE_BATCH_SIZE", "1"))
+    ocr_backend: str = os.getenv("OCR_BACKEND", "ai-engine")
+    ocr_engine_url: str = os.getenv(
+        "OCR_ENGINE_URL",
+        "http://ocr-engine.cap-prod-ocr-engine.svc.cluster.local:8091/extract/lab-report",
+    )
+    ocr_engine_timeout_seconds: int = int(os.getenv("OCR_ENGINE_TIMEOUT_SECONDS", "120"))
 
 
 @lru_cache

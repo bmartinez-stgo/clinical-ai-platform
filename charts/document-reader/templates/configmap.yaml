@@ -17,3 +17,6 @@ data:
   AI_ENGINE_URL: {{ .Values.app.aiEngineUrl | quote }}
   AI_ENGINE_TIMEOUT_SECONDS: {{ .Values.app.aiEngineTimeoutSeconds | quote }}
   AI_ENGINE_PAGE_BATCH_SIZE: {{ .Values.app.aiEnginePageBatchSize | quote }}
+  OCR_BACKEND: {{ .Values.app.ocrBackend | quote }}
+  OCR_ENGINE_URL: {{ .Values.app.ocrEngineUrl | quote }}
+  OCR_ENGINE_TIMEOUT_SECONDS: {{ .Values.app.ocrEngineTimeoutSeconds | quote }}

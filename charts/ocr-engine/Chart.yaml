@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ocr-engine
+description: Clinical AI Platform OCR extraction engine using GLM-OCR
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
