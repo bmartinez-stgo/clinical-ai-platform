@@ -1,0 +1,17 @@
+{{- if .Values.cache.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ default (include "ocr-engine.fullname" .) .Values.cache.persistence.existingClaim }}
+  labels:
+    {{- include "ocr-engine.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.cache.persistence.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.cache.persistence.size }}
+  {{- if .Values.cache.persistence.storageClassName }}
+  storageClassName: {{ .Values.cache.persistence.storageClassName | quote }}
+  {{- end }}
+{{- end }}

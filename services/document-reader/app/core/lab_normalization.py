@@ -22,6 +22,45 @@ def normalize_text(value: str) -> str:
     return re.sub(r"\s+", " ", ascii_text.strip().lower())
 
 
+def coerce_ocr_numeric_token(value: str | None) -> float | None:
+    if value is None:
+        return None
+
+    cleaned = value.strip()
+    if not cleaned:
+        return None
+
+    cleaned = cleaned.replace(",", ".").replace("O", "0").replace("o", "0").replace("C", "0")
+    cleaned = re.sub(r"[^0-9.\-]", "", cleaned)
+    if not cleaned or cleaned in {"-", ".", "-."}:
+        return None
+
+    if cleaned.count(".") == 0:
+        try:
+            return float(cleaned)
+        except ValueError:
+            return None
+
+    parts = [part for part in cleaned.split(".") if part != ""]
+    if not parts:
+        return None
+
+    if len(parts) == 2:
+        integer_part, decimal_part = parts
+        if len(decimal_part) <= 2:
+            candidate = f"{integer_part}.{decimal_part}"
+            try:
+                return float(candidate)
+            except ValueError:
+                return None
+
+    integer_candidate = "".join(parts)
+    try:
+        return float(integer_candidate)
+    except ValueError:
+        return None
+
+
 def normalize_unit(unit: str | None, fallback: str | None = None) -> str | None:
     if unit:
         key = normalize_text(unit)
@@ -66,16 +105,22 @@ def parse_reference_range(reference_range_raw: str | None, fallback_unit: str | 
     value = reference_range_raw.strip()
     match = RANGE_PATTERN.search(value)
     if match:
+        low_value = coerce_ocr_numeric_token(match.group("low"))
+        high_value = coerce_ocr_numeric_token(match.group("high"))
+        if low_value is None or high_value is None:
+            return None
         return {
-            "low": float(match.group("low")),
-            "high": float(match.group("high")),
+            "low": low_value,
+            "high": high_value,
             "unit_ucum": normalize_unit(match.group("unit"), fallback_unit),
         }
 
     match = BOUND_PATTERN.search(value)
     if match:
         op = match.group("op")
-        bound = float(match.group("bound"))
+        bound = coerce_ocr_numeric_token(match.group("bound"))
+        if bound is None:
+            return None
         return {
             "low": bound if op == ">" else None,
             "high": bound if op == "<" else None,
@@ -92,6 +137,9 @@ def parse_value(raw_value: str | None) -> tuple[Any, str]:
     if NUMERIC_PATTERN.match(stripped):
         value = float(stripped)
         return ((int(value) if value.is_integer() else value), "numeric")
+    coerced = coerce_ocr_numeric_token(stripped)
+    if coerced is not None:
+        return ((int(coerced) if coerced.is_integer() else coerced), "numeric")
     return (stripped, "text")
 
 
@@ -270,7 +318,8 @@ def build_normalized_response(document_payload: dict[str, Any], extraction_paylo
         observations.append(normalized_observation)
         review_items.extend(observation_issues)
         if review_required:
-            unmapped_items.append(normalized_observation["test_name_raw"])
+            if normalized_observation["loinc_code"] is None:
+                unmapped_items.append(normalized_observation["test_name_raw"])
             requires_manual_review = True
 
     patient_payload = extraction_payload.get("patient", {})

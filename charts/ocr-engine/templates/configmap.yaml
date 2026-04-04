@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "ocr-engine.fullname" . }}
+  labels:
+    {{- include "ocr-engine.labels" . | nindent 4 }}
+data:
+  APP_NAME: {{ .Values.app.name | quote }}
+  APP_NAMESPACE: {{ .Values.app.namespace | quote }}
+  APP_PORT: {{ .Values.app.port | quote }}
+  LOG_LEVEL: {{ .Values.app.logLevel | quote }}
+  DEBUG_LOGGING: {{ .Values.app.debugLogging | quote }}
+  SERVICE_VERSION: {{ .Values.app.serviceVersion | quote }}
+  ENVIRONMENT: {{ .Values.app.environment | quote }}
+  ENGINE_BACKEND: {{ .Values.app.engineBackend | quote }}
+  ENGINE_ID: {{ .Values.app.engineId | quote }}
+  MAX_NEW_TOKENS: {{ .Values.app.maxNewTokens | quote }}
+  TEMPERATURE: {{ .Values.app.temperature | quote }}
+  DEVICE_PREFERENCE: {{ .Values.app.devicePreference | quote }}
+  HF_HOME: {{ .Values.app.hfHome | quote }}
+  TRANSFORMERS_CACHE: {{ .Values.app.transformersCache | quote }}
+  GENERATED_PREVIEW_CHARS: {{ .Values.app.generatedPreviewChars | quote }}

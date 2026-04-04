@@ -1,0 +1,58 @@
+replicaCount: 1
+
+image:
+  repository: registry:5000/ocr-engine
+  tag: prod-latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8091
+  targetPort: 8091
+
+app:
+  name: ocr-engine
+  namespace: cap-prod-ocr-engine
+  port: 8091
+  logLevel: INFO
+  debugLogging: "true"
+  serviceVersion: "0.1.0"
+  environment: prod
+  engineBackend: transformers
+  engineId: zai-org/GLM-OCR
+  maxNewTokens: "4096"
+  temperature: "0"
+  devicePreference: cuda
+  hfHome: /var/cache/huggingface
+  transformersCache: /var/cache/huggingface/transformers
+  generatedPreviewChars: "2000"
+
+gpu:
+  enabled: true
+  count: 1
+
+resources:
+  requests:
+    cpu: "2"
+    memory: 8Gi
+  limits:
+    cpu: "6"
+    memory: 24Gi
+
+cache:
+  mountPath: /var/cache/huggingface
+  persistence:
+    enabled: true
+    existingClaim: ""
+    storageClassName: local-path
+    accessModes:
+      - ReadWriteOnce
+    size: 20Gi
+
+podLabels: {}
+podAnnotations: {}
+
+runtimeClassName: nvidia
+nodeSelector: {}
+tolerations: []
+affinity: {}
