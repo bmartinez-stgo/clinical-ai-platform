@@ -27,7 +27,7 @@ async def extract_laboratory_observations(payload: dict) -> dict:
                 "target_url": target_url,
                 "timeout_seconds": timeout_seconds,
                 "document_id": payload.get("document_id"),
-                "filename": payload.get("filename"),
+                "document_filename": payload.get("filename"),
                 "page_numbers": [page.get("page_number") for page in payload.get("pages", [])],
                 "include_metadata": payload.get("include_metadata"),
             },
@@ -49,13 +49,13 @@ async def extract_laboratory_observations(payload: dict) -> dict:
             logger.exception(
                 "extraction backend call failed",
                 extra={
-                    "ocr_backend": settings.ocr_backend,
-                    "target_url": target_url,
-                    "timeout_seconds": timeout_seconds,
-                    "document_id": payload.get("document_id"),
-                    "filename": payload.get("filename"),
-                    "page_numbers": [page.get("page_number") for page in payload.get("pages", [])],
-                    "include_metadata": payload.get("include_metadata"),
-                },
-            )
+                "ocr_backend": settings.ocr_backend,
+                "target_url": target_url,
+                "timeout_seconds": timeout_seconds,
+                "document_id": payload.get("document_id"),
+                "document_filename": payload.get("filename"),
+                "page_numbers": [page.get("page_number") for page in payload.get("pages", [])],
+                "include_metadata": payload.get("include_metadata"),
+            },
+        )
             raise

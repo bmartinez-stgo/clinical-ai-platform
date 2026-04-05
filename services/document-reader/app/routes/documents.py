@@ -59,7 +59,7 @@ async def parse_document(file: UploadFile = File(...)):
         logger.info(
             "starting generic document parse",
             extra={
-                "filename": file.filename,
+                "document_filename": file.filename,
                 "content_type": file.content_type,
                 "size_bytes": len(file_bytes),
             },
@@ -73,7 +73,7 @@ async def parse_document(file: UploadFile = File(...)):
         logger.exception(
             "generic document parse failed",
             extra={
-                "filename": file.filename,
+                "document_filename": file.filename,
                 "content_type": file.content_type,
                 "size_bytes": len(file_bytes),
             },
@@ -109,7 +109,7 @@ async def parse_laboratory_report(file: UploadFile = File(...)):
         logger.info(
             "starting laboratory document normalization",
             extra={
-                "filename": file.filename,
+                "document_filename": file.filename,
                 "content_type": file.content_type,
                 "size_bytes": len(file_bytes),
                 "ocr_backend": settings.ocr_backend,
@@ -124,7 +124,7 @@ async def parse_laboratory_report(file: UploadFile = File(...)):
             "laboratory document parsed into page payload",
             extra={
                 "document_id": document_payload.get("document_id"),
-                "filename": document_payload.get("filename"),
+                "document_filename": document_payload.get("filename"),
                 "page_count": len(document_payload.get("pages", [])),
                 "character_count": document_payload.get("character_count"),
                 "ocr_backend": settings.ocr_backend,
@@ -135,7 +135,7 @@ async def parse_laboratory_report(file: UploadFile = File(...)):
         logger.exception(
             "laboratory document normalization failed",
             extra={
-                "filename": file.filename,
+                "document_filename": file.filename,
                 "content_type": file.content_type,
                 "size_bytes": len(file_bytes),
                 "ocr_backend": settings.ocr_backend,
