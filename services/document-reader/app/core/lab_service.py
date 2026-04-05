@@ -1,11 +1,14 @@
 from __future__ import annotations
 
+import logging
+
 from app.core.config import get_settings
 from app.core.document_profile import detect_document_profile
 from app.core.lab_normalization import build_normalized_response
 from app.core.vision_client import extract_laboratory_observations
 
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 
 def chunk_pages(pages: list[dict], batch_size: int) -> list[list[dict]]:
@@ -41,6 +44,19 @@ def merge_extraction_payloads(document_id: str, payloads: list[dict]) -> dict:
 
 async def normalize_lab_document(document_payload: dict) -> dict:
     profile = detect_document_profile(document_payload)
+    logger.info(
+        "normalizing laboratory document",
+        extra={
+            "document_id": document_payload.get("document_id"),
+            "filename": document_payload.get("filename"),
+            "content_type": document_payload.get("content_type"),
+            "page_count": len(document_payload.get("pages", [])),
+            "ocr_backend": settings.ocr_backend,
+            "profile_name": profile.profile_name,
+            "requires_ocr": profile.requires_ocr,
+            "text_density": round(profile.text_density, 2) if document_payload.get("character_count") else None,
+        },
+    )
     pages = [
         {
             "page_number": page["page_number"],
@@ -52,7 +68,18 @@ async def normalize_lab_document(document_payload: dict) -> dict:
     page_batches = chunk_pages(pages, settings.ai_engine_page_batch_size)
     extraction_payloads: list[dict] = []
 
-    for batch in page_batches:
+    for batch_index, batch in enumerate(page_batches, start=1):
+        logger.info(
+            "sending extraction batch",
+            extra={
+                "document_id": document_payload.get("document_id"),
+                "batch_index": batch_index,
+                "batch_count": len(page_batches),
+                "page_numbers": [page["page_number"] for page in batch],
+                "include_metadata": any(page["page_number"] == 1 for page in batch),
+                "ocr_backend": settings.ocr_backend,
+            },
+        )
         extraction_payloads.append(
             await extract_laboratory_observations(
                 {
@@ -64,6 +91,16 @@ async def normalize_lab_document(document_payload: dict) -> dict:
                 }
             )
         )
+        logger.info(
+            "received extraction batch",
+            extra={
+                "document_id": document_payload.get("document_id"),
+                "batch_index": batch_index,
+                "observation_count": len(extraction_payloads[-1].get("observations", [])),
+                "warning_count": len(extraction_payloads[-1].get("warnings", [])),
+                "ocr_backend": settings.ocr_backend,
+            },
+        )
 
     extraction_payload = merge_extraction_payloads(document_payload["document_id"], extraction_payloads)
     result = build_normalized_response(document_payload, extraction_payload)
@@ -71,6 +108,17 @@ async def normalize_lab_document(document_payload: dict) -> dict:
     result["requires_ocr"] = profile.requires_ocr
     result["confidence"] = calculate_result_confidence(result, profile.profile_name)
     result["source"]["text_density"] = round(profile.text_density, 2) if document_payload["character_count"] else None
+    logger.info(
+        "completed laboratory document normalization",
+        extra={
+            "document_id": document_payload.get("document_id"),
+            "observation_count": result.get("observation_count"),
+            "warning_count": len(result.get("warnings", [])),
+            "review_item_count": len(result.get("review_items", [])),
+            "confidence": result.get("confidence"),
+            "ocr_backend": settings.ocr_backend,
+        },
+    )
     return result
 
 
