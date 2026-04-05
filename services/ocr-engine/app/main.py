@@ -49,7 +49,11 @@ def startup() -> None:
             "debug_logging": settings.debug_logging,
         },
     )
-    warmup_pipeline()
+    try:
+        warmup_pipeline()
+    except Exception:
+        logger.exception("ocr-engine startup warmup failed")
+        raise
 
 
 app.add_middleware(RequestContextMiddleware)
