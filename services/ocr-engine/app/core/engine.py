@@ -11,7 +11,7 @@ from typing import Any
 
 import torch
 from PIL import Image
-from transformers import AutoModelForImageTextToText, AutoProcessor
+from transformers import AutoProcessor, GlmOcrForConditionalGeneration
 
 from app.core.config import get_settings
 from app.core.schema import ExtractionInput, ExtractionOutput
@@ -112,10 +112,18 @@ def _get_components() -> tuple[Any, Any]:
             },
         )
         _PROCESSOR = AutoProcessor.from_pretrained(settings.engine_id)
-        _MODEL = AutoModelForImageTextToText.from_pretrained(
+        _MODEL = GlmOcrForConditionalGeneration.from_pretrained(
             pretrained_model_name_or_path=settings.engine_id,
-            torch_dtype=torch_dtype,
+            dtype=torch_dtype,
             device_map=device_map,
+        )
+        logger.info(
+            "ocr model components ready",
+            extra={
+                "engine_id": settings.engine_id,
+                "processor_class": _PROCESSOR.__class__.__name__,
+                "model_class": _MODEL.__class__.__name__,
+            },
         )
         logger.info("ocr model loaded")
     return _PROCESSOR, _MODEL
@@ -359,6 +367,14 @@ def _normalize_parsed_payload(parsed: dict[str, Any], include_metadata: bool) ->
 
 
 def _generate_text(messages: list[dict[str, Any]], processor: Any, model: Any) -> str:
+    if settings.debug_logging:
+        logger.debug(
+            "applying ocr chat template",
+            extra={
+                "message_count": len(messages),
+                "content_items": len(messages[0].get("content", [])) if messages else 0,
+            },
+        )
     inputs = processor.apply_chat_template(
         messages,
         tokenize=True,
@@ -367,8 +383,23 @@ def _generate_text(messages: list[dict[str, Any]], processor: Any, model: Any) -
         return_tensors="pt",
     ).to(model.device)
     inputs.pop("token_type_ids", None)
+    if settings.debug_logging:
+        logger.debug(
+            "ocr model inputs ready",
+            extra={
+                "input_keys": list(inputs.keys()),
+                "input_token_count": int(inputs["input_ids"].shape[1]) if "input_ids" in inputs else None,
+            },
+        )
     generated_ids = model.generate(**inputs, max_new_tokens=settings.max_new_tokens)
     generated_tail = generated_ids[0][inputs["input_ids"].shape[1] :]
+    if settings.debug_logging:
+        logger.debug(
+            "ocr model generation complete",
+            extra={
+                "generated_token_count": int(generated_tail.shape[0]) if hasattr(generated_tail, "shape") else None,
+            },
+        )
     return processor.decode(generated_tail, skip_special_tokens=False)
 
 
@@ -385,6 +416,15 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
     logger.info("stage=get_components", extra={"document_id": payload.document_id})
     try:
         processor, model = _get_components()
+        if settings.debug_logging:
+            logger.debug(
+                "ocr components acquired",
+                extra={
+                    "document_id": payload.document_id,
+                    "processor_class": processor.__class__.__name__,
+                    "model_class": model.__class__.__name__,
+                },
+            )
     except Exception as exc:
         logger.exception("failed to get ocr model components")
         raise ValueError(f"failed to initialize ocr engine: {exc}") from exc
