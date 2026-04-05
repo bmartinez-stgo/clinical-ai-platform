@@ -48,7 +48,7 @@ async def normalize_lab_document(document_payload: dict) -> dict:
         "normalizing laboratory document",
         extra={
             "document_id": document_payload.get("document_id"),
-            "filename": document_payload.get("filename"),
+            "document_filename": document_payload.get("filename"),
             "content_type": document_payload.get("content_type"),
             "page_count": len(document_payload.get("pages", [])),
             "ocr_backend": settings.ocr_backend,
