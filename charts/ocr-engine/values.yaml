@@ -14,7 +14,7 @@ app:
   name: ocr-engine
   namespace: cap-prod-ocr-engine
   port: 8091
-  logLevel: INFO
+  logLevel: DEBUG
   debugLogging: "true"
   serviceVersion: "0.1.0"
   environment: prod
