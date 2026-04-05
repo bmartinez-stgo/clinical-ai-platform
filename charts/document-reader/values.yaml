@@ -14,7 +14,7 @@ app:
   name: document-reader
   namespace: cap-prod-document-reader
   port: 8082
-  logLevel: INFO
+  logLevel: DEBUG
   serviceVersion: "0.1.0"
   environment: prod
   maxUploadSizeBytes: "20971520"
