@@ -12,7 +12,7 @@ from typing import Any
 import torch
 from PIL import Image
 import transformers
-from transformers import AutoProcessor
+from transformers import AutoModel, AutoProcessor
 
 from app.core.config import get_settings
 from app.core.schema import ExtractionInput, ExtractionOutput
@@ -113,43 +113,11 @@ def _get_components() -> tuple[Any, Any]:
                 "transformers_version": getattr(transformers, "__version__", "unknown"),
             },
         )
-        try:
-            model_class = getattr(transformers, "GlmOcrForConditionalGeneration")
-            logger.info(
-                "resolved glm-ocr model class from transformers export",
-                extra={"model_class": model_class.__name__},
-            )
-        except AttributeError:
-            logger.warning(
-                "glm-ocr model class was not exported from transformers top-level package",
-                extra={
-                    "transformers_version": getattr(transformers, "__version__", "unknown"),
-                },
-            )
-            try:
-                from transformers.models.glm_ocr.modeling_glm_ocr import GlmOcrForConditionalGeneration
-
-                model_class = GlmOcrForConditionalGeneration
-                logger.info(
-                    "resolved glm-ocr model class from transformers submodule",
-                    extra={"model_class": model_class.__name__},
-                )
-            except Exception as exc:
-                glm_related_exports = sorted(name for name in dir(transformers) if "glm" in name.lower())
-                logger.exception(
-                    "failed to resolve glm-ocr model class from transformers runtime",
-                    extra={
-                        "transformers_version": getattr(transformers, "__version__", "unknown"),
-                        "glm_related_exports_preview": glm_related_exports[:50],
-                    },
-                )
-                raise RuntimeError(
-                    "this ocr-engine image does not include a transformers runtime with GLM-OCR support"
-                ) from exc
-        _PROCESSOR = AutoProcessor.from_pretrained(settings.engine_id)
-        _MODEL = model_class.from_pretrained(
+        _PROCESSOR = AutoProcessor.from_pretrained(settings.engine_id, trust_remote_code=True)
+        _MODEL = AutoModel.from_pretrained(
             pretrained_model_name_or_path=settings.engine_id,
-            dtype=torch_dtype,
+            trust_remote_code=True,
+            torch_dtype=torch_dtype,
             device_map=device_map,
         )
         logger.info(
