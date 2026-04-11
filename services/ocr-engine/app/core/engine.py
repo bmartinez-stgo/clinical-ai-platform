@@ -357,6 +357,8 @@ def _normalize_parsed_payload(parsed: dict[str, Any], include_metadata: bool) ->
         if not isinstance(item, dict):
             continue
         normalized_item = dict(item)
+        if "test_name_raw" not in normalized_item and "test_name" in normalized_item:
+            normalized_item["test_name_raw"] = normalized_item.pop("test_name")
         normalized_item["confidence"] = _normalize_confidence_value(item.get("confidence"))
         normalized_observations.append(normalized_item)
 
