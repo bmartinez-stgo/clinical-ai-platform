@@ -12,7 +12,7 @@ from typing import Any
 import torch
 from PIL import Image
 import transformers
-from transformers import AutoModel, AutoProcessor
+from transformers import AutoModelForImageTextToText, AutoProcessor
 
 from app.core.config import get_settings
 from app.core.schema import ExtractionInput, ExtractionOutput
@@ -113,10 +113,9 @@ def _get_components() -> tuple[Any, Any]:
                 "transformers_version": getattr(transformers, "__version__", "unknown"),
             },
         )
-        _PROCESSOR = AutoProcessor.from_pretrained(settings.engine_id, trust_remote_code=True)
-        _MODEL = AutoModel.from_pretrained(
+        _PROCESSOR = AutoProcessor.from_pretrained(settings.engine_id)
+        _MODEL = AutoModelForImageTextToText.from_pretrained(
             pretrained_model_name_or_path=settings.engine_id,
-            trust_remote_code=True,
             torch_dtype=torch_dtype,
             device_map=device_map,
         )
