@@ -23,7 +23,7 @@ app:
   aiEngineUrl: http://ai-engine.cap-prod-ai-engine.svc.cluster.local:8090/extract/lab-report
   aiEngineTimeoutSeconds: "120"
   aiEnginePageBatchSize: "1"
-  ocrBackend: ocr-engine
+  ocrBackend: ai-engine
   ocrEngineUrl: http://ocr-engine.cap-prod-ocr-engine.svc.cluster.local:8091/extract/lab-report
   ocrEngineTimeoutSeconds: "120"
 

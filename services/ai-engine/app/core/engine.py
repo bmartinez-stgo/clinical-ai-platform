@@ -21,7 +21,9 @@ _PIPELINE = None
 logger = logging.getLogger(__name__)
 
 FIRST_PAGE_INSTRUCTION_TEXT = """
-Read this page image of a clinical laboratory report and return only valid JSON.
+Read this clinical laboratory report image and return only valid JSON.
+
+The report may use any layout or format. Identify each individual laboratory measurement and extract its data.
 
 Return this structure:
 {
@@ -51,17 +53,27 @@ Return this structure:
   "warnings": [string]
 }
 
+Field definitions:
+- test_name_raw: the name of the specific analyte being measured — the individual item with its own result value (e.g., "Leucocitos", "Hemoglobina (Hb)", "Glucosa", "Creatinina"). This must be the label of the row that contains the result.
+- panel_raw: the section or group header this analyte belongs to, if present (e.g., "Serie Blanca", "Quimica Sanguinea"). Null if not applicable.
+- value_raw: the measured result exactly as it appears (e.g., "4,000.00", "15.20", "Negativo"). Preserve commas and decimals as printed.
+- unit_raw: the measurement unit exactly as printed (e.g., "K/ul", "g/dl", "%"). Null if absent.
+- reference_range_raw: the reference range exactly as printed (e.g., "4,600.00 - 10,200.00", ">0.50"). Null if absent.
+- specimen_raw: the biological specimen type if explicitly stated (e.g., "Sangre", "Suero", "Orina"). Null if not stated.
+- confidence: 0.0 to 1.0 extraction confidence.
+
 Rules:
-- Return one JSON object only.
-- Do not use markdown fences.
-- Do not add explanations outside JSON.
+- Return one JSON object only. No markdown fences. No text outside JSON.
+- One observation per analyte with an actual result value.
+- Skip rows that are section or panel headers without their own result value.
 - If a field is missing, use null.
-- If there are no observations on this page, return an empty list.
 - Extract only what is visible on this page.
 """.strip()
 
 CONTINUATION_PAGE_INSTRUCTION_TEXT = """
-Read this page image of a clinical laboratory report and return only valid JSON.
+Read this clinical laboratory report image and return only valid JSON.
+
+The report may use any layout or format. Identify each individual laboratory measurement and extract its data.
 
 Return this structure:
 {
@@ -80,12 +92,21 @@ Return this structure:
   "warnings": [string]
 }
 
+Field definitions:
+- test_name_raw: the name of the specific analyte being measured — the individual item with its own result value (e.g., "Leucocitos", "Hemoglobina (Hb)", "Glucosa"). This must be the label of the row that contains the result.
+- panel_raw: the section or group header this analyte belongs to, if present. Null if not applicable.
+- value_raw: the measured result exactly as it appears. Preserve commas and decimals as printed.
+- unit_raw: the measurement unit exactly as printed. Null if absent.
+- reference_range_raw: the reference range exactly as printed. Null if absent.
+- specimen_raw: the biological specimen type if explicitly stated. Null if not stated.
+- confidence: 0.0 to 1.0 extraction confidence.
+
 Rules:
-- Return one JSON object only.
-- Do not use markdown fences.
-- Do not add explanations outside JSON.
-- Do not include patient or report metadata on continuation pages.
-- If there are no observations on this page, return an empty list.
+- Return one JSON object only. No markdown fences. No text outside JSON.
+- One observation per analyte with an actual result value.
+- Skip rows that are section or panel headers without their own result value.
+- Do not include patient or report metadata.
+- If a field is missing, use null.
 - Extract only what is visible on this page.
 """.strip()
 
