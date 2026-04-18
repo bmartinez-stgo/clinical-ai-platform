@@ -8,7 +8,7 @@ from uuid import uuid4
 from app.core.terminology import LAB_DEFINITIONS, UNIT_NORMALIZATION
 
 RANGE_PATTERN = re.compile(
-    r"(?P<low>-?\d+(?:\.\d+)?)\s*[-–]\s*(?P<high>-?\d+(?:\.\d+)?)\s*(?P<unit>[A-Za-z/{}\._0-9^%µ ]+)?"
+    r"(?P<low>-?[\d,]+(?:\.\d+)?)\s*[-–]\s*(?P<high>-?[\d,]+(?:\.\d+)?)\s*(?P<unit>[A-Za-z/{}\._0-9^%µ ]+)?"
 )
 BOUND_PATTERN = re.compile(
     r"^(?P<op>>|<)\s*(?P<bound>-?\d+(?:\.\d+)?)\s*(?P<unit>[A-Za-z/{}\._0-9^%µ ]+)?$"
@@ -30,7 +30,12 @@ def coerce_ocr_numeric_token(value: str | None) -> float | None:
     if not cleaned:
         return None
 
-    cleaned = cleaned.replace(",", ".").replace("O", "0").replace("o", "0").replace("C", "0")
+    # Thousands-separator comma: comma followed by exactly 3 digits → strip it
+    if re.search(r",\d{3}(?!\d)", cleaned):
+        cleaned = cleaned.replace(",", "")
+    else:
+        cleaned = cleaned.replace(",", ".")
+    cleaned = cleaned.replace("O", "0").replace("o", "0").replace("C", "0")
     cleaned = re.sub(r"[^0-9.\-]", "", cleaned)
     if not cleaned or cleaned in {"-", ".", "-."}:
         return None

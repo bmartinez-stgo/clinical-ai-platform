@@ -19,8 +19,8 @@ app:
   serviceVersion: "0.1.0"
   environment: prod
   engineBackend: transformers
-  engineId: Qwen/Qwen2.5-VL-3B-Instruct
-  maxNewTokens: "768"
+  engineId: Qwen/Qwen2.5-VL-7B-Instruct
+  maxNewTokens: "2048"
   temperature: "0"
   devicePreference: cuda
   hfHome: /var/cache/huggingface
@@ -35,10 +35,10 @@ gpu:
 resources:
   requests:
     cpu: "2"
-    memory: 12Gi
+    memory: 20Gi
   limits:
     cpu: "6"
-    memory: 32Gi
+    memory: 40Gi
 
 cache:
   mountPath: /var/cache/huggingface
@@ -54,6 +54,7 @@ podLabels: {}
 podAnnotations: {}
 
 runtimeClassName: nvidia
-nodeSelector: {}
+nodeSelector:
+  workload: large-models
 tolerations: []
 affinity: {}
