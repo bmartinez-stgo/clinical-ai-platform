@@ -311,19 +311,19 @@ LAB_DEFINITIONS: tuple[LabDefinition, ...] = (
     LabDefinition(
         canonical_name="Mean corpuscular volume",
         loinc_code="787-2",
-        aliases=("volumen corp. medio",),
+        aliases=("volumen corpuscular medio", "volumen corp. medio", "vcm"),
         default_unit_ucum="fL",
     ),
     LabDefinition(
         canonical_name="Mean corpuscular hemoglobin",
         loinc_code="785-6",
-        aliases=("hemoglobina corp. media",),
+        aliases=("hemoglobina corpuscular media", "hemoglobina corp. media", "hcm"),
         default_unit_ucum="pg",
     ),
     LabDefinition(
         canonical_name="Mean corpuscular hemoglobin concentration",
         loinc_code="786-4",
-        aliases=("conc. media de hemoglobina corp.",),
+        aliases=("conc. de hb corpuscular media", "conc. media de hemoglobina corp.", "chcm", "chorr"),
         default_unit_ucum="g/dL",
     ),
     LabDefinition(
@@ -341,7 +341,7 @@ LAB_DEFINITIONS: tuple[LabDefinition, ...] = (
     LabDefinition(
         canonical_name="Platelets",
         loinc_code="777-3",
-        aliases=("plaquetas",),
+        aliases=("plaquetas", "plequetas"),
     ),
     LabDefinition(
         canonical_name="Mean platelet volume",
@@ -352,7 +352,25 @@ LAB_DEFINITIONS: tuple[LabDefinition, ...] = (
     LabDefinition(
         canonical_name="Neutrophils Percent",
         loinc_code="770-8",
-        aliases=("neutrofilos",),
+        aliases=("neutrofilos", "segmentados"),
+        default_unit_ucum="%",
+    ),
+    LabDefinition(
+        canonical_name="Band neutrophils Percent",
+        loinc_code="26507-4",
+        aliases=("bandas",),
+        default_unit_ucum="%",
+    ),
+    LabDefinition(
+        canonical_name="Metamyelocytes Percent",
+        loinc_code="28541-1",
+        aliases=("metamielocitos",),
+        default_unit_ucum="%",
+    ),
+    LabDefinition(
+        canonical_name="Myelocytes Percent",
+        loinc_code="26498-6",
+        aliases=("mielocitos",),
         default_unit_ucum="%",
     ),
     LabDefinition(
