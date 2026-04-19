@@ -65,10 +65,8 @@ Field definitions:
 
 Rules:
 - Return one JSON object only. No markdown fences. No text outside JSON.
-- Only extract rows that represent a single measurable laboratory analyte with a numeric or clearly categorical result (e.g., "Positivo", "Negativo", "Trazas").
-- Skip section headers, panel titles, and any row without its own individual result value.
-- Skip laboratory name, address, physician name, patient demographics, report dates, and any administrative text.
-- Skip imaging or ultrasound findings, diagnoses, clinical interpretations, and free-text comments.
+- One observation per analyte with an actual result value.
+- Skip rows that are section or panel headers without their own result value.
 - If a field is missing, use null.
 - Extract only what is visible on this page.
 """.strip()
@@ -106,10 +104,8 @@ Field definitions:
 
 Rules:
 - Return one JSON object only. No markdown fences. No text outside JSON.
-- Only extract rows that represent a single measurable laboratory analyte with a numeric or clearly categorical result (e.g., "Positivo", "Negativo", "Trazas").
-- Skip section headers, panel titles, and any row without its own individual result value.
-- Skip laboratory name, address, physician name, patient demographics, report dates, and any administrative text.
-- Skip imaging or ultrasound findings, diagnoses, clinical interpretations, and free-text comments.
+- One observation per analyte with an actual result value.
+- Skip rows that are section or panel headers without their own result value.
 - Do not include patient or report metadata.
 - If a field is missing, use null.
 - Extract only what is visible on this page.
