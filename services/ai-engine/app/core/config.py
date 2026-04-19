@@ -22,6 +22,7 @@ class Settings:
     generated_preview_chars: int = int(os.getenv("GENERATED_PREVIEW_CHARS", "2000"))
     vllm_url: str = os.getenv("VLLM_URL", "http://vllm-server.cap-prod-vllm-server.svc.cluster.local:8000")
     vllm_timeout_seconds: int = int(os.getenv("VLLM_TIMEOUT_SECONDS", "120"))
+    max_image_dimension: int = int(os.getenv("MAX_IMAGE_DIMENSION", "768"))
 
 
 @lru_cache
