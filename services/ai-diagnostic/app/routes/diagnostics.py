@@ -1,26 +1,19 @@
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, Field
 
-from app.core.engine_client import request_clinical_inference
-
+from app.core.engine_client import run_diagnostic_inference
+from app.core.schema import DiagnosticRequest, DiagnosticResponse
 
 router = APIRouter(tags=["diagnostics"])
 
 
-class DiagnosticRequest(BaseModel):
-    patient_context: dict = Field(default_factory=dict)
-    observations: list[dict] = Field(default_factory=list)
-    request_context: dict = Field(default_factory=dict)
-
-
-@router.post("/infer")
-async def infer_diagnostics(payload: DiagnosticRequest) -> dict:
+@router.post("/diagnose", response_model=DiagnosticResponse)
+def diagnose(payload: DiagnosticRequest) -> DiagnosticResponse:
     try:
-        return await request_clinical_inference(payload.model_dump())
+        return run_diagnostic_inference(payload)
     except HTTPException:
         raise
     except Exception as exc:
         raise HTTPException(
             status_code=502,
-            detail=f"failed to request clinical inference: {exc}",
+            detail=f"diagnostic inference failed: {exc}",
         ) from exc

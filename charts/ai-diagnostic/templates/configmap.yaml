@@ -11,5 +11,8 @@ data:
   LOG_LEVEL: {{ .Values.app.logLevel | quote }}
   SERVICE_VERSION: {{ .Values.app.serviceVersion | quote }}
   ENVIRONMENT: {{ .Values.app.environment | quote }}
-  AI_ENGINE_URL: {{ .Values.app.aiEngineUrl | quote }}
-  AI_ENGINE_TIMEOUT_SECONDS: {{ .Values.app.aiEngineTimeoutSeconds | quote }}
+  VLLM_REASONING_URL: {{ .Values.app.vllmReasoningUrl | quote }}
+  VLLM_REASONING_MODEL: {{ .Values.app.vllmReasoningModel | quote }}
+  VLLM_TIMEOUT_SECONDS: {{ .Values.app.vllmTimeoutSeconds | quote }}
+  MAX_TOKENS: {{ .Values.app.maxTokens | quote }}
+  TEMPERATURE: {{ .Values.app.temperature | quote }}

@@ -17,8 +17,11 @@ app:
   logLevel: INFO
   serviceVersion: "0.1.0"
   environment: prod
-  aiEngineUrl: http://ai-engine.cap-prod-ai-engine.svc.cluster.local:8090/infer/clinical
-  aiEngineTimeoutSeconds: "120"
+  vllmReasoningUrl: http://vllm-reasoning.cap-prod-vllm-reasoning.svc.cluster.local:8000
+  vllmReasoningModel: hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+  vllmTimeoutSeconds: "120"
+  maxTokens: "2048"
+  temperature: "0.1"
 
 resources:
   requests:

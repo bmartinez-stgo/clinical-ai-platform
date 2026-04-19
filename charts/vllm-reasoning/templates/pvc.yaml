@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "vllm-reasoning.fullname" . }}
+  namespace: {{ .Values.app.namespace }}
+  labels:
+    {{- include "vllm-reasoning.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.cache.persistence.accessModes | nindent 4 }}
+  storageClassName: {{ .Values.cache.persistence.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.cache.persistence.size }}

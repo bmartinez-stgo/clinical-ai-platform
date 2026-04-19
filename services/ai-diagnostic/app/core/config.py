@@ -11,11 +11,17 @@ class Settings:
     log_level: str = os.getenv("LOG_LEVEL", "INFO")
     service_version: str = os.getenv("SERVICE_VERSION", "0.1.0")
     environment: str = os.getenv("ENVIRONMENT", "prod")
-    ai_engine_url: str = os.getenv(
-        "AI_ENGINE_URL",
-        "http://ai-engine.cap-prod-ai-engine.svc.cluster.local:8090/infer/clinical",
+    vllm_reasoning_url: str = os.getenv(
+        "VLLM_REASONING_URL",
+        "http://vllm-reasoning.cap-prod-vllm-reasoning.svc.cluster.local:8000",
     )
-    ai_engine_timeout_seconds: int = int(os.getenv("AI_ENGINE_TIMEOUT_SECONDS", "120"))
+    vllm_reasoning_model: str = os.getenv(
+        "VLLM_REASONING_MODEL",
+        "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4",
+    )
+    vllm_timeout_seconds: int = int(os.getenv("VLLM_TIMEOUT_SECONDS", "120"))
+    max_tokens: int = int(os.getenv("MAX_TOKENS", "2048"))
+    temperature: float = float(os.getenv("TEMPERATURE", "0.1"))
 
 
 @lru_cache
