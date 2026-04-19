@@ -20,7 +20,7 @@ app:
   environment: prod
   engineBackend: transformers
   engineId: Qwen/Qwen2.5-VL-7B-Instruct
-  maxNewTokens: "1024"
+  maxNewTokens: "2048"
   temperature: "0"
   devicePreference: cuda
   hfHome: /var/cache/huggingface
