@@ -383,6 +383,27 @@ def _normalize_parsed_payload(parsed: dict[str, Any], include_metadata: bool) ->
     }
 
 
+def _run_vllm_inference(images: list[Image.Image], instruction_text: str) -> str:
+    import httpx
+    content: list[dict] = []
+    for image in images:
+        buf = BytesIO()
+        image.save(buf, format="PNG")
+        b64 = base64.b64encode(buf.getvalue()).decode()
+        content.append({"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}})
+    content.append({"type": "text", "text": instruction_text})
+    body = {
+        "model": settings.engine_id,
+        "messages": [{"role": "user", "content": content}],
+        "max_tokens": settings.max_new_tokens,
+        "temperature": settings.temperature,
+    }
+    with httpx.Client(timeout=settings.vllm_timeout_seconds) as client:
+        resp = client.post(f"{settings.vllm_url}/v1/chat/completions", json=body)
+        resp.raise_for_status()
+    return resp.json()["choices"][0]["message"]["content"]
+
+
 def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
     logger.info(
         "starting extraction request",
@@ -393,12 +414,13 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
             "page_count": len(payload.pages),
         },
     )
-    logger.info("stage=get_pipeline", extra={"document_id": payload.document_id})
-    try:
-        extractor = _get_pipeline()
-    except Exception as exc:
-        logger.exception("failed to get inference pipeline")
-        raise ValueError(f"failed to initialize inference pipeline: {exc}") from exc
+    if settings.engine_backend != "vllm":
+        logger.info("stage=get_pipeline", extra={"document_id": payload.document_id})
+        try:
+            extractor = _get_pipeline()
+        except Exception as exc:
+            logger.exception("failed to get inference pipeline")
+            raise ValueError(f"failed to initialize inference pipeline: {exc}") from exc
 
     logger.info("stage=decode_pages_start", extra={"document_id": payload.document_id})
     try:
@@ -446,55 +468,38 @@ def run_extraction(payload: ExtractionInput) -> ExtractionOutput:
         raise ValueError(f"failed to build multimodal messages: {exc}") from exc
 
     try:
-        logger.info(
-            "stage=model_invoke_start",
-            extra={"document_id": payload.document_id},
-        )
+        logger.info("stage=model_invoke_start", extra={"document_id": payload.document_id})
         logger.info(
             "invoking multimodal model",
-            extra={
-                "document_id": payload.document_id,
-                "engine_id": settings.engine_id,
-                "max_new_tokens": settings.max_new_tokens,
-            },
+            extra={"document_id": payload.document_id, "engine_id": settings.engine_id, "backend": settings.engine_backend},
         )
-        generated = extractor(
-            text=messages,
-            max_new_tokens=settings.max_new_tokens,
-            return_full_text=False,
-        )
-        logger.info(
-            "stage=model_invoke_done",
-            extra={"document_id": payload.document_id},
-        )
-    except Exception as exc:
-        logger.exception(
-            "model invocation failed",
-            extra={"document_id": payload.document_id},
-        )
-        raise ValueError(f"model invocation failed: {exc}") from exc
-
-    if not generated:
-        raise ValueError("inference engine returned no content")
-
-    if isinstance(generated, list):
-        if isinstance(generated[0], dict):
-            generated_text = generated[0].get("generated_text", "")
+        if settings.engine_backend == "vllm":
+            generated_text = _run_vllm_inference(images, instruction_text)
         else:
-            generated_text = str(generated[0])
-    else:
-        generated_text = str(generated)
-
-    if isinstance(generated_text, list):
-        assistant_messages = [item for item in generated_text if isinstance(item, dict) and item.get("role") == "assistant"]
-        if not assistant_messages:
-            raise ValueError("inference engine did not return assistant content")
-        assistant_content = assistant_messages[-1].get("content", [])
-        text_fragments = []
-        for item in assistant_content:
-            if isinstance(item, dict) and item.get("type") == "text":
-                text_fragments.append(item.get("text", ""))
-        generated_text = "\n".join(fragment for fragment in text_fragments if fragment)
+            generated = extractor(
+                text=messages,
+                max_new_tokens=settings.max_new_tokens,
+                return_full_text=False,
+            )
+            if not generated:
+                raise ValueError("inference engine returned no content")
+            if isinstance(generated, list):
+                generated_text = generated[0].get("generated_text", "") if isinstance(generated[0], dict) else str(generated[0])
+            else:
+                generated_text = str(generated)
+            if isinstance(generated_text, list):
+                assistant_messages = [m for m in generated_text if isinstance(m, dict) and m.get("role") == "assistant"]
+                if not assistant_messages:
+                    raise ValueError("inference engine did not return assistant content")
+                assistant_content = assistant_messages[-1].get("content", [])
+                generated_text = "\n".join(
+                    item.get("text", "") for item in assistant_content
+                    if isinstance(item, dict) and item.get("type") == "text"
+                )
+        logger.info("stage=model_invoke_done", extra={"document_id": payload.document_id})
+    except Exception as exc:
+        logger.exception("model invocation failed", extra={"document_id": payload.document_id})
+        raise ValueError(f"model invocation failed: {exc}") from exc
 
     logger.info(
         "received model output",

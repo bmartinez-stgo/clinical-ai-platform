@@ -1,57 +1,66 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "ai-engine.fullname" . }}
+  name: {{ include "vllm-server.fullname" . }}
+  namespace: {{ .Values.app.namespace }}
   labels:
-    {{- include "ai-engine.labels" . | nindent 4 }}
+    {{- include "vllm-server.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   strategy:
     type: Recreate
   selector:
     matchLabels:
-      {{- include "ai-engine.selectorLabels" . | nindent 6 }}
+      {{- include "vllm-server.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        {{- with .Values.podAnnotations }}
-        {{- toYaml . | nindent 8 }}
-        {{- end }}
       labels:
-        {{- include "ai-engine.selectorLabels" . | nindent 8 }}
+        {{- include "vllm-server.selectorLabels" . | nindent 8 }}
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
-    spec:
-      {{- if .Values.gpu.enabled }}
-      runtimeClassName: {{ .Values.runtimeClassName | quote }}
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if .Values.cache.persistence.enabled }}
+    spec:
+      runtimeClassName: {{ .Values.runtimeClassName | quote }}
       volumes:
         - name: model-cache
           persistentVolumeClaim:
-            claimName: {{ default (include "ai-engine.fullname" .) .Values.cache.persistence.existingClaim }}
-      {{- end }}
+            claimName: {{ .Values.cache.persistence.existingClaim }}
       containers:
-        - name: ai-engine
+        - name: vllm-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          args:
+            - "--model"
+            - {{ .Values.app.modelId | quote }}
+            - "--dtype"
+            - {{ .Values.app.dtype | quote }}
+            - "--max-model-len"
+            - {{ .Values.app.maxModelLen | quote }}
+            - "--gpu-memory-utilization"
+            - {{ .Values.app.gpuMemoryUtilization | quote }}
+            - "--port"
+            - {{ .Values.app.port | quote }}
+            - "--host"
+            - "0.0.0.0"
+          env:
+            - name: HF_HOME
+              value: {{ .Values.app.hfHome | quote }}
+            - name: TRANSFORMERS_CACHE
+              value: "{{ .Values.app.hfHome }}/transformers"
           ports:
             - name: http
               containerPort: {{ .Values.app.port }}
               protocol: TCP
-          envFrom:
-            - configMapRef:
-                name: {{ include "ai-engine.fullname" . }}
-          {{- if .Values.cache.persistence.enabled }}
           volumeMounts:
             - name: model-cache
               mountPath: {{ .Values.cache.mountPath }}
-          {{- end }}
           readinessProbe:
             httpGet:
-              path: /ready
+              path: /health
               port: http
             initialDelaySeconds: 120
             periodSeconds: 10

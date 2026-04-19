@@ -18,32 +18,34 @@ app:
   debugLogging: "true"
   serviceVersion: "0.1.0"
   environment: prod
-  engineBackend: transformers
+  engineBackend: vllm
   engineId: Qwen/Qwen2.5-VL-7B-Instruct
   maxNewTokens: "2048"
   temperature: "0"
-  devicePreference: cuda
+  devicePreference: cpu
   hfHome: /var/cache/huggingface
   transformersCache: /var/cache/huggingface/transformers
   generatedPreviewChars: "2000"
   pytorchCudaAllocConf: expandable_segments:True
+  vllmUrl: http://vllm-server.cap-prod-vllm-server.svc.cluster.local:8000
+  vllmTimeoutSeconds: "120"
 
 gpu:
-  enabled: true
+  enabled: false
   count: 1
 
 resources:
   requests:
-    cpu: "2"
-    memory: 20Gi
+    cpu: "500m"
+    memory: 512Mi
   limits:
-    cpu: "6"
-    memory: 40Gi
+    cpu: "2"
+    memory: 1Gi
 
 cache:
   mountPath: /var/cache/huggingface
   persistence:
-    enabled: true
+    enabled: false
     existingClaim: ""
     storageClassName: local-path
     accessModes:
@@ -54,7 +56,6 @@ podLabels: {}
 podAnnotations: {}
 
 runtimeClassName: nvidia
-nodeSelector:
-  workload: large-models
+nodeSelector: {}
 tolerations: []
 affinity: {}
