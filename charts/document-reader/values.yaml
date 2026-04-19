@@ -19,7 +19,7 @@ app:
   environment: prod
   maxUploadSizeBytes: "20971520"
   renderDpi: "96"
-  maxImageDimension: "1024"
+  maxImageDimension: "768"
   aiEngineUrl: http://ai-engine.cap-prod-ai-engine.svc.cluster.local:8090/extract/lab-report
   aiEngineTimeoutSeconds: "120"
   aiEnginePageBatchSize: "1"
