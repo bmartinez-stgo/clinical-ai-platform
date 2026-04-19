@@ -9,6 +9,7 @@ import re
 from io import BytesIO
 from typing import Any
 
+import httpx
 import torch
 from PIL import Image
 from transformers import pipeline
@@ -385,7 +386,6 @@ def _normalize_parsed_payload(parsed: dict[str, Any], include_metadata: bool) ->
 
 
 def _run_vllm_inference(images: list[Image.Image], instruction_text: str) -> str:
-    import httpx
     content: list[dict] = []
     for image in images:
         buf = BytesIO()
