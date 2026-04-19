@@ -142,7 +142,8 @@ def _get_pipeline():
 
 
 def warmup_pipeline() -> None:
-    _get_pipeline()
+    if settings.engine_backend != "vllm":
+        _get_pipeline()
 
 
 def _decode_pages(payload: ExtractionInput) -> list[Image.Image]:
