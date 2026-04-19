@@ -207,7 +207,12 @@ def _prepare_json_candidate(text: str) -> str:
 
 
 def _extract_json(text: str) -> dict[str, Any]:
-    return json.loads(_prepare_json_candidate(text))
+    candidate = _prepare_json_candidate(text)
+    start = candidate.find("{")
+    if start == -1:
+        raise ValueError("no JSON object found in model output")
+    obj, _ = json.JSONDecoder().raw_decode(candidate, start)
+    return obj
 
 
 def sanitize_json_candidate(candidate: str) -> str:
