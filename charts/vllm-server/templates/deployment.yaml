@@ -28,7 +28,7 @@ spec:
       volumes:
         - name: model-cache
           persistentVolumeClaim:
-            claimName: {{ .Values.cache.persistence.existingClaim }}
+            claimName: {{ include "vllm-server.fullname" . }}
       containers:
         - name: vllm-server
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

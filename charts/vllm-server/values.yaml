@@ -35,7 +35,10 @@ resources:
 cache:
   mountPath: /var/cache/huggingface
   persistence:
-    existingClaim: "ai-engine"
+    storageClassName: local-path
+    accessModes:
+      - ReadWriteOnce
+    size: 30Gi
 
 podLabels: {}
 podAnnotations: {}
