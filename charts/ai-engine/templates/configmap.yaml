@@ -21,3 +21,5 @@ data:
   TRANSFORMERS_CACHE: {{ .Values.app.transformersCache | quote }}
   GENERATED_PREVIEW_CHARS: {{ .Values.app.generatedPreviewChars | quote }}
   PYTORCH_CUDA_ALLOC_CONF: {{ .Values.app.pytorchCudaAllocConf | quote }}
+  VLLM_URL: {{ .Values.app.vllmUrl | quote }}
+  VLLM_TIMEOUT_SECONDS: {{ .Values.app.vllmTimeoutSeconds | quote }}

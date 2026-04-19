@@ -20,6 +20,8 @@ class Settings:
     hf_home: str = os.getenv("HF_HOME", "/var/cache/huggingface")
     transformers_cache: str = os.getenv("TRANSFORMERS_CACHE", "/var/cache/huggingface/transformers")
     generated_preview_chars: int = int(os.getenv("GENERATED_PREVIEW_CHARS", "2000"))
+    vllm_url: str = os.getenv("VLLM_URL", "http://vllm-server.cap-prod-vllm-server.svc.cluster.local:8000")
+    vllm_timeout_seconds: int = int(os.getenv("VLLM_TIMEOUT_SECONDS", "120"))
 
 
 @lru_cache
