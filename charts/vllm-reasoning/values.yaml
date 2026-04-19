@@ -1,0 +1,51 @@
+replicaCount: 1
+
+image:
+  repository: vllm/vllm-openai
+  tag: latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8000
+  targetPort: 8000
+
+app:
+  name: vllm-reasoning
+  namespace: cap-prod-vllm-reasoning
+  modelId: hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+  dtype: half
+  maxModelLen: "4096"
+  gpuMemoryUtilization: "0.85"
+  quantization: awq
+  port: 8000
+  hfHome: /var/cache/huggingface
+
+gpu:
+  enabled: true
+  count: 1
+
+resources:
+  requests:
+    cpu: "2"
+    memory: 8Gi
+  limits:
+    cpu: "4"
+    memory: 16Gi
+
+cache:
+  mountPath: /var/cache/huggingface
+  persistence:
+    storageClassName: local-path
+    accessModes:
+      - ReadWriteOnce
+    size: 20Gi
+
+podLabels: {}
+podAnnotations: {}
+
+runtimeClassName: nvidia
+nodeSelector:
+  workload: small-models
+tolerations: []
+affinity: {}
