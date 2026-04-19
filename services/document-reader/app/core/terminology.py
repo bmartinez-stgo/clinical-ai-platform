@@ -132,7 +132,7 @@ LAB_DEFINITIONS: tuple[LabDefinition, ...] = (
     ),
     LabDefinition(
         canonical_name="LDL/HDL Ratio",
-        loinc_code=None,
+        loinc_code="11054-4",
         aliases=("relacion ldl/hdl",),
         default_unit_ucum=None,
     ),
@@ -228,7 +228,7 @@ LAB_DEFINITIONS: tuple[LabDefinition, ...] = (
     ),
     LabDefinition(
         canonical_name="Albumin/Globulin Ratio",
-        loinc_code=None,
+        loinc_code="1759-0",
         aliases=("relacion a/g",),
         default_unit_ucum=None,
     ),
@@ -271,19 +271,19 @@ LAB_DEFINITIONS: tuple[LabDefinition, ...] = (
     LabDefinition(
         canonical_name="Immunoglobulin G",
         loinc_code="2465-3",
-        aliases=("inmunoglobulina g",),
+        aliases=("inmunoglobulina g", "immunoglobulina g"),
         default_unit_ucum="mg/dL",
     ),
     LabDefinition(
         canonical_name="Immunoglobulin A",
         loinc_code="2458-8",
-        aliases=("inmunoglobulina a",),
+        aliases=("inmunoglobulina a", "immunoglobulina a"),
         default_unit_ucum="mg/dL",
     ),
     LabDefinition(
         canonical_name="Immunoglobulin M",
         loinc_code="2472-9",
-        aliases=("inmunoglobulina m",),
+        aliases=("inmunoglobulina m", "immunoglobulina m"),
         default_unit_ucum="mg/dL",
     ),
     LabDefinition(
@@ -334,7 +334,7 @@ LAB_DEFINITIONS: tuple[LabDefinition, ...] = (
     ),
     LabDefinition(
         canonical_name="Erythrocyte distribution width SD",
-        loinc_code=None,
+        loinc_code="21000-5",
         aliases=("ancho de distrib. de eritrocitos (sd)",),
         default_unit_ucum="fL",
     ),

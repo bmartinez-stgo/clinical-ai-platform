@@ -319,6 +319,10 @@ def build_normalized_response(document_payload: dict[str, Any], extraction_paylo
     ]
 
     for raw_observation in extraction_payload.get("observations", []):
+        # Skip reference-table rows that are not actual analyte results
+        raw_value = str(raw_observation.get("value_raw") or "")
+        if re.search(r"\d+\s*[-–]\s*\d+.*(?:ml|l/min|m2)", raw_value, re.IGNORECASE):
+            continue
         normalized_observation, review_required, observation_issues = normalize_observation(raw_observation)
         observations.append(normalized_observation)
         review_items.extend(observation_issues)
