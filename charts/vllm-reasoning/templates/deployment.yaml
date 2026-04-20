@@ -48,11 +48,17 @@ spec:
             - {{ .Values.app.port | quote }}
             - "--host"
             - "0.0.0.0"
+            - "--enforce-eager"
           env:
             - name: HF_HOME
               value: {{ .Values.app.hfHome | quote }}
             - name: TRANSFORMERS_CACHE
               value: "{{ .Values.app.hfHome }}/transformers"
+            - name: HF_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: hf-token
+                  key: HF_TOKEN
           ports:
             - name: http
               containerPort: {{ .Values.app.port }}
@@ -60,22 +66,27 @@ spec:
           volumeMounts:
             - name: model-cache
               mountPath: {{ .Values.cache.mountPath }}
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 360
           readinessProbe:
             httpGet:
               path: /health
               port: http
-            initialDelaySeconds: 90
             periodSeconds: 10
             timeoutSeconds: 5
-            failureThreshold: 18
+            failureThreshold: 6
           livenessProbe:
             httpGet:
               path: /health
               port: http
-            initialDelaySeconds: 120
             periodSeconds: 20
             timeoutSeconds: 5
-            failureThreshold: 30
+            failureThreshold: 6
           resources:
             limits:
               {{- toYaml .Values.resources.limits | nindent 14 }}
