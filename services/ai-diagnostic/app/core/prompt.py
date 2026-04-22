@@ -4,7 +4,7 @@ import json
 from app.core.schema import DiagnosticRequest
 
 
-SYSTEM_PROMPT = """You are a clinical decision support assistant specialized in autoimmune diseases.
+_SYSTEM_PROMPT_BASE = """You are a clinical decision support assistant specialized in autoimmune diseases.
 You analyze structured patient data including laboratory results, clinical findings, and physician observations to assist in identifying autoimmune conditions.
 
 You have deep knowledge of:
@@ -55,6 +55,19 @@ Rules:
 - reasoning must explicitly cite lab values, trends, and clinical findings.
 - Return one JSON object only. No markdown. No text outside JSON.
 """.strip()
+
+_LANGUAGE_RULES = {
+    "es": "- Respond entirely in Spanish. All text fields (condition, supporting_findings, missing_workup, differential, recommended_followup, reasoning) must be in Spanish.",
+    "en": "- Respond entirely in English. All text fields must be in English.",
+}
+
+
+def get_system_prompt(language: str = "es") -> str:
+    lang_rule = _LANGUAGE_RULES.get(language, _LANGUAGE_RULES["es"])
+    return _SYSTEM_PROMPT_BASE.replace(
+        "Rules:",
+        f"Rules:\n{lang_rule}",
+    )
 
 
 def build_user_message(payload: DiagnosticRequest) -> str:

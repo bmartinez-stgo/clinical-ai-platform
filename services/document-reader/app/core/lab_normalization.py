@@ -214,7 +214,7 @@ def build_review_issue(
     }
 
 
-def normalize_observation(raw_observation: dict[str, Any]) -> tuple[dict[str, Any], bool, list[dict[str, Any]]]:
+def normalize_observation(raw_observation: dict[str, Any], language: str = "en") -> tuple[dict[str, Any], bool, list[dict[str, Any]]]:
     definition = find_definition(raw_observation.get("test_name_raw", ""))
     raw_value, value_type = parse_value(raw_observation.get("value_raw"))
     reference_range = parse_reference_range(
@@ -227,11 +227,20 @@ def normalize_observation(raw_observation: dict[str, Any]) -> tuple[dict[str, An
         else normalize_unit(raw_observation.get("unit_raw"), definition.default_unit_ucum if definition else None)
     )
 
+    if definition:
+        canonical = (
+            definition.canonical_name_es or definition.canonical_name
+            if language == "es"
+            else definition.canonical_name
+        )
+    else:
+        canonical = raw_observation.get("test_name_raw")
+
     normalized = {
         "observation_id": str(uuid4()),
         "panel_raw": raw_observation.get("panel_raw"),
         "test_name_raw": raw_observation.get("test_name_raw"),
-        "test_name_normalized": definition.canonical_name if definition else raw_observation.get("test_name_raw"),
+        "test_name_normalized": canonical,
         "loinc_code": definition.loinc_code if definition else None,
         "value": raw_value,
         "value_type": value_type,
@@ -304,7 +313,7 @@ def normalize_observation(raw_observation: dict[str, Any]) -> tuple[dict[str, An
     return normalized, requires_review, review_items
 
 
-def build_normalized_response(document_payload: dict[str, Any], extraction_payload: dict[str, Any]) -> dict[str, Any]:
+def build_normalized_response(document_payload: dict[str, Any], extraction_payload: dict[str, Any], language: str = "en") -> dict[str, Any]:
     observations: list[dict[str, Any]] = []
     unmapped_items: list[str] = []
     requires_manual_review = False
@@ -324,7 +333,7 @@ def build_normalized_response(document_payload: dict[str, Any], extraction_paylo
         raw_value = str(raw_observation.get("value_raw") or "")
         if raw_name.startswith("estadio ") or re.search(r"\d+\s*[-–]\s*\d+.*(?:ml|l/min|m2)", raw_value, re.IGNORECASE):
             continue
-        normalized_observation, review_required, observation_issues = normalize_observation(raw_observation)
+        normalized_observation, review_required, observation_issues = normalize_observation(raw_observation, language=language)
         observations.append(normalized_observation)
         review_items.extend(observation_issues)
         if review_required:
@@ -347,6 +356,7 @@ def build_normalized_response(document_payload: dict[str, Any], extraction_paylo
             "content_type": document_payload["content_type"],
             "page_count": document_payload["page_count"],
             "language": "es-MX",
+            "response_language": language,
         },
         "patient": {
             "external_id": patient_payload.get("external_id"),
