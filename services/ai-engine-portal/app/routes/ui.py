@@ -131,7 +131,16 @@ HTML = """<!doctype html>
       </section>
 
       <section class="toolbar">
-        <div><div class="pill pill-green" id="sessionState">Sesión activa</div></div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div class="pill pill-green" id="sessionState">Sesión activa</div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:0.85rem;font-weight:600;margin:0;">
+            Idioma
+            <select id="langSelect" style="border-radius:8px;padding:5px 10px;border:1px solid var(--line);font:inherit;font-size:0.85rem;background:#fff;">
+              <option value="es" selected>Español</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+        </div>
         <div class="toolbar-meta">
           <div class="status" id="sessionStatus">Autenticado.</div>
           <button id="logoutBtn" class="danger sm" type="button">Cerrar sesión</button>
@@ -343,6 +352,7 @@ HTML = """<!doctype html>
       const resultCard = document.getElementById("resultCard");
 
       let lastParseResult = null;
+      function getLang() { return document.getElementById("langSelect").value; }
 
       function pretty(v) { return JSON.stringify(v, null, 2); }
       function readToken() { return window.localStorage.getItem(tokenKey); }
@@ -432,7 +442,7 @@ HTML = """<!doctype html>
         try {
           const formData = new FormData();
           formData.append("file", file);
-          const payload = await requestJson("/documents/labs/parse", {
+          const payload = await requestJson(`/documents/labs/parse?language=${getLang()}`, {
             method: "POST",
             headers: { "Authorization": `Bearer ${token}` },
             body: formData,
@@ -460,11 +470,11 @@ HTML = """<!doctype html>
           || new Date().toISOString().split("T")[0];
         const results = (lastParseResult.observations || []).map(obs => ({
           loinc_code: obs.loinc_code || null,
-          test_name: obs.test_name || obs.analyte || "",
+          test_name: obs.test_name_normalized || obs.test_name_raw || "",
           value: obs.value,
-          unit: obs.unit || null,
-          ref_low: obs.ref_low != null ? obs.ref_low : null,
-          ref_high: obs.ref_high != null ? obs.ref_high : null,
+          unit: obs.unit_ucum || obs.unit_raw || null,
+          ref_low: obs.reference_range?.low ?? null,
+          ref_high: obs.reference_range?.high ?? null,
           interpretation: obs.interpretation || null,
         }));
         const labSeries = [{ report_date: reportDate, results }];
@@ -551,6 +561,7 @@ HTML = """<!doctype html>
           clinical_diagnosis: clinicalDiagnosis,
           doctor_observations: document.getElementById("doctor_observations").value.trim() || null,
           focus,
+          language: getLang(),
         };
       }
 

@@ -75,6 +75,7 @@ class DiagnosticRequest(BaseModel):
     clinical_diagnosis: str
     doctor_observations: str | None = None
     focus: list[str] = Field(default_factory=lambda: ["autoimmune"])
+    language: str = "es"
 
 
 class AutoimmuneFlag(BaseModel):
