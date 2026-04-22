@@ -42,7 +42,7 @@ def merge_extraction_payloads(document_id: str, payloads: list[dict]) -> dict:
     }
 
 
-async def normalize_lab_document(document_payload: dict) -> dict:
+async def normalize_lab_document(document_payload: dict, language: str = "en") -> dict:
     profile = detect_document_profile(document_payload)
     logger.info(
         "normalizing laboratory document",
@@ -103,7 +103,7 @@ async def normalize_lab_document(document_payload: dict) -> dict:
         )
 
     extraction_payload = merge_extraction_payloads(document_payload["document_id"], extraction_payloads)
-    result = build_normalized_response(document_payload, extraction_payload)
+    result = build_normalized_response(document_payload, extraction_payload, language=language)
     result["extraction_profile"] = profile.profile_name
     result["requires_ocr"] = profile.requires_ocr
     result["confidence"] = calculate_result_confidence(result, profile.profile_name)

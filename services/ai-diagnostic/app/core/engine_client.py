@@ -6,7 +6,7 @@ import logging
 import httpx
 
 from app.core.config import get_settings
-from app.core.prompt import SYSTEM_PROMPT, build_user_message
+from app.core.prompt import get_system_prompt, build_user_message
 from app.core.schema import DiagnosticRequest, DiagnosticResponse
 
 settings = get_settings()
@@ -15,11 +15,12 @@ logger = logging.getLogger(__name__)
 
 def run_diagnostic_inference(payload: DiagnosticRequest) -> DiagnosticResponse:
     user_message = build_user_message(payload)
+    system_prompt = get_system_prompt(payload.language)
 
     body = {
         "model": settings.vllm_reasoning_model,
         "messages": [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_message},
         ],
         "max_tokens": settings.max_tokens,

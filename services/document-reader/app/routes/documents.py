@@ -1,6 +1,6 @@
 import logging
 
-from fastapi import APIRouter, File, HTTPException, UploadFile, status
+from fastapi import APIRouter, File, HTTPException, Query, UploadFile, status
 
 from app.core.config import get_settings
 from app.core.lab_service import normalize_lab_document
@@ -85,7 +85,10 @@ async def parse_document(file: UploadFile = File(...)):
 
 
 @router.post("/labs/parse")
-async def parse_laboratory_report(file: UploadFile = File(...)):
+async def parse_laboratory_report(
+    file: UploadFile = File(...),
+    language: str = Query(default="es", pattern="^(es|en)$"),
+):
     if file.content_type not in SUPPORTED_CONTENT_TYPES:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -130,7 +133,7 @@ async def parse_laboratory_report(file: UploadFile = File(...)):
                 "ocr_backend": settings.ocr_backend,
             },
         )
-        return await normalize_lab_document(document_payload)
+        return await normalize_lab_document(document_payload, language=language)
     except Exception as exc:
         logger.exception(
             "laboratory document normalization failed",
