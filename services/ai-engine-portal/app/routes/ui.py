@@ -94,6 +94,11 @@ HTML = """<!doctype html>
       .result-list li { margin-bottom: 4px; font-size: 0.92rem; }
       .reasoning-box { background: #f6f2e8; border: 1px solid var(--line); border-radius: 12px; padding: 14px; font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; }
       .disclaimer { font-size: 0.82rem; color: var(--muted); font-style: italic; margin-top: 12px; padding: 10px 14px; background: rgba(180,120,0,0.07); border-radius: 10px; }
+      .timing-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; background: rgba(13,122,95,0.08); color: var(--brand-dark); font-size: 0.78rem; font-weight: 700; font-family: "IBM Plex Mono", monospace; }
+      .parse-summary { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px; }
+      .parse-summary th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); padding: 4px 8px; border-bottom: 1px solid var(--line); }
+      .parse-summary td { padding: 6px 8px; border-bottom: 1px solid rgba(216,209,192,0.5); }
+      .parse-summary tr:last-child td { border-bottom: none; }
       [hidden] { display: none !important; }
       code { font-family: "IBM Plex Mono", "SFMono-Regular", monospace; }
       @media (max-width: 720px) {
@@ -152,19 +157,25 @@ HTML = """<!doctype html>
         <!-- STEP 1: PDF PARSE -->
         <article class="card">
           <div class="card-header">
-            <h2>Paso 1 — Parsear PDF de laboratorio</h2>
+            <h2>Paso 1 — Parsear PDFs de laboratorio</h2>
           </div>
-          <p>Carga un PDF o imagen de resultados de laboratorio para extraer los analitos.</p>
+          <p>Carga uno o varios PDFs o imágenes. Cada archivo se procesará como un reporte independiente y se agregará a la serie de laboratorios.</p>
           <div class="row">
-            <label>Archivo de laboratorio<input id="labFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" /></label>
+            <label>Archivos de laboratorio<span class="hint">puedes seleccionar varios a la vez</span>
+              <input id="labFile" type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple />
+            </label>
           </div>
           <div class="actions">
-            <button id="parseBtn">Parsear reporte</button>
+            <button id="parseBtn">Parsear reportes</button>
             <button id="useParseBtn" class="ghost sm" type="button" hidden>Usar resultados en Paso 2</button>
           </div>
           <div class="status" id="parseStatus">Esperando archivo.</div>
           <div style="margin-top: 14px;" id="parseResultArea" hidden>
-            <pre id="parseOutput">{}</pre>
+            <div id="parseSummary"></div>
+            <details style="margin-top:10px;">
+              <summary style="cursor:pointer;font-size:0.85rem;color:var(--muted);">Ver JSON del último archivo</summary>
+              <pre id="parseOutput" style="margin-top:8px;">{}</pre>
+            </details>
           </div>
         </article>
 
@@ -344,6 +355,7 @@ HTML = """<!doctype html>
       const parseOutput = document.getElementById("parseOutput");
       const parseStatus = document.getElementById("parseStatus");
       const parseResultArea = document.getElementById("parseResultArea");
+      const parseSummary = document.getElementById("parseSummary");
       const useParseBtn = document.getElementById("useParseBtn");
       const useParseBtn2 = document.getElementById("useParseBtn2");
       const labSeriesStatus = document.getElementById("labSeriesStatus");
@@ -351,8 +363,9 @@ HTML = """<!doctype html>
       const diagnosticOutput = document.getElementById("diagnosticOutput");
       const resultCard = document.getElementById("resultCard");
 
-      let lastParseResult = null;
+      let parsedFiles = [];
       function getLang() { return document.getElementById("langSelect").value; }
+      function fmtMs(ms) { return ms < 1000 ? `${ms}ms` : `${(ms/1000).toFixed(1)}s`; }
 
       function pretty(v) { return JSON.stringify(v, null, 2); }
       function readToken() { return window.localStorage.getItem(tokenKey); }
@@ -434,52 +447,94 @@ HTML = """<!doctype html>
 
       document.getElementById("parseBtn").addEventListener("click", async () => {
         const token = readToken();
-        const file = document.getElementById("labFile").files[0];
+        const files = [...document.getElementById("labFile").files];
         if (!token) { clearSession(); return; }
-        if (!file) { setStatus(parseStatus, "Elige un PDF o imagen primero.", "error"); return; }
-        setStatus(parseStatus, "Parseando documento...");
+        if (!files.length) { setStatus(parseStatus, "Elige al menos un PDF o imagen.", "error"); return; }
+
         document.getElementById("parseBtn").disabled = true;
-        try {
-          const formData = new FormData();
-          formData.append("file", file);
-          const payload = await requestJson(`/documents/labs/parse?language=${getLang()}`, {
-            method: "POST",
-            headers: { "Authorization": `Bearer ${token}` },
-            body: formData,
-          });
-          lastParseResult = payload;
-          parseOutput.textContent = pretty(payload);
-          parseResultArea.hidden = false;
-          useParseBtn.hidden = false;
-          setStatus(parseStatus, `Documento parseado. ${(payload.observations || []).length} analitos extraídos.`, "ok");
-        } catch (error) {
-          setStatus(parseStatus, "Error al parsear.", "error");
-          parseOutput.textContent = String(error.message || error);
-          parseResultArea.hidden = false;
-        } finally {
-          document.getElementById("parseBtn").disabled = false;
+        parsedFiles = [];
+        parseResultArea.hidden = false;
+        useParseBtn.hidden = true;
+        parseSummary.innerHTML = "";
+
+        const totalStart = performance.now();
+        let allOk = true;
+
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          setStatus(parseStatus, `Parseando archivo ${i + 1} / ${files.length}: ${file.name}...`);
+          const fileStart = performance.now();
+          try {
+            const formData = new FormData();
+            formData.append("file", file);
+            const payload = await requestJson(`/documents/labs/parse?language=${getLang()}`, {
+              method: "POST",
+              headers: { "Authorization": `Bearer ${token}` },
+              body: formData,
+            });
+            const elapsed = Math.round(performance.now() - fileStart);
+            parsedFiles.push({ filename: file.name, result: payload, elapsed });
+            parseOutput.textContent = pretty(payload);
+          } catch (error) {
+            const elapsed = Math.round(performance.now() - fileStart);
+            parsedFiles.push({ filename: file.name, result: null, elapsed, error: String(error.message || error) });
+            allOk = false;
+          }
         }
+
+        const totalElapsed = Math.round(performance.now() - totalStart);
+
+        // Render summary table
+        const rows = parsedFiles.map(f => {
+          if (f.error) {
+            return `<tr><td>${f.filename}</td><td style="color:var(--danger)">Error</td><td>—</td><td><span class="timing-badge">⏱ ${fmtMs(f.elapsed)}</span></td></tr>`;
+          }
+          const count = (f.result.observations || []).length;
+          const date = f.result.report?.report_date || "—";
+          return `<tr><td>${f.filename}</td><td>${count} analitos</td><td>${date}</td><td><span class="timing-badge">⏱ ${fmtMs(f.elapsed)}</span></td></tr>`;
+        }).join("");
+        parseSummary.innerHTML = `
+          <table class="parse-summary">
+            <thead><tr><th>Archivo</th><th>Analitos</th><th>Fecha reporte</th><th>Tiempo</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          <div style="margin-top:8px;font-size:0.82rem;color:var(--muted);">
+            Total: ${files.length} archivo(s) — <span class="timing-badge">⏱ ${fmtMs(totalElapsed)} total</span>
+          </div>`;
+
+        const successCount = parsedFiles.filter(f => f.result).length;
+        if (successCount > 0) {
+          useParseBtn.hidden = false;
+          setStatus(parseStatus, `${successCount} de ${files.length} archivo(s) parseados.`, allOk ? "ok" : "");
+        } else {
+          setStatus(parseStatus, "Todos los archivos fallaron al parsear.", "error");
+        }
+        document.getElementById("parseBtn").disabled = false;
       });
 
       function loadLabSeriesFromParse() {
-        if (!lastParseResult) {
-          setStatus(labSeriesStatus, "No hay resultado de parseo disponible.", "error");
+        const successful = parsedFiles.filter(f => f.result);
+        if (!successful.length) {
+          setStatus(labSeriesStatus, "No hay resultados de parseo disponibles.", "error");
           return;
         }
-        const reportDate = (lastParseResult.report && lastParseResult.report.report_date)
-          || new Date().toISOString().split("T")[0];
-        const results = (lastParseResult.observations || []).map(obs => ({
-          loinc_code: obs.loinc_code || null,
-          test_name: obs.test_name_normalized || obs.test_name_raw || "",
-          value: obs.value,
-          unit: obs.unit_ucum || obs.unit_raw || null,
-          ref_low: obs.reference_range?.low ?? null,
-          ref_high: obs.reference_range?.high ?? null,
-          interpretation: obs.interpretation || null,
-        }));
-        const labSeries = [{ report_date: reportDate, results }];
+        const labSeries = successful.map(f => {
+          const reportDate = (f.result.report && f.result.report.report_date)
+            || new Date().toISOString().split("T")[0];
+          const results = (f.result.observations || []).map(obs => ({
+            loinc_code: obs.loinc_code || null,
+            test_name: obs.test_name_normalized || obs.test_name_raw || "",
+            value: obs.value,
+            unit: obs.unit_ucum || obs.unit_raw || null,
+            ref_low: obs.reference_range?.low ?? null,
+            ref_high: obs.reference_range?.high ?? null,
+            interpretation: obs.interpretation || null,
+          }));
+          return { report_date: reportDate, results };
+        });
+        const totalObs = labSeries.reduce((acc, s) => acc + s.results.length, 0);
         document.getElementById("labSeriesJson").value = pretty(labSeries);
-        setStatus(labSeriesStatus, `Cargados ${results.length} analitos del parseo.`, "ok");
+        setStatus(labSeriesStatus, `${labSeries.length} snapshot(s) cargados — ${totalObs} analitos en total.`, "ok");
       }
 
       useParseBtn.addEventListener("click", loadLabSeriesFromParse);
@@ -621,6 +676,7 @@ HTML = """<!doctype html>
         setStatus(diagnoseStatus, "Enviando a inferencia diagnóstica... (puede tardar hasta 2 min)");
         document.getElementById("diagnoseBtn").disabled = true;
         resultCard.hidden = true;
+        const inferStart = performance.now();
 
         try {
           const result = await requestJson("/diagnostics/diagnose", {
@@ -631,8 +687,9 @@ HTML = """<!doctype html>
             },
             body: JSON.stringify(payload),
           });
+          const inferElapsed = Math.round(performance.now() - inferStart);
           renderDiagnosticResult(result);
-          setStatus(diagnoseStatus, "Inferencia completada.", "ok");
+          setStatus(diagnoseStatus, `Inferencia completada — ⏱ ${fmtMs(inferElapsed)}`, "ok");
         } catch (error) {
           setStatus(diagnoseStatus, "Error en inferencia diagnóstica.", "error");
           diagnosticOutput.textContent = String(error.message || error);
