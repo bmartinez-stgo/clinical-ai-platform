@@ -30,6 +30,9 @@ async def proxy_request(full_path: str, request: Request):
     route = match_route(path, load_proxy_config())
 
     if not route:
+        if path in ("/", ""):
+            from fastapi.responses import RedirectResponse
+            return RedirectResponse(url="/webui", status_code=302)
         return JSONResponse(
             status_code=404,
             content={
