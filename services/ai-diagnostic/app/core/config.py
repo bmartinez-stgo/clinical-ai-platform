@@ -22,6 +22,12 @@ class Settings:
     vllm_timeout_seconds: int = int(os.getenv("VLLM_TIMEOUT_SECONDS", "120"))
     max_tokens: int = int(os.getenv("MAX_TOKENS", "2048"))
     temperature: float = float(os.getenv("TEMPERATURE", "0.1"))
+    clinical_rag_url: str = os.getenv(
+        "CLINICAL_RAG_URL",
+        "http://clinical-rag.cap-prod-clinical-rag.svc.cluster.local:8085",
+    )
+    clinical_rag_enabled: bool = os.getenv("CLINICAL_RAG_ENABLED", "true").lower() == "true"
+    clinical_rag_top_k: int = int(os.getenv("CLINICAL_RAG_TOP_K", "3"))
 
 
 @lru_cache

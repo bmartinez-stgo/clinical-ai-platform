@@ -16,3 +16,6 @@ data:
   VLLM_TIMEOUT_SECONDS: {{ .Values.app.vllmTimeoutSeconds | quote }}
   MAX_TOKENS: {{ .Values.app.maxTokens | quote }}
   TEMPERATURE: {{ .Values.app.temperature | quote }}
+  CLINICAL_RAG_URL: {{ .Values.app.clinicalRagUrl | quote }}
+  CLINICAL_RAG_ENABLED: {{ .Values.app.clinicalRagEnabled | quote }}
+  CLINICAL_RAG_TOP_K: {{ .Values.app.clinicalRagTopK | quote }}

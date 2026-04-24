@@ -135,7 +135,7 @@ def get_system_prompt(language: str = "es", focus: list[str] | None = None) -> s
     )
 
 
-def build_user_message(payload: DiagnosticRequest) -> str:
+def build_user_message(payload: DiagnosticRequest, rag_context: str = "") -> str:
     lines: list[str] = []
 
     p = payload.patient
@@ -189,6 +189,10 @@ def build_user_message(payload: DiagnosticRequest) -> str:
         lines.append("BIOPSIES:")
         for b in payload.biopsies:
             lines.append(f"  [{b.date or 'n/d'}] {b.tissue}: {b.findings}")
+
+    if rag_context:
+        lines.append("")
+        lines.append(rag_context)
 
     lines.append("")
     lines.append(f"CLINICAL DIAGNOSIS: {payload.clinical_diagnosis}")
