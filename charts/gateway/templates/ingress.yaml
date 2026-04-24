@@ -10,6 +10,10 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "25m"
     nginx.ingress.kubernetes.io/proxy-read-timeout: "180"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "180"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      if ($request_uri = "/") {
+        return 302 https://{{ .Values.ingress.host }}/portal;
+      }
 spec:
   ingressClassName: nginx
   {{- if .Values.ingress.tls.enabled }}
