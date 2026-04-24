@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import logging
 
 from app.core.config import get_settings
@@ -42,6 +43,42 @@ def merge_extraction_payloads(document_id: str, payloads: list[dict]) -> dict:
     }
 
 
+async def _extract_batch(document_payload: dict, batch: list[dict], batch_index: int, batch_count: int) -> dict:
+    document_id = document_payload.get("document_id")
+    include_metadata = any(page["page_number"] == 1 for page in batch)
+    logger.info(
+        "sending extraction batch",
+        extra={
+            "document_id": document_id,
+            "batch_index": batch_index,
+            "batch_count": batch_count,
+            "page_numbers": [page["page_number"] for page in batch],
+            "include_metadata": include_metadata,
+            "ocr_backend": settings.ocr_backend,
+        },
+    )
+    result = await extract_laboratory_observations(
+        {
+            "document_id": document_payload["document_id"],
+            "filename": document_payload["filename"],
+            "content_type": document_payload["content_type"],
+            "include_metadata": include_metadata,
+            "pages": batch,
+        }
+    )
+    logger.info(
+        "received extraction batch",
+        extra={
+            "document_id": document_id,
+            "batch_index": batch_index,
+            "observation_count": len(result.get("observations", [])),
+            "warning_count": len(result.get("warnings", [])),
+            "ocr_backend": settings.ocr_backend,
+        },
+    )
+    return result
+
+
 async def normalize_lab_document(document_payload: dict, language: str = "en") -> dict:
     profile = detect_document_profile(document_payload)
     logger.info(
@@ -66,41 +103,15 @@ async def normalize_lab_document(document_payload: dict, language: str = "en") -
         for page in document_payload["pages"]
     ]
     page_batches = chunk_pages(pages, settings.ai_engine_page_batch_size)
-    extraction_payloads: list[dict] = []
 
-    for batch_index, batch in enumerate(page_batches, start=1):
-        logger.info(
-            "sending extraction batch",
-            extra={
-                "document_id": document_payload.get("document_id"),
-                "batch_index": batch_index,
-                "batch_count": len(page_batches),
-                "page_numbers": [page["page_number"] for page in batch],
-                "include_metadata": any(page["page_number"] == 1 for page in batch),
-                "ocr_backend": settings.ocr_backend,
-            },
+    extraction_payloads: list[dict] = list(
+        await asyncio.gather(
+            *[
+                _extract_batch(document_payload, batch, idx, len(page_batches))
+                for idx, batch in enumerate(page_batches, start=1)
+            ]
         )
-        extraction_payloads.append(
-            await extract_laboratory_observations(
-                {
-                    "document_id": document_payload["document_id"],
-                    "filename": document_payload["filename"],
-                    "content_type": document_payload["content_type"],
-                    "include_metadata": any(page["page_number"] == 1 for page in batch),
-                    "pages": batch,
-                }
-            )
-        )
-        logger.info(
-            "received extraction batch",
-            extra={
-                "document_id": document_payload.get("document_id"),
-                "batch_index": batch_index,
-                "observation_count": len(extraction_payloads[-1].get("observations", [])),
-                "warning_count": len(extraction_payloads[-1].get("warnings", [])),
-                "ocr_backend": settings.ocr_backend,
-            },
-        )
+    )
 
     extraction_payload = merge_extraction_payloads(document_payload["document_id"], extraction_payloads)
     result = build_normalized_response(document_payload, extraction_payload, language=language)
