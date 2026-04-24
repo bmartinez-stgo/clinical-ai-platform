@@ -15,7 +15,7 @@ app:
   namespace: cap-prod-vllm-reasoning
   modelId: hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
   dtype: half
-  maxModelLen: "4096"
+  maxModelLen: "8192"
   gpuMemoryUtilization: "0.85"
   quantization: awq
   port: 8000

@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: open-webui-root-redirect
+  namespace: cap-prod-open-webui
+  annotations:
+    nginx.ingress.kubernetes.io/permanent-redirect: "https://nahui-ai.ddns.net/webui"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - nahui-ai.ddns.net
+      secretName: open-webui-tls
+  rules:
+    - host: nahui-ai.ddns.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: open-webui
+                port:
+                  number: 8080
