@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 def run_diagnostic_inference(payload: DiagnosticRequest) -> DiagnosticResponse:
     user_message = build_user_message(payload)
-    system_prompt = get_system_prompt(payload.language)
+    system_prompt = get_system_prompt(payload.language, payload.focus)
 
     body = {
         "model": settings.vllm_reasoning_model,
