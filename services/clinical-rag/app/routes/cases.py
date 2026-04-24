@@ -74,7 +74,7 @@ def find_similar(req: SimilarCasesRequest) -> SimilarCasesResponse:
     return SimilarCasesResponse(cases=cases, total_cases_in_store=total)
 
 
-@router.delete("/{case_id}", status_code=204)
+@router.delete("/{case_id}", status_code=204, response_model=None)
 def delete_case(case_id: str) -> None:
     try:
         store.delete(case_id)
