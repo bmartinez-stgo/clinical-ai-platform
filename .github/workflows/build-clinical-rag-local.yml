@@ -1,0 +1,117 @@
+name: Build and Deploy Clinical RAG Local
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "services/clinical-rag/**"
+      - "charts/clinical-rag/**"
+      - ".github/workflows/build-clinical-rag-local.yml"
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: clinical-ai-local
+
+    env:
+      IMAGE_REPOSITORY: registry:5000/clinical-rag
+      IMAGE_NAME: clinical-rag
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Wait for Docker daemon
+        run: |
+          echo "Waiting for Docker to be ready..."
+          for i in $(seq 1 60); do
+            if docker info >/dev/null 2>&1; then
+              echo "Docker is ready"
+              break
+            fi
+            echo "Docker not ready yet, retry $i/60"
+            sleep 2
+          done
+          docker info
+
+      - name: Define image tags
+        id: vars
+        run: |
+          BUILD_TAG=build-${GITHUB_RUN_NUMBER}
+          STABLE_TAG=prod-latest
+
+          echo "build_tag=${BUILD_TAG}" >> $GITHUB_OUTPUT
+          echo "stable_tag=${STABLE_TAG}" >> $GITHUB_OUTPUT
+
+      - name: Build clinical-rag image
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          docker build \
+            -t ${IMAGE_REPOSITORY}:${BUILD_TAG} \
+            -t ${IMAGE_REPOSITORY}:${STABLE_TAG} \
+            ./services/clinical-rag
+
+      - name: Push clinical-rag image tags
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          docker push ${IMAGE_REPOSITORY}:${BUILD_TAG}
+          docker push ${IMAGE_REPOSITORY}:${STABLE_TAG}
+
+      - name: Postcheck registry tags
+        id: postcheck
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          TAGS_JSON=$(curl -fsS http://registry:5000/v2/${IMAGE_NAME}/tags/list)
+
+          echo "tags_json<<EOF" >> $GITHUB_OUTPUT
+          echo "${TAGS_JSON}" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+          if ! echo "${TAGS_JSON}" | grep -q "\"${BUILD_TAG}\""; then
+            echo "ERROR: build tag ${BUILD_TAG} not found in registry"
+            exit 1
+          fi
+
+      - name: Deploy via Helm
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+
+          helm upgrade --install clinical-rag ./charts/clinical-rag \
+            --namespace cap-prod-clinical-rag \
+            --create-namespace \
+            --set image.tag=${BUILD_TAG} \
+            --wait \
+            --timeout 300s
+
+      - name: Publish workflow summary
+        run: |
+          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
+          STABLE_TAG="${{ steps.vars.outputs.stable_tag }}"
+
+          {
+            echo "# Clinical RAG build and deploy summary"
+            echo ""
+            echo "## Image repository"
+            echo "\`registry:5000/clinical-rag\`"
+            echo ""
+            echo "## Published tags"
+            echo "- \`${BUILD_TAG}\`"
+            echo "- \`${STABLE_TAG}\`"
+            echo ""
+            echo "## Deployed to"
+            echo "Namespace: \`cap-prod-clinical-rag\`"
+            echo ""
+            echo "## Manual deploy command"
+            echo '```bash'
+            echo 'helm upgrade --install clinical-rag ./charts/clinical-rag \'
+            echo '  --namespace cap-prod-clinical-rag \'
+            echo '  --create-namespace'
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY

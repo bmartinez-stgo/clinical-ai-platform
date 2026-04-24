@@ -57,11 +57,6 @@ def _validate_autoimmune_flags(
     flags: list[AutoimmuneFlag],
     payload: DiagnosticRequest,
 ) -> list[AutoimmuneFlag]:
-    """
-    Remove or downgrade autoimmune flags that the model hallucinated without
-    sufficient evidence. Small LLMs often suggest conditions by keyword
-    association rather than by actual diagnostic criteria.
-    """
     history = payload.history
     lab_series = payload.lab_series
 
@@ -90,7 +85,6 @@ def _validate_autoimmune_flags(
             if has_positive_aps:
                 validated.append(flag)
             elif has_aps_serology:
-                # Tests ordered but not positive — keep as low
                 validated.append(AutoimmuneFlag(
                     condition=flag.condition,
                     likelihood="low",
@@ -98,7 +92,6 @@ def _validate_autoimmune_flags(
                     missing_workup=flag.missing_workup,
                 ))
             elif has_thrombosis or has_pregnancy_loss:
-                # Clinical history supports it, flag as low, workup needed
                 validated.append(AutoimmuneFlag(
                     condition=flag.condition,
                     likelihood="low",
@@ -110,7 +103,6 @@ def _validate_autoimmune_flags(
                     "removed APS flag: no serology, no thrombosis history, no pregnancy loss",
                     extra={"request_id": payload.request_id},
                 )
-                # Don't add — not enough evidence
 
         elif "sjogren" in key or "sjögren" in key:
             if has_ssa_ssb or has_sicca:
@@ -131,14 +123,69 @@ def _validate_autoimmune_flags(
                 )
 
         else:
-            # Keep other flags (SLE, vasculitis, myositis, etc.) — harder to validate without more context
             validated.append(flag)
 
     return validated
 
 
+def _fetch_rag_context(payload: DiagnosticRequest) -> str:
+    s = get_settings()
+    if not s.clinical_rag_enabled or not s.clinical_rag_url:
+        return ""
+
+    all_results = [r for snap in payload.lab_series for r in snap.results]
+    if not all_results:
+        return ""
+
+    rag_payload = {
+        "patient": {
+            "age": payload.patient.age,
+            "sex": payload.patient.sex,
+            "ethnicity": payload.patient.ethnicity,
+        },
+        "lab_results": [r.model_dump() for r in all_results],
+        "top_k": s.clinical_rag_top_k,
+    }
+
+    try:
+        with httpx.Client(timeout=5.0) as client:
+            resp = client.post(f"{s.clinical_rag_url}/cases/similar", json=rag_payload)
+            resp.raise_for_status()
+
+        data = resp.json()
+        cases = data.get("cases", [])
+        total = data.get("total_cases_in_store", 0)
+
+        if not cases or total == 0:
+            return ""
+
+        lines = ["REFERENCE CASES FROM VALIDATED DATABASE (use as clinical context):"]
+        for c in cases:
+            line = f"  - {c['patient_summary']} | similarity {c['similarity']} | Diagnosis: {c['validated_diagnosis']}"
+            if c.get("differential"):
+                line += f" | Differential: {', '.join(c['differential'][:3])}"
+            if c.get("doctor_notes"):
+                line += f" | Notes: {c['doctor_notes']}"
+            lines.append(line)
+
+        logger.info(
+            "RAG retrieved %d similar cases (total in store: %d)",
+            len(cases), total,
+            extra={"request_id": payload.request_id},
+        )
+        return "\n".join(lines)
+
+    except Exception as exc:
+        logger.warning(
+            "RAG retrieval failed, continuing without context: %s", exc,
+            extra={"request_id": payload.request_id},
+        )
+        return ""
+
+
 def run_diagnostic_inference(payload: DiagnosticRequest) -> DiagnosticResponse:
-    user_message = build_user_message(payload)
+    rag_context = _fetch_rag_context(payload)
+    user_message = build_user_message(payload, rag_context=rag_context)
     system_prompt = get_system_prompt(payload.language, payload.focus)
 
     body = {
@@ -163,7 +210,6 @@ def run_diagnostic_inference(payload: DiagnosticRequest) -> DiagnosticResponse:
     result = _parse_response(raw, payload.request_id)
     result.autoimmune_flags = _validate_autoimmune_flags(result.autoimmune_flags, payload)
 
-    # Remove validated-out conditions from the differential too
     validated_conditions = {_condition_key(f.condition) for f in result.autoimmune_flags}
     result.differential = [
         d for d in result.differential

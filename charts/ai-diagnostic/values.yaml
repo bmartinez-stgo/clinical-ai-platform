@@ -22,6 +22,9 @@ app:
   vllmTimeoutSeconds: "120"
   maxTokens: "1024"
   temperature: "0.1"
+  clinicalRagUrl: http://clinical-rag.cap-prod-clinical-rag.svc.cluster.local:8085
+  clinicalRagEnabled: "true"
+  clinicalRagTopK: "3"
 
 resources:
   requests:
