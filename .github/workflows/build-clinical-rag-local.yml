@@ -79,17 +79,6 @@ jobs:
             exit 1
           fi
 
-      - name: Deploy via Helm
-        run: |
-          BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
-
-          helm upgrade --install clinical-rag ./charts/clinical-rag \
-            --namespace cap-prod-clinical-rag \
-            --create-namespace \
-            --set image.tag=${BUILD_TAG} \
-            --wait \
-            --timeout 300s
-
       - name: Publish workflow summary
         run: |
           BUILD_TAG="${{ steps.vars.outputs.build_tag }}"
