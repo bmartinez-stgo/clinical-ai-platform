@@ -33,6 +33,8 @@ proxyRoutes:
     upstream: http://document-reader.cap-prod-document-reader.svc.cluster.local:8082
   - prefix: /diagnostics
     upstream: http://ai-diagnostic.cap-prod-ai-diagnostic.svc.cluster.local:8083
+  - prefix: /rag
+    upstream: http://clinical-rag.cap-prod-clinical-rag.svc.cluster.local:8085
 
 env:
   APP_NAME: gateway
