@@ -4,7 +4,12 @@ from fastapi import APIRouter, Header, HTTPException, status
 from pydantic import BaseModel
 
 from app.core.config import get_settings
-from app.core.security import create_access_token, decode_access_token
+from app.core.security import (
+    create_access_token,
+    create_refresh_token,
+    decode_access_token,
+    decode_refresh_token,
+)
 from app.core.users import authenticate_user
 
 router = APIRouter()
@@ -18,6 +23,18 @@ class LoginRequest(BaseModel):
 
 class LoginResponse(BaseModel):
     access_token: str
+    refresh_token: str
+    token_type: str
+    expires_in: int
+    refresh_expires_in: int
+
+
+class RefreshRequest(BaseModel):
+    refresh_token: str
+
+
+class RefreshResponse(BaseModel):
+    access_token: str
     token_type: str
     expires_in: int
 
@@ -29,21 +46,18 @@ class ValidateResponse(BaseModel):
     service: str
 
 
-
 def extract_bearer_token(authorization: Optional[str]) -> str:
     if not authorization:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="missing authorization header",
         )
-
     parts = authorization.split(" ", 1)
     if len(parts) != 2 or parts[0].lower() != "bearer":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="invalid authorization header",
         )
-
     return parts[1]
 
 
@@ -56,17 +70,54 @@ async def login(payload: LoginRequest):
             detail="invalid credentials",
         )
 
-    token = create_access_token(
+    roles = user.get("roles", [])
+
+    access_token = create_access_token(
         subject=user["username"],
-        roles=user.get("roles", []),
+        roles=roles,
+        secret=settings.auth_token_secret,
+        expiration_seconds=settings.token_expiration_seconds,
+        issuer=settings.jwt_issuer,
+        audience=settings.jwt_audience,
+    )
+    refresh_token = create_refresh_token(
+        subject=user["username"],
+        roles=roles,
+        secret=settings.refresh_token_secret,
+        expiration_seconds=settings.refresh_token_expiration_seconds,
+        issuer=settings.jwt_issuer,
+        audience=settings.jwt_audience,
+    )
+
+    return LoginResponse(
+        access_token=access_token,
+        refresh_token=refresh_token,
+        token_type="bearer",
+        expires_in=settings.token_expiration_seconds,
+        refresh_expires_in=settings.refresh_token_expiration_seconds,
+    )
+
+
+@router.post("/refresh", response_model=RefreshResponse)
+async def refresh(payload: RefreshRequest):
+    claims = decode_refresh_token(
+        token=payload.refresh_token,
+        secret=settings.refresh_token_secret,
+        issuer=settings.jwt_issuer,
+        audience=settings.jwt_audience,
+    )
+
+    access_token = create_access_token(
+        subject=claims["sub"],
+        roles=claims.get("roles", []),
         secret=settings.auth_token_secret,
         expiration_seconds=settings.token_expiration_seconds,
         issuer=settings.jwt_issuer,
         audience=settings.jwt_audience,
     )
 
-    return LoginResponse(
-        access_token=token,
+    return RefreshResponse(
+        access_token=access_token,
         token_type="bearer",
         expires_in=settings.token_expiration_seconds,
     )

@@ -19,12 +19,13 @@ app:
   environment: prod
 
 auth:
-  tokenSecret: changeme
+  tokenSecret: ""
+  refreshTokenSecret: ""
   tokenExpirationSeconds: 3600
+  refreshTokenExpirationSeconds: 2592000
   jwtIssuer: clinical-ai-platform-auth
   jwtAudience: clinical-ai-platform
-  usersJson: >-
-    [{"username":"admin","password":"changeme","roles":["admin"]}]
+  usersJson: ""
 
 otel:
   enabled: false

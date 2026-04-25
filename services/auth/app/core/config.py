@@ -16,6 +16,10 @@ class Settings:
 
     auth_token_secret: str = os.getenv("AUTH_TOKEN_SECRET", "changeme")
     token_expiration_seconds: int = int(os.getenv("TOKEN_EXPIRATION_SECONDS", "3600"))
+
+    refresh_token_secret: str = os.getenv("REFRESH_TOKEN_SECRET", "changeme-refresh")
+    refresh_token_expiration_seconds: int = int(os.getenv("REFRESH_TOKEN_EXPIRATION_SECONDS", "2592000"))
+
     jwt_issuer: str = os.getenv("JWT_ISSUER", "clinical-ai-platform-auth")
     jwt_audience: str = os.getenv("JWT_AUDIENCE", "clinical-ai-platform")
 
@@ -23,10 +27,7 @@ class Settings:
     otel_service_name: str = os.getenv("OTEL_SERVICE_NAME", "auth")
     otel_exporter_otlp_endpoint: str = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "")
 
-    auth_users_json: str = os.getenv(
-        "AUTH_USERS_JSON",
-        '[{"username":"admin","password":"changeme","roles":["admin"]}]',
-    )
+    auth_users_json: str = os.getenv("AUTH_USERS_JSON", "[]")
     auth_users: List[dict] = field(default_factory=list)
 
     def __post_init__(self):
