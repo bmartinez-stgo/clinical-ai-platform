@@ -22,7 +22,7 @@ auth:
   tokenSecret: ""
   refreshTokenSecret: ""
   tokenExpirationSeconds: 3600
-  refreshTokenExpirationSeconds: 2592000
+  refreshTokenExpirationSeconds: "2592000"
   jwtIssuer: clinical-ai-platform-auth
   jwtAudience: clinical-ai-platform
   usersJson: ""
