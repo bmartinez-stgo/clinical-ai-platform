@@ -11,6 +11,8 @@ from app.core.vision_client import extract_laboratory_observations
 settings = get_settings()
 logger = logging.getLogger(__name__)
 
+_extraction_semaphore = asyncio.Semaphore(2)
+
 
 def chunk_pages(pages: list[dict], batch_size: int) -> list[list[dict]]:
     if batch_size <= 0:
@@ -57,15 +59,16 @@ async def _extract_batch(document_payload: dict, batch: list[dict], batch_index:
             "ocr_backend": settings.ocr_backend,
         },
     )
-    result = await extract_laboratory_observations(
-        {
-            "document_id": document_payload["document_id"],
-            "filename": document_payload["filename"],
-            "content_type": document_payload["content_type"],
-            "include_metadata": include_metadata,
-            "pages": batch,
-        }
-    )
+    async with _extraction_semaphore:
+        result = await extract_laboratory_observations(
+            {
+                "document_id": document_payload["document_id"],
+                "filename": document_payload["filename"],
+                "content_type": document_payload["content_type"],
+                "include_metadata": include_metadata,
+                "pages": batch,
+            }
+        )
     logger.info(
         "received extraction batch",
         extra={
