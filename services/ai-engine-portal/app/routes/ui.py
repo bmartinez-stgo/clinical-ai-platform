@@ -777,7 +777,7 @@ HTML = """<!doctype html>
         const thinking = appendThinking();
 
         try {
-          const res = await requestJson("/chat/message", {
+          const res = await requestJson("/clinical-chat/message", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -791,6 +791,7 @@ HTML = """<!doctype html>
             }),
           });
           thinking.remove();
+
           chatMessages.push({ role: "assistant", content: res.message });
           appendBubble("assistant", res.message);
           setStatus(chatStatus, "");
