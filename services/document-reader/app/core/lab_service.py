@@ -11,7 +11,7 @@ from app.core.vision_client import extract_laboratory_observations
 settings = get_settings()
 logger = logging.getLogger(__name__)
 
-_extraction_semaphore = asyncio.Semaphore(2)
+_extraction_semaphore = asyncio.Semaphore(3)
 
 
 def chunk_pages(pages: list[dict], batch_size: int) -> list[list[dict]]:
