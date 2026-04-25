@@ -1,0 +1,39 @@
+replicaCount: 1
+
+image:
+  repository: registry:5000/clinical-chat
+  tag: prod-latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8086
+  targetPort: 8086
+
+app:
+  name: clinical-chat
+  namespace: cap-prod-clinical-chat
+  port: 8086
+  logLevel: INFO
+  serviceVersion: "0.1.0"
+  environment: prod
+  vllmReasoningUrl: http://vllm-reasoning.cap-prod-vllm-reasoning.svc.cluster.local:8000
+  vllmReasoningModel: hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+  vllmTimeoutSeconds: "120"
+  maxTokens: "512"
+  temperature: "0.3"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+podLabels: {}
+podAnnotations: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
