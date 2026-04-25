@@ -12,9 +12,9 @@ data:
   SERVICE_VERSION: {{ .Values.app.serviceVersion | quote }}
   ENVIRONMENT: {{ .Values.app.environment | quote }}
   TOKEN_EXPIRATION_SECONDS: {{ .Values.auth.tokenExpirationSeconds | quote }}
+  REFRESH_TOKEN_EXPIRATION_SECONDS: {{ .Values.auth.refreshTokenExpirationSeconds | quote }}
   JWT_ISSUER: {{ .Values.auth.jwtIssuer | quote }}
   JWT_AUDIENCE: {{ .Values.auth.jwtAudience | quote }}
-  AUTH_USERS_JSON: {{ .Values.auth.usersJson | quote }}
   OTEL_ENABLED: {{ .Values.otel.enabled | quote }}
   OTEL_SERVICE_NAME: {{ .Values.otel.serviceName | quote }}
   OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.otel.exporterOtlpEndpoint | quote }}
