@@ -35,6 +35,8 @@ proxyRoutes:
     upstream: http://ai-diagnostic.cap-prod-ai-diagnostic.svc.cluster.local:8083
   - prefix: /rag
     upstream: http://clinical-rag.cap-prod-clinical-rag.svc.cluster.local:8085
+  - prefix: /chat
+    upstream: http://clinical-chat.cap-prod-clinical-chat.svc.cluster.local:8086
 
 env:
   APP_NAME: gateway

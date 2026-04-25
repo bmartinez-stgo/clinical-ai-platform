@@ -94,6 +94,13 @@ HTML = """<!doctype html>
       .result-list li { margin-bottom: 4px; font-size: 0.92rem; }
       .reasoning-box { background: #f6f2e8; border: 1px solid var(--line); border-radius: 12px; padding: 14px; font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; }
       .disclaimer { font-size: 0.82rem; color: var(--muted); font-style: italic; margin-top: 12px; padding: 10px 14px; background: rgba(180,120,0,0.07); border-radius: 10px; }
+      .chat-window { display: flex; flex-direction: column; gap: 10px; max-height: 420px; overflow-y: auto; padding: 12px; background: #f6f2e8; border: 1px solid var(--line); border-radius: 14px; margin-bottom: 12px; }
+      .chat-bubble { max-width: 80%; padding: 10px 14px; border-radius: 14px; font-size: 0.9rem; line-height: 1.5; white-space: pre-wrap; }
+      .chat-bubble.user { align-self: flex-end; background: var(--brand); color: white; border-bottom-right-radius: 4px; }
+      .chat-bubble.assistant { align-self: flex-start; background: white; border: 1px solid var(--line); border-bottom-left-radius: 4px; }
+      .chat-input-row { display: flex; gap: 8px; align-items: flex-end; }
+      .chat-input-row textarea { flex: 1; min-height: 44px; max-height: 120px; resize: vertical; border-radius: 12px; }
+      .chat-empty { color: var(--muted); font-size: 0.85rem; text-align: center; padding: 20px 0; }
       .timing-badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 999px; background: rgba(13,122,95,0.08); color: var(--brand-dark); font-size: 0.78rem; font-weight: 700; font-family: "IBM Plex Mono", monospace; }
       .parse-summary { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-top: 10px; }
       .parse-summary th { text-align: left; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); padding: 4px 8px; border-bottom: 1px solid var(--line); }
@@ -332,6 +339,23 @@ HTML = """<!doctype html>
             <summary style="cursor: pointer; font-size: 0.85rem; color: var(--muted);">Ver JSON completo</summary>
             <pre id="diagnosticOutput" style="margin-top: 10px;">{}</pre>
           </details>
+        </article>
+
+        <!-- STEP 4: CHAT -->
+        <article class="card" id="chatCard" hidden>
+          <div class="card-header">
+            <h2>Consultas de seguimiento</h2>
+            <span class="pill pill-green">IA conversacional</span>
+          </div>
+          <p>Haz preguntas de seguimiento sobre este paciente. El asistente tiene acceso completo al resultado diagnóstico y los datos clínicos.</p>
+          <div class="chat-window" id="chatWindow">
+            <div class="chat-empty" id="chatEmpty">Escribe una pregunta para comenzar.</div>
+          </div>
+          <div class="chat-input-row">
+            <textarea id="chatInput" placeholder="p. ej. ¿Debería pedir anti-dsDNA dada la trombocitopenia?" rows="2"></textarea>
+            <button id="chatSendBtn" class="sm">Enviar</button>
+          </div>
+          <div class="status" id="chatStatus"></div>
         </article>
 
         <!-- SESSION -->
@@ -661,6 +685,8 @@ HTML = """<!doctype html>
         resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
       }
 
+      let _lastDiagnosticPayload = null;
+
       document.getElementById("diagnoseBtn").addEventListener("click", async () => {
         const token = readToken();
         if (!token) { clearSession(); return; }
@@ -690,6 +716,7 @@ HTML = """<!doctype html>
           const inferElapsed = Math.round(performance.now() - inferStart);
           renderDiagnosticResult(result);
           setStatus(diagnoseStatus, `Inferencia completada — ⏱ ${fmtMs(inferElapsed)}`, "ok");
+          openChatForResult(payload, result);
         } catch (error) {
           setStatus(diagnoseStatus, "Error en inferencia diagnóstica.", "error");
           diagnosticOutput.textContent = String(error.message || error);
@@ -698,6 +725,101 @@ HTML = """<!doctype html>
           document.getElementById("diagnoseBtn").disabled = false;
         }
       });
+
+      // CHAT
+      let chatContext = null;    // diagnostic_context (DiagnosticRequest payload)
+      let chatResult = null;     // diagnostic_result (DiagnosticResponse)
+      let chatMessages = [];     // [{role, content}]
+
+      const chatCard = document.getElementById("chatCard");
+      const chatWindow = document.getElementById("chatWindow");
+      const chatEmpty = document.getElementById("chatEmpty");
+      const chatInput = document.getElementById("chatInput");
+      const chatSendBtn = document.getElementById("chatSendBtn");
+      const chatStatus = document.getElementById("chatStatus");
+
+      function appendBubble(role, content) {
+        chatEmpty.hidden = true;
+        const div = document.createElement("div");
+        div.className = `chat-bubble ${role}`;
+        div.textContent = content;
+        chatWindow.appendChild(div);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+      }
+
+      function appendThinking() {
+        chatEmpty.hidden = true;
+        const div = document.createElement("div");
+        div.className = "chat-bubble assistant";
+        div.id = "chatThinking";
+        div.textContent = "…";
+        chatWindow.appendChild(div);
+        chatWindow.scrollTop = chatWindow.scrollHeight;
+        return div;
+      }
+
+      chatSendBtn.addEventListener("click", async () => {
+        const token = readToken();
+        if (!token) { clearSession(); return; }
+        const text = chatInput.value.trim();
+        if (!text) return;
+        if (!chatContext || !chatResult) {
+          setStatus(chatStatus, "Primero ejecuta una inferencia diagnóstica.", "error");
+          return;
+        }
+
+        chatMessages.push({ role: "user", content: text });
+        appendBubble("user", text);
+        chatInput.value = "";
+        chatSendBtn.disabled = true;
+        setStatus(chatStatus, "El asistente está procesando...");
+
+        const thinking = appendThinking();
+
+        try {
+          const res = await requestJson("/chat/message", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              diagnostic_context: chatContext,
+              diagnostic_result: chatResult,
+              messages: chatMessages,
+              language: getLang(),
+            }),
+          });
+          thinking.remove();
+          chatMessages.push({ role: "assistant", content: res.message });
+          appendBubble("assistant", res.message);
+          setStatus(chatStatus, "");
+        } catch (err) {
+          thinking.remove();
+          chatMessages.pop();
+          setStatus(chatStatus, "Error al procesar la consulta.", "error");
+        } finally {
+          chatSendBtn.disabled = false;
+        }
+      });
+
+      chatInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+          e.preventDefault();
+          chatSendBtn.click();
+        }
+      });
+
+      function openChatForResult(context, result) {
+        chatContext = context;
+        chatResult = result;
+        chatMessages = [];
+        chatWindow.innerHTML = "";
+        chatEmpty.hidden = false;
+        chatWindow.appendChild(chatEmpty);
+        chatCard.hidden = false;
+        chatCard.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
 
       bootstrapSession();
     </script>
