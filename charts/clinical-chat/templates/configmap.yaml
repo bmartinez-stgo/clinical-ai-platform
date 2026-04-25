@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "clinical-chat.fullname" . }}
+  labels:
+    {{- include "clinical-chat.labels" . | nindent 4 }}
+data:
+  APP_NAME: {{ .Values.app.name | quote }}
+  APP_NAMESPACE: {{ .Values.app.namespace | quote }}
+  APP_PORT: {{ .Values.app.port | quote }}
+  LOG_LEVEL: {{ .Values.app.logLevel | quote }}
+  SERVICE_VERSION: {{ .Values.app.serviceVersion | quote }}
+  ENVIRONMENT: {{ .Values.app.environment | quote }}
+  VLLM_REASONING_URL: {{ .Values.app.vllmReasoningUrl | quote }}
+  VLLM_REASONING_MODEL: {{ .Values.app.vllmReasoningModel | quote }}
+  VLLM_TIMEOUT_SECONDS: {{ .Values.app.vllmTimeoutSeconds | quote }}
+  MAX_TOKENS: {{ .Values.app.maxTokens | quote }}
+  TEMPERATURE: {{ .Values.app.temperature | quote }}

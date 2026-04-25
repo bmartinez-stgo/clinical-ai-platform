@@ -1,0 +1,6 @@
+apiVersion: v2
+name: clinical-chat
+description: Clinical AI Platform conversational follow-up chat service
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
