@@ -85,8 +85,36 @@ class AutoimmuneFlag(BaseModel):
     missing_workup: list[str] = Field(default_factory=list)
 
 
+class AbnormalMarker(BaseModel):
+    test_name: str
+    loinc_code: str | None = None
+    value: float | str
+    unit: str | None = None
+    ref_low: float | None = None
+    ref_high: float | None = None
+    direction: Literal["high", "low", "critical"]
+    report_date: str
+
+
+class MarkerCorrelation(BaseModel):
+    pattern: str
+    markers_involved: list[str]
+    interpretation: str
+
+
+class LabAbnormalitySummary(BaseModel):
+    abnormal_count: int
+    abnormal_markers: list[AbnormalMarker]
+    correlations: list[MarkerCorrelation]
+
+
 class DiagnosticResponse(BaseModel):
     request_id: str | None = None
+    lab_abnormalities: LabAbnormalitySummary = Field(
+        default_factory=lambda: LabAbnormalitySummary(
+            abnormal_count=0, abnormal_markers=[], correlations=[]
+        )
+    )
     autoimmune_flags: list[AutoimmuneFlag]
     differential: list[str]
     recommended_followup: list[str]

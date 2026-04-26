@@ -7,7 +7,7 @@ HTML = """<!doctype html>
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>AI Engine Portal</title>
     <style>
       :root {
@@ -108,9 +108,98 @@ HTML = """<!doctype html>
       .parse-summary tr:last-child td { border-bottom: none; }
       [hidden] { display: none !important; }
       code { font-family: "IBM Plex Mono", "SFMono-Regular", monospace; }
-      @media (max-width: 720px) {
+
+      /* ── Mobile step navigator ───────────────────────────── */
+      .mobile-step-nav {
+        display: none;
+        position: fixed;
+        bottom: 0; left: 0; right: 0;
+        background: var(--paper);
+        border-top: 1px solid var(--line);
+        padding: 8px 12px;
+        gap: 6px;
+        z-index: 100;
+        box-shadow: 0 -4px 16px rgba(24,33,31,0.10);
+      }
+      @supports (padding: env(safe-area-inset-bottom)) {
+        .mobile-step-nav { padding-bottom: calc(8px + env(safe-area-inset-bottom)); }
+      }
+      .step-nav-btn {
+        flex: 1;
+        appearance: none;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: transparent;
+        color: var(--muted);
+        font: inherit;
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 6px 2px;
+        min-height: 48px;
+        cursor: pointer;
+        line-height: 1.3;
+        text-align: center;
+        transition: background 0.15s, color 0.15s, border-color 0.15s;
+      }
+      .step-nav-btn .step-num { display: block; font-size: 1rem; }
+      .step-nav-btn.active { background: var(--brand); color: white; border-color: var(--brand); }
+      .step-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+      /* ── Responsive breakpoints ──────────────────────────── */
+
+      /* Tablet landscape: 769–1024px */
+      @media (max-width: 1024px) {
+        .shell { padding: 20px 16px 40px; }
+        .form-grid-3 { grid-template-columns: 1fr 1fr; }
+        .card { padding: 20px; }
+      }
+
+      /* Tablet portrait / large phone: ≤ 768px */
+      @media (max-width: 768px) {
+        .shell { padding: 16px 12px 76px; }
+        h1 { font-size: clamp(1.6rem, 6vw, 2.4rem); max-width: none; }
+        .hero { margin-bottom: 16px; }
+        .lead { font-size: 0.9rem; }
+        .card { padding: 16px; border-radius: 16px; }
+        .card-header { flex-wrap: wrap; gap: 8px; }
         .form-grid-2, .form-grid-3 { grid-template-columns: 1fr; }
-        .toolbar { align-items: flex-start; flex-direction: column; }
+        .toolbar { flex-direction: column; align-items: stretch; gap: 10px; }
+        .toolbar > div:first-child { flex-wrap: wrap; }
+        .toolbar-meta { justify-content: space-between; align-items: center; }
+        input[type="text"],
+        input[type="number"],
+        input[type="password"],
+        input[type="date"],
+        select { min-height: 44px; padding: 10px 12px; font-size: 0.95rem; }
+        textarea { font-size: 0.95rem; }
+        button { min-height: 44px; padding: 12px 20px; }
+        button.sm { min-height: 40px; padding: 10px 16px; }
+        .check-item { padding: 10px 14px; font-size: 0.9rem; min-height: 44px; }
+        .chat-window { max-height: 300px; }
+        .chat-input-row { flex-direction: column; }
+        .chat-input-row textarea { width: 100%; }
+        .chat-input-row button { width: 100%; min-height: 44px; border-radius: 12px; }
+        .parse-summary th:nth-child(3), .parse-summary td:nth-child(3) { display: none; }
+        .login-card { border-radius: 20px; }
+        .mobile-step-nav { display: flex; }
+        .flag-card h3 { flex-wrap: wrap; }
+      }
+
+      /* Phone: ≤ 480px */
+      @media (max-width: 480px) {
+        .shell { padding: 12px 10px 80px; }
+        h1 { font-size: 1.6rem; }
+        .card { padding: 14px; border-radius: 14px; }
+        .actions { flex-direction: column; align-items: stretch; }
+        .actions > button { width: 100%; text-align: center; }
+        .chat-window { max-height: 240px; }
+        .chat-bubble { max-width: 92%; }
+        pre { font-size: 0.73rem; padding: 12px; }
+        .reasoning-box { font-size: 0.85rem; padding: 12px; }
+        .login-shell { padding: 12px; align-items: flex-start; padding-top: 10vh; }
+        .login-card { padding: 20px; border-radius: 16px; }
+        .parse-summary th:nth-child(2), .parse-summary td:nth-child(2) { display: none; }
+        .section-title { margin: 16px 0 8px; }
       }
     </style>
   </head>
@@ -162,7 +251,7 @@ HTML = """<!doctype html>
       <section class="grid">
 
         <!-- STEP 1: PDF PARSE -->
-        <article class="card">
+        <article class="card" id="step1Card">
           <div class="card-header">
             <h2>Paso 1 — Parsear PDFs de laboratorio</h2>
           </div>
@@ -187,7 +276,7 @@ HTML = """<!doctype html>
         </article>
 
         <!-- STEP 2: CLINICAL FORM -->
-        <article class="card">
+        <article class="card" id="step2Card">
           <div class="card-header">
             <h2>Paso 2 — Datos clínicos</h2>
           </div>
@@ -316,6 +405,18 @@ HTML = """<!doctype html>
             <div id="confidencePill"></div>
           </div>
 
+          <!-- Lab abnormalities (deterministic, independent of AI inference) -->
+          <div id="labAbnormSection" hidden>
+            <div class="result-section">
+              <h3>Marcadores fuera de rango <span id="abnormCountBadge" class="timing-badge"></span></h3>
+              <div id="abnormTable"></div>
+            </div>
+            <div class="result-section" id="correlationsSection" hidden>
+              <h3>Correlaciones clínicas</h3>
+              <div id="correlationsList"></div>
+            </div>
+          </div>
+
           <div id="flagsContainer"></div>
 
           <div class="result-section">
@@ -368,6 +469,22 @@ HTML = """<!doctype html>
       </section>
     </main>
 
+    <!-- Mobile step navigator (fixed bottom bar, visible ≤ 768px) -->
+    <nav id="mobileStepNav" class="mobile-step-nav" aria-label="Navegación de pasos">
+      <button class="step-nav-btn active" id="stepNavBtn1" type="button">
+        <span class="step-num">1</span>PDF
+      </button>
+      <button class="step-nav-btn" id="stepNavBtn2" type="button">
+        <span class="step-num">2</span>Clínico
+      </button>
+      <button class="step-nav-btn" id="stepNavBtn3" type="button" disabled>
+        <span class="step-num">3</span>Resultado
+      </button>
+      <button class="step-nav-btn" id="stepNavBtn4" type="button" disabled>
+        <span class="step-num">4</span>Chat
+      </button>
+    </nav>
+
     <script>
       const tokenKey = "clinical-ai-engine-portal-token";
       const loginView = document.getElementById("loginView");
@@ -386,6 +503,28 @@ HTML = """<!doctype html>
       const diagnoseStatus = document.getElementById("diagnoseStatus");
       const diagnosticOutput = document.getElementById("diagnosticOutput");
       const resultCard = document.getElementById("resultCard");
+
+      // Mobile step navigator
+      const stepNavBtns = [1, 2, 3, 4].map(n => document.getElementById(`stepNavBtn${n}`));
+      const stepCardIds = ["step1Card", "step2Card", "resultCard", "chatCard"];
+
+      function setActiveStep(idx) {
+        stepNavBtns.forEach((btn, i) => btn && btn.classList.toggle("active", i === idx));
+      }
+
+      function scrollToCard(id) {
+        const el = document.getElementById(id);
+        if (!el || el.hidden) return;
+        const offset = 12;
+        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+        window.scrollTo({ top, behavior: "smooth" });
+        const idx = stepCardIds.indexOf(id);
+        if (idx !== -1) setActiveStep(idx);
+      }
+
+      stepNavBtns.forEach((btn, i) => {
+        if (btn) btn.addEventListener("click", () => scrollToCard(stepCardIds[i]));
+      });
 
       let parsedFiles = [];
       function getLang() { return document.getElementById("langSelect").value; }
@@ -644,6 +783,77 @@ HTML = """<!doctype html>
         };
       }
 
+      function directionPill(direction) {
+        if (direction === "critical") return `<span class="pill pill-red">Crítico !</span>`;
+        if (direction === "high")     return `<span class="pill pill-orange">Alto ↑</span>`;
+        return                               `<span class="pill pill-blue">Bajo ↓</span>`;
+      }
+
+      function renderLabAbnormalities(labAbn) {
+        const section = document.getElementById("labAbnormSection");
+        const tableEl = document.getElementById("abnormTable");
+        const corrSection = document.getElementById("correlationsSection");
+        const corrList = document.getElementById("correlationsList");
+        const countBadge = document.getElementById("abnormCountBadge");
+
+        if (!labAbn || !labAbn.abnormal_markers || labAbn.abnormal_markers.length === 0) {
+          section.hidden = true;
+          return;
+        }
+
+        countBadge.textContent = `${labAbn.abnormal_count} alterado(s)`;
+
+        // Group by report_date
+        const byDate = {};
+        for (const m of labAbn.abnormal_markers) {
+          if (!byDate[m.report_date]) byDate[m.report_date] = [];
+          byDate[m.report_date].push(m);
+        }
+
+        let html = "";
+        for (const date of Object.keys(byDate).sort()) {
+          html += `<div class="section-title" style="margin-top:12px;">${date}</div>`;
+          html += `<table class="parse-summary"><thead><tr>
+            <th>Analito</th><th>Valor</th><th>Rango referencia</th><th>Estado</th>
+          </tr></thead><tbody>`;
+          for (const m of byDate[date]) {
+            const ref = (m.ref_low !== null && m.ref_high !== null)
+              ? `${m.ref_low} – ${m.ref_high} ${m.unit || ""}`.trim()
+              : (m.ref_low !== null ? `≥ ${m.ref_low} ${m.unit || ""}`.trim()
+              : (m.ref_high !== null ? `≤ ${m.ref_high} ${m.unit || ""}`.trim() : "—"));
+            html += `<tr>
+              <td>${m.test_name}</td>
+              <td><strong>${m.value}</strong>${m.unit ? " " + m.unit : ""}</td>
+              <td style="color:var(--muted);font-size:0.82rem;">${ref}</td>
+              <td>${directionPill(m.direction)}</td>
+            </tr>`;
+          }
+          html += `</tbody></table>`;
+        }
+        tableEl.innerHTML = html;
+        section.hidden = false;
+
+        if (labAbn.correlations && labAbn.correlations.length > 0) {
+          corrList.innerHTML = labAbn.correlations.map(c => `
+            <div class="flag-card">
+              <h3 style="font-size:0.95rem;">${c.pattern}
+                <span class="pill pill-orange" style="font-size:0.75rem;">correlación</span>
+              </h3>
+              <div class="flag-section">
+                <strong>Marcadores involucrados</strong>
+                <ul>${c.markers_involved.map(m => `<li>${m}</li>`).join("")}</ul>
+              </div>
+              <div class="flag-section" style="margin-top:6px;">
+                <strong>Interpretación clínica</strong>
+                <p style="margin:4px 0 0;font-size:0.88rem;line-height:1.55;">${c.interpretation}</p>
+              </div>
+            </div>`).join("");
+          corrSection.hidden = false;
+        } else {
+          corrSection.hidden = true;
+        }
+      }
+
       function likelihoodPill(likelihood) {
         const map = { high: "pill-red", moderate: "pill-orange", low: "pill-blue" };
         const labels = { high: "Alta probabilidad", moderate: "Probabilidad moderada", low: "Baja probabilidad" };
@@ -651,6 +861,8 @@ HTML = """<!doctype html>
       }
 
       function renderDiagnosticResult(result) {
+        renderLabAbnormalities(result.lab_abnormalities);
+
         const confMap = { high: "pill-red", moderate: "pill-orange", low: "pill-blue" };
         const confLabels = { high: "Confianza alta", moderate: "Confianza moderada", low: "Confianza baja" };
         document.getElementById("confidencePill").innerHTML =
@@ -683,6 +895,12 @@ HTML = """<!doctype html>
         document.getElementById("diagnosticOutput").textContent = pretty(result);
         resultCard.hidden = false;
         resultCard.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        // Unlock step 3 in mobile nav
+        if (stepNavBtns[2]) {
+          stepNavBtns[2].disabled = false;
+          setActiveStep(2);
+        }
       }
 
       let _lastDiagnosticPayload = null;
@@ -820,6 +1038,12 @@ HTML = """<!doctype html>
         chatWindow.appendChild(chatEmpty);
         chatCard.hidden = false;
         chatCard.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        // Unlock step 4 in mobile nav
+        if (stepNavBtns[3]) {
+          stepNavBtns[3].disabled = false;
+          setActiveStep(3);
+        }
       }
 
       bootstrapSession();
