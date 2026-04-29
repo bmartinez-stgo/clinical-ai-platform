@@ -46,6 +46,9 @@ spec:
             - {{ .Values.app.port | quote }}
             - "--host"
             - "0.0.0.0"
+            {{- range .Values.app.extraArgs }}
+            - {{ . | quote }}
+            {{- end }}
           env:
             - name: HF_HOME
               value: {{ .Values.app.hfHome | quote }}
