@@ -13,7 +13,7 @@ service:
 app:
   name: vllm-server
   namespace: cap-prod-vllm-server
-  modelId: Qwen/Qwen2.5-VL-7B-Instruct
+  modelId: Qwen/Qwen3-VL-8B-Instruct
   dtype: bfloat16
   maxModelLen: "8192"
   gpuMemoryUtilization: "0.90"
