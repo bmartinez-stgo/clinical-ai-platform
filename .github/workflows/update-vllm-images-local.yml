@@ -1,0 +1,202 @@
+name: Update vLLM Images
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "charts/vllm-reasoning/values.yaml"
+      - "charts/vllm-server/values.yaml"
+      - ".github/workflows/update-vllm-images-local.yml"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "vLLM image tag (e.g. latest, v0.8.0)"
+        required: false
+        default: "latest"
+
+jobs:
+  update-vllm:
+    runs-on: clinical-ai-local
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Resolve image tags
+        id: vars
+        run: |
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            TAG_REASONING="${{ github.event.inputs.tag }}"
+            TAG_SERVER="${{ github.event.inputs.tag }}"
+          else
+            TAG_REASONING=$(grep '^  tag:' charts/vllm-reasoning/values.yaml | awk '{print $2}' | tr -d '"')
+            TAG_SERVER=$(grep '^  tag:' charts/vllm-server/values.yaml | awk '{print $2}' | tr -d '"')
+          fi
+
+          TAG_REASONING="${TAG_REASONING:-latest}"
+          TAG_SERVER="${TAG_SERVER:-latest}"
+
+          echo "tag_reasoning=${TAG_REASONING}" >> $GITHUB_OUTPUT
+          echo "tag_server=${TAG_SERVER}"       >> $GITHUB_OUTPUT
+          echo "deploy_ts=$(date -u +%Y%m%dT%H%M%SZ)" >> $GITHUB_OUTPUT
+
+          echo "vllm-reasoning → vllm/vllm-openai:${TAG_REASONING}"
+          echo "vllm-server    → vllm/vllm-openai:${TAG_SERVER}"
+
+      # Pull the image into containerd on the target node by running a
+      # throwaway Job. imagePullPolicy:Always forces re-pull even for
+      # mutable tags (e.g. "latest"). ttlSecondsAfterFinished auto-cleans.
+      - name: Pre-pull vLLM image on reasoning node (small-models)
+        run: |
+          IMAGE="vllm/vllm-openai:${{ steps.vars.outputs.tag_reasoning }}"
+          JOB=vllm-prefetch-reasoning
+
+          kubectl delete job $JOB -n default --ignore-not-found=true
+
+          kubectl apply -f - <<YAML
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: ${JOB}
+            namespace: default
+          spec:
+            ttlSecondsAfterFinished: 120
+            backoffLimit: 0
+            template:
+              spec:
+                restartPolicy: Never
+                nodeSelector:
+                  workload: small-models
+                containers:
+                - name: prefetch
+                  image: "${IMAGE}"
+                  imagePullPolicy: Always
+                  command: ["sh", "-c", "echo pulled ${IMAGE} on \$(hostname)"]
+                  resources:
+                    requests:
+                      cpu: "10m"
+                      memory: "64Mi"
+          YAML
+
+          echo "Waiting for image pull on small-models node..."
+          for i in $(seq 1 120); do
+            PHASE=$(kubectl get pods -n default -l job-name=${JOB} \
+              -o jsonpath='{.items[0].status.phase}' 2>/dev/null)
+            [[ -z "$PHASE" ]] && PHASE="Pending"
+            echo "  [${i}/120] phase=${PHASE}"
+            if [[ "$PHASE" == "Succeeded" || "$PHASE" == "Failed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+
+          if [[ "$PHASE" != "Succeeded" ]]; then
+            echo "ERROR: pull job failed or timed out (phase=${PHASE})"
+            kubectl logs -n default -l job-name=${JOB} --tail=30 || true
+            exit 1
+          fi
+          echo "Image ${IMAGE} available on small-models node."
+
+      - name: Pre-pull vLLM image on server node (large-models)
+        run: |
+          IMAGE="vllm/vllm-openai:${{ steps.vars.outputs.tag_server }}"
+          JOB=vllm-prefetch-server
+
+          kubectl delete job $JOB -n default --ignore-not-found=true
+
+          kubectl apply -f - <<YAML
+          apiVersion: batch/v1
+          kind: Job
+          metadata:
+            name: ${JOB}
+            namespace: default
+          spec:
+            ttlSecondsAfterFinished: 120
+            backoffLimit: 0
+            template:
+              spec:
+                restartPolicy: Never
+                nodeSelector:
+                  workload: large-models
+                containers:
+                - name: prefetch
+                  image: "${IMAGE}"
+                  imagePullPolicy: Always
+                  command: ["sh", "-c", "echo pulled ${IMAGE} on \$(hostname)"]
+                  resources:
+                    requests:
+                      cpu: "10m"
+                      memory: "64Mi"
+          YAML
+
+          echo "Waiting for image pull on large-models node..."
+          for i in $(seq 1 120); do
+            PHASE=$(kubectl get pods -n default -l job-name=${JOB} \
+              -o jsonpath='{.items[0].status.phase}' 2>/dev/null)
+            [[ -z "$PHASE" ]] && PHASE="Pending"
+            echo "  [${i}/120] phase=${PHASE}"
+            if [[ "$PHASE" == "Succeeded" || "$PHASE" == "Failed" ]]; then
+              break
+            fi
+            sleep 5
+          done
+
+          if [[ "$PHASE" != "Succeeded" ]]; then
+            echo "ERROR: pull job failed or timed out (phase=${PHASE})"
+            kubectl logs -n default -l job-name=${JOB} --tail=30 || true
+            exit 1
+          fi
+          echo "Image ${IMAGE} available on large-models node."
+
+      # podAnnotations.deployTime forces a pod template change so Kubernetes
+      # always does a rolling restart even when the image tag didn't change
+      # (important for mutable tags like "latest").
+      - name: Deploy vllm-reasoning
+        run: |
+          helm upgrade --install vllm-reasoning ./charts/vllm-reasoning \
+            --namespace cap-prod-vllm-reasoning \
+            --create-namespace \
+            --set image.tag=${{ steps.vars.outputs.tag_reasoning }} \
+            --set podAnnotations.deployTime=${{ steps.vars.outputs.deploy_ts }}
+
+      - name: Deploy vllm-server
+        run: |
+          helm upgrade --install vllm-server ./charts/vllm-server \
+            --namespace cap-prod-vllm-server \
+            --create-namespace \
+            --set image.tag=${{ steps.vars.outputs.tag_server }} \
+            --set podAnnotations.deployTime=${{ steps.vars.outputs.deploy_ts }}
+
+      - name: Wait for vllm-reasoning rollout
+        run: |
+          kubectl rollout status deployment/vllm-reasoning \
+            -n cap-prod-vllm-reasoning --timeout=600s
+
+      - name: Wait for vllm-server rollout
+        run: |
+          kubectl rollout status deployment/vllm-server \
+            -n cap-prod-vllm-server --timeout=600s
+
+      - name: Publish workflow summary
+        run: |
+          TAG_R="${{ steps.vars.outputs.tag_reasoning }}"
+          TAG_S="${{ steps.vars.outputs.tag_server }}"
+          TS="${{ steps.vars.outputs.deploy_ts }}"
+          {
+            echo "# vLLM image update summary"
+            echo ""
+            echo "## Images pulled and deployed"
+            echo "| Service | Image |"
+            echo "|---|---|"
+            echo "| vllm-reasoning (small-models) | \`vllm/vllm-openai:${TAG_R}\` |"
+            echo "| vllm-server (large-models)    | \`vllm/vllm-openai:${TAG_S}\` |"
+            echo ""
+            echo "## Deploy timestamp"
+            echo "\`${TS}\`"
+            echo ""
+            echo "## Manual trigger"
+            echo '```'
+            echo 'gh workflow run update-vllm-images-local.yml -f tag=latest'
+            echo '```'
+          } >> $GITHUB_STEP_SUMMARY
