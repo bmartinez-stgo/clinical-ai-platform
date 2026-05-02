@@ -15,6 +15,7 @@ class ChatRequest(BaseModel):
     diagnostic_result: dict[str, Any]
     messages: list[ChatMessage]
     language: str = "es"
+    user_id: str | None = None  # For audit logging
 
 
 class ChatResponse(BaseModel):
