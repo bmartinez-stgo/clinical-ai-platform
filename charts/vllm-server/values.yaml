@@ -15,7 +15,7 @@ app:
   namespace: cap-prod-vllm-server
   modelId: Qwen/Qwen3-VL-8B-Instruct
   dtype: bfloat16
-  maxModelLen: "8192"
+  maxModelLen: "4096"
   gpuMemoryUtilization: "0.90"
   port: 8000
   hfHome: /var/cache/huggingface
