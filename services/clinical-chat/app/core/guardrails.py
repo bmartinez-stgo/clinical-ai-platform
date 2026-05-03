@@ -53,7 +53,7 @@ def is_prompt_injection_attempt(text: str) -> bool:
     text_lower = text.lower()
     for pattern in INJECTION_PATTERNS:
         if re.search(pattern, text_lower):
-            logger.warning("potential_prompt_injection", extra={"pattern": pattern, "text": text[:100]})
+            logger.warning("potential_prompt_injection", extra={"pattern": pattern, "text_sample": text[:100]})
             return True
     return False
 
@@ -76,7 +76,7 @@ def is_medical_query(text: str, language: str = 'es') -> tuple[bool, Optional[st
         if trigger in text_lower:
             logger.warning(
                 "non_medical_query_detected",
-                extra={"trigger": trigger, "text": text[:100]}
+                extra={"trigger": trigger, "text_sample": text[:100]}
             )
             return False, f"Query appears to be about '{trigger}', not clinical matters"
 
@@ -89,7 +89,7 @@ def is_medical_query(text: str, language: str = 'es') -> tuple[bool, Optional[st
     has_medical_keyword = any(kw in text_lower for kw in all_medical_keywords)
 
     if not has_medical_keyword:
-        logger.warning("no_medical_keywords", extra={"text": text[:100]})
+        logger.warning("no_medical_keywords", extra={"text_sample": text[:100]})
         return False, "Query does not contain recognizable medical/clinical terminology"
 
     return True, None
@@ -109,7 +109,7 @@ def is_valid_response(response: str, language: str = 'es') -> tuple[bool, Option
         if trigger in response_lower:
             logger.warning(
                 "off_topic_response_detected",
-                extra={"trigger": trigger, "response": response[:100]}
+                extra={"trigger": trigger, "response_sample": response[:100]}
             )
             return False, "Model response deviates from clinical context"
 
