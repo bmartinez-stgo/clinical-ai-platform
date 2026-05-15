@@ -1,8 +1,9 @@
-from typing import Optional
+from typing import List, Optional
 
-from fastapi import APIRouter, Header, HTTPException, status
+from fastapi import APIRouter, Header, HTTPException, Request, status
 from pydantic import BaseModel
 
+from app.core.brute_force import is_locked_out, record_failure, record_success
 from app.core.config import get_settings
 from app.core.security import (
     create_access_token,
@@ -42,6 +43,7 @@ class RefreshResponse(BaseModel):
 class ValidateResponse(BaseModel):
     active: bool
     subject: str
+    roles: List[str]
     expires_at: int
     service: str
 
@@ -62,14 +64,26 @@ def extract_bearer_token(authorization: Optional[str]) -> str:
 
 
 @router.post("/login", response_model=LoginResponse)
-async def login(payload: LoginRequest):
+async def login(payload: LoginRequest, request: Request):
+    ip = request.client.host if request.client else "unknown"
+
+    locked, retry_after = is_locked_out(ip)
+    if locked:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="too many failed attempts, try again later",
+            headers={"Retry-After": str(retry_after)},
+        )
+
     user = authenticate_user(payload.username, payload.password)
     if not user:
+        record_failure(ip)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="invalid credentials",
         )
 
+    record_success(ip)
     roles = user.get("roles", [])
 
     access_token = create_access_token(
@@ -136,6 +150,7 @@ async def validate(authorization: Optional[str] = Header(default=None)):
     return ValidateResponse(
         active=True,
         subject=claims["sub"],
+        roles=claims.get("roles", []),
         expires_at=claims["exp"],
         service=settings.app_name,
     )
