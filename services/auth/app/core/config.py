@@ -32,6 +32,17 @@ class Settings:
 
     def __post_init__(self):
         self.auth_users = json.loads(self.auth_users_json)
+        _WEAK_SECRETS = {"changeme", "changeme-refresh", "", "secret", "password"}
+        if self.auth_token_secret in _WEAK_SECRETS or len(self.auth_token_secret) < 32:
+            raise RuntimeError(
+                "AUTH_TOKEN_SECRET is insecure or unset — "
+                "set a random string of at least 32 characters"
+            )
+        if self.refresh_token_secret in _WEAK_SECRETS or len(self.refresh_token_secret) < 32:
+            raise RuntimeError(
+                "REFRESH_TOKEN_SECRET is insecure or unset — "
+                "set a random string of at least 32 characters"
+            )
 
 
 @lru_cache

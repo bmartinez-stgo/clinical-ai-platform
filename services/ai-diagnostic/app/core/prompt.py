@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from app.core.guardrails import sanitize_free_text, sanitize_list, sanitize_short_text
 from app.core.schema import DiagnosticRequest
 
 
@@ -164,9 +165,9 @@ def build_user_message(payload: DiagnosticRequest, rag_context: str = "") -> str
 
     pf = payload.physical_findings
     if pf.affected_systems:
-        lines.append(f"Affected systems: {', '.join(pf.affected_systems)}")
+        lines.append(f"Affected systems: {', '.join(sanitize_list(pf.affected_systems))}")
     if pf.free_text:
-        lines.append(f"Physical findings: {pf.free_text}")
+        lines.append(f"Physical findings: {sanitize_free_text(pf.free_text)}")
 
     lines.append("")
     lines.append("LABORATORY SERIES:")
@@ -182,22 +183,22 @@ def build_user_message(payload: DiagnosticRequest, rag_context: str = "") -> str
         lines.append("")
         lines.append("IMAGING:")
         for img in payload.imaging:
-            lines.append(f"  [{img.study_date or 'n/d'}] {img.modality}: {img.findings}")
+            lines.append(f"  [{img.study_date or 'n/d'}] {img.modality}: {sanitize_free_text(img.findings)}")
 
     if payload.biopsies:
         lines.append("")
         lines.append("BIOPSIES:")
         for b in payload.biopsies:
-            lines.append(f"  [{b.date or 'n/d'}] {b.tissue}: {b.findings}")
+            lines.append(f"  [{b.date or 'n/d'}] {b.tissue}: {sanitize_free_text(b.findings)}")
 
     if rag_context:
         lines.append("")
         lines.append(rag_context)
 
     lines.append("")
-    lines.append(f"CLINICAL DIAGNOSIS: {payload.clinical_diagnosis}")
+    lines.append(f"CLINICAL DIAGNOSIS: {sanitize_short_text(payload.clinical_diagnosis)}")
     if payload.doctor_observations:
-        lines.append(f"DOCTOR OBSERVATIONS: {payload.doctor_observations}")
+        lines.append(f"DOCTOR OBSERVATIONS: {sanitize_free_text(payload.doctor_observations)}")
 
     lines.append("")
     lines.append(f"FOCUS: {', '.join(payload.focus)}")
