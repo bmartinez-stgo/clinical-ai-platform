@@ -23,6 +23,6 @@ async def status():
             "health_endpoint": True,
             "ready_endpoint": True,
             "metrics_endpoint": True,
-            "token_validation_ready": True,
+            "token_validation_ready": settings.token_validation_enabled,
         },
     }

@@ -4,6 +4,7 @@ from fastapi.responses import JSONResponse
 
 from app.config import settings
 from app.core.proxy_config import load_proxy_config, match_route, strip_prefix
+from app.middleware.auth import validate_token
 
 router = APIRouter()
 
@@ -27,6 +28,9 @@ HOP_BY_HOP_HEADERS = {
 )
 async def proxy_request(full_path: str, request: Request):
     path = f"/{full_path}"
+
+    await validate_token(request)
+
     route = match_route(path, load_proxy_config())
 
     if not route:

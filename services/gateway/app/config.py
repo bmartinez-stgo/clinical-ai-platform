@@ -10,12 +10,13 @@ class Settings(BaseSettings):
     service_version: str = "0.1.0"
 
     auth_service_url: str = "http://auth.cap-prod-auth.svc.cluster.local:8081"
-    request_timeout_seconds: int = 5
+    request_timeout_seconds: int = 300
     proxy_config_path: str = "/app/config/routes.yaml"
 
     metrics_enabled: bool = True
     metrics_path: str = "/metrics"
 
+    token_validation_enabled: bool = True
     readiness_check_auth: bool = False
 
     tracing_enabled: bool = False
