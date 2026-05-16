@@ -26,6 +26,13 @@ auth:
   jwtIssuer: clinical-ai-platform-auth
   jwtAudience: clinical-ai-platform
   usersJson: ""
+  clientTokenTtlSeconds: "3600"
+
+persistence:
+  enabled: true
+  size: 1Gi
+  storageClass: ""
+  dbPath: /data/clients.db
 
 otel:
   enabled: false

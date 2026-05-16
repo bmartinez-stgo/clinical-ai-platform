@@ -2,15 +2,19 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
+from fastapi.staticfiles import StaticFiles
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 
 from app.core.config import get_settings
+from app.core.database import init_db
 from app.core.logging import configure_logging, get_logger
 from app.observability.metrics import metrics
 from app.observability.middleware import RequestContextMiddleware
 from app.observability.tracing import setup_tracing
 from app.routes.auth import router as auth_router
+from app.routes.clients import router as clients_router
 from app.routes.health import router as health_router
+from app.routes.token import router as token_router
 
 settings = get_settings()
 configure_logging(settings)
@@ -19,6 +23,7 @@ logger = get_logger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    await init_db()
     metrics.set_service_info(
         service_name=settings.app_name,
         service_namespace=settings.app_namespace,
@@ -61,6 +66,9 @@ app.add_middleware(RequestContextMiddleware)
 
 app.include_router(health_router)
 app.include_router(auth_router)
+app.include_router(token_router)
+app.include_router(clients_router)
+app.mount("/ui", StaticFiles(directory="app/ui", html=True), name="ui")
 
 
 @app.get("/metrics", include_in_schema=False)

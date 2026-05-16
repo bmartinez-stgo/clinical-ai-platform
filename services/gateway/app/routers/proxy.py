@@ -78,6 +78,8 @@ async def proxy_request(full_path: str, request: Request):
     # 3. Pre-auth IP rate limit for auth-mutating endpoints
     if settings.rate_limit_enabled and path in ("/auth/login", "/auth/refresh"):
         check_rate_limit(ip_key(request, "auth-sensitive"), settings.rate_limit_auth_rpm)
+    if settings.rate_limit_enabled and path == "/auth/token":
+        check_rate_limit(ip_key(request, "auth-token"), settings.rate_limit_token_rpm)
 
     # 4. Token validation — cached + circuit-broken
     token_data = None

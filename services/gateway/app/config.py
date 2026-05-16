@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     rate_limit_rag_rpm: int = 30
     rate_limit_portal_rpm: int = 60
     rate_limit_default_rpm: int = 30
+    rate_limit_token_rpm: int = 10
 
     # IP blocking
     ip_block_enabled: bool = True

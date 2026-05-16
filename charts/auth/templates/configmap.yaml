@@ -18,3 +18,5 @@ data:
   OTEL_ENABLED: {{ .Values.otel.enabled | quote }}
   OTEL_SERVICE_NAME: {{ .Values.otel.serviceName | quote }}
   OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.otel.exporterOtlpEndpoint | quote }}
+  CLIENT_TOKEN_TTL_SECONDS: {{ .Values.auth.clientTokenTtlSeconds | quote }}
+  DB_PATH: {{ .Values.persistence.dbPath | quote }}
