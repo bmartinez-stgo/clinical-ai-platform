@@ -1,0 +1,475 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Clinical AI Platform — Partner API",
+    "version": "1.0.0",
+    "description": "## Integración para sistemas clínicos externos\n\n### Flujo de autenticación\n\n1. Obtén un token con tus credenciales `client_id` / `client_secret` → `POST /auth/token`\n2. Incluye el token en cada request: `Authorization: Bearer <token>`\n3. Los tokens expiran en **1 hora**. Renuévalos automáticamente antes de que expiren.\n\n### Flujo principal\n\n```\nPOST /auth/token          → access_token\nPOST /documents/labs/parse  → LabReport (PDF → observaciones estructuradas)\nPOST /diagnostics/diagnose  → DiagnosticResponse (diagnóstico diferencial LLM)\n```\n\n### SDK Python\n\nDescarga el SDK en [`/auth/ui/clinical_ai_client.py`](/auth/ui/clinical_ai_client.py). Maneja el ciclo de vida del token automáticamente.\n\n```python\nfrom clinical_ai_client import ClinicalAIClient, PatientContext\n\nclient = ClinicalAIClient(\n    base_url=\"https://nahui-ai.ddns.net\",\n    client_id=\"client-xxxxxxxx\",\n    client_secret=\"tu-secret\",\n)\n\nlabs = client.parse_lab_report(\"examen.pdf\")\nresult = client.diagnose(\n    lab_report=labs,\n    patient=PatientContext(age=35, sex=\"female\"),\n    clinical_diagnosis=\"Posible lupus eritematoso sistémico\",\n)\nprint(result.differential)\n```\n"
+  },
+  "servers": [
+    {
+      "url": "https://nahui-ai.ddns.net",
+      "description": "Production"
+    }
+  ],
+  "tags": [
+    { "name": "Authentication", "description": "Obtención y renovación de tokens de acceso" },
+    { "name": "Lab Reports",    "description": "Extracción y normalización de resultados de laboratorio desde PDF o imagen" },
+    { "name": "Diagnostics",    "description": "Diagnóstico diferencial con LLM especializado" }
+  ],
+  "paths": {
+    "/auth/token": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Obtener token de acceso",
+        "description": "OAuth 2.0 Client Credentials Grant (RFC 6749 §4.4). Renueva el token antes de que expire (`expires_in` segundos).",
+        "operationId": "getToken",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": ["grant_type", "client_id", "client_secret"],
+                "properties": {
+                  "grant_type": {
+                    "type": "string",
+                    "enum": ["client_credentials"],
+                    "example": "client_credentials"
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "example": "client-xxxxxxxx",
+                    "description": "Client ID entregado por el administrador de la plataforma"
+                  },
+                  "client_secret": {
+                    "type": "string",
+                    "format": "password",
+                    "description": "Client secret entregado al crear el cliente (solo visible una vez)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token emitido correctamente",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/TokenResponse" },
+                "example": {
+                  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+                  "token_type": "bearer",
+                  "expires_in": 3600
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "429": { "$ref": "#/components/responses/RateLimited" }
+        }
+      }
+    },
+    "/documents/labs/parse": {
+      "post": {
+        "tags": ["Lab Reports"],
+        "summary": "Parsear reporte de laboratorio",
+        "description": "Envía un PDF o imagen de resultados de laboratorio. Devuelve observaciones normalizadas con códigos LOINC, valores, unidades UCUM e interpretación clínica.\n\n**Formatos aceptados:** PDF, PNG, JPEG, WebP  \n**Tamaño máximo:** 25 MB  \n**Tiempo de procesamiento:** 10–60 segundos dependiendo del número de páginas.",
+        "operationId": "parseLabReport",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": { "type": "string", "enum": ["es", "en"], "default": "es" },
+            "description": "Idioma de los nombres canónicos de los analitos en la respuesta"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Archivo PDF o imagen del reporte de laboratorio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reporte procesado y normalizado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/LabReport" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "413": { "$ref": "#/components/responses/TooLarge" },
+          "422": { "$ref": "#/components/responses/ProcessingError" },
+          "429": { "$ref": "#/components/responses/RateLimited" }
+        }
+      }
+    },
+    "/diagnostics/diagnose": {
+      "post": {
+        "tags": ["Diagnostics"],
+        "summary": "Diagnóstico diferencial",
+        "description": "Envía el resultado de `/documents/labs/parse` junto con contexto clínico del paciente. Devuelve diagnósticos diferenciales, banderas autoinmunes y plan de seguimiento generados por LLM.\n\n**Nota:** El campo `lab_series` debe construirse desde las `observations` del reporte de laboratorio. El SDK Python lo hace automáticamente.",
+        "operationId": "diagnose",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/DiagnosticRequest" },
+              "example": {
+                "patient": { "age": 35, "sex": "female" },
+                "history": {
+                  "family_autoimmune": ["Lupus (madre)"],
+                  "comorbidities": ["Hipotiroidismo"],
+                  "current_medications": ["Levotiroxina 50mcg"]
+                },
+                "lab_series": [
+                  {
+                    "report_date": "2024-01-15",
+                    "results": [
+                      { "test_name": "ANA", "value": 1, "unit": "{titer}", "interpretation": "high" },
+                      { "test_name": "Anti-dsDNA", "loinc_code": "13473-8", "value": 42.5, "unit": "IU/mL", "ref_high": 10, "interpretation": "high" }
+                    ]
+                  }
+                ],
+                "clinical_diagnosis": "Posible lupus eritematoso sistémico",
+                "doctor_observations": "Paciente refiere fatiga crónica y artralgia bilateral de 6 meses de evolución",
+                "focus": ["autoimmune"],
+                "language": "es"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Diagnóstico diferencial generado",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DiagnosticResponse" }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "422": { "$ref": "#/components/responses/ProcessingError" },
+          "429": { "$ref": "#/components/responses/RateLimited" },
+          "502": { "$ref": "#/components/responses/UpstreamError" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Token JWT obtenido de `POST /auth/token`. Incluirlo como `Authorization: Bearer <token>`."
+      }
+    },
+    "schemas": {
+      "TokenResponse": {
+        "type": "object",
+        "required": ["access_token", "token_type", "expires_in"],
+        "properties": {
+          "access_token": { "type": "string", "description": "JWT de acceso" },
+          "token_type":   { "type": "string", "example": "bearer" },
+          "expires_in":   { "type": "integer", "example": 3600, "description": "Segundos hasta que el token expira" }
+        }
+      },
+      "LabReport": {
+        "type": "object",
+        "description": "Resultado normalizado del reporte de laboratorio",
+        "properties": {
+          "document_id":            { "type": "string", "format": "uuid" },
+          "document_type":          { "type": "string", "example": "lab_report" },
+          "source": {
+            "type": "object",
+            "properties": {
+              "filename":          { "type": "string" },
+              "content_type":      { "type": "string" },
+              "page_count":        { "type": "integer" },
+              "language":          { "type": "string", "example": "es-MX" },
+              "response_language": { "type": "string", "example": "es" }
+            }
+          },
+          "patient": {
+            "type": "object",
+            "properties": {
+              "external_id":   { "type": "string", "nullable": true },
+              "name":          { "type": "string", "nullable": true },
+              "sex":           { "type": "string", "enum": ["male", "female", null], "nullable": true },
+              "date_of_birth": { "type": "string", "nullable": true, "example": "1988-03-22" }
+            }
+          },
+          "report": {
+            "type": "object",
+            "properties": {
+              "laboratory_name":   { "type": "string", "nullable": true },
+              "report_date":       { "type": "string", "nullable": true, "example": "2024-01-15" },
+              "accession_number":  { "type": "string", "nullable": true }
+            }
+          },
+          "observation_count": { "type": "integer" },
+          "observations": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Observation" }
+          },
+          "confidence":             { "type": "number", "minimum": 0, "maximum": 1, "description": "Confianza global del proceso de extracción (0.0 – 1.0)" },
+          "requires_manual_review": { "type": "boolean", "description": "True si alguna observación requiere revisión humana" },
+          "warnings":               { "type": "array", "items": { "type": "string" } },
+          "unmapped_items":         { "type": "array", "items": { "type": "string" }, "description": "Nombres de analitos no mapeados a LOINC" },
+          "extraction_profile":     { "type": "string", "example": "digital_tabular_lab" },
+          "requires_ocr":           { "type": "boolean" }
+        }
+      },
+      "Observation": {
+        "type": "object",
+        "description": "Observación de laboratorio normalizada",
+        "properties": {
+          "observation_id":       { "type": "string", "format": "uuid" },
+          "panel_raw":            { "type": "string", "nullable": true, "description": "Panel o sección del reporte (texto original)" },
+          "test_name_raw":        { "type": "string", "description": "Nombre del analito tal como aparece en el documento" },
+          "test_name_normalized": { "type": "string", "description": "Nombre canónico normalizado" },
+          "loinc_code":           { "type": "string", "nullable": true, "example": "13473-8", "description": "Código LOINC del analito" },
+          "value": {
+            "oneOf": [{ "type": "number" }, { "type": "string" }],
+            "description": "Valor numérico o textual del resultado"
+          },
+          "value_type":           { "type": "string", "enum": ["numeric", "text"] },
+          "unit_raw":             { "type": "string", "nullable": true, "description": "Unidad tal como aparece en el documento" },
+          "unit_ucum":            { "type": "string", "nullable": true, "description": "Unidad normalizada en formato UCUM", "example": "g/dL" },
+          "reference_range_raw":  { "type": "string", "nullable": true, "example": "13.0-17.0 g/dL" },
+          "reference_range": {
+            "nullable": true,
+            "type": "object",
+            "properties": {
+              "low":       { "type": "number", "nullable": true },
+              "high":      { "type": "number", "nullable": true },
+              "unit_ucum": { "type": "string", "nullable": true }
+            }
+          },
+          "interpretation": { "type": "string", "nullable": true, "enum": ["normal", "low", "high", null] },
+          "delta_from_range": {
+            "nullable": true,
+            "type": "object",
+            "description": "Cuánto se aleja el valor del rango normal",
+            "properties": {
+              "direction":           { "type": "string", "enum": ["above", "below"] },
+              "absolute":            { "type": "number" },
+              "relative_to_upper":   { "type": "number", "nullable": true },
+              "relative_to_lower":   { "type": "number", "nullable": true },
+              "unit_ucum":           { "type": "string", "nullable": true }
+            }
+          },
+          "specimen":   { "type": "string", "nullable": true },
+          "page":       { "type": "integer", "nullable": true },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 }
+        }
+      },
+      "DiagnosticRequest": {
+        "type": "object",
+        "required": ["patient", "lab_series", "clinical_diagnosis"],
+        "description": "Solicitud de diagnóstico diferencial. El SDK Python construye este objeto automáticamente desde `LabReport`.",
+        "properties": {
+          "request_id": { "type": "string", "nullable": true, "description": "ID de correlación opcional para rastrear la solicitud" },
+          "patient": {
+            "type": "object",
+            "required": ["age", "sex"],
+            "properties": {
+              "external_id":  { "type": "string", "nullable": true },
+              "age":          { "type": "integer", "description": "Edad en años" },
+              "sex":          { "type": "string", "enum": ["male", "female", "other"] },
+              "ethnicity":    { "type": "string", "nullable": true },
+              "weight_kg":    { "type": "number", "nullable": true },
+              "height_cm":    { "type": "number", "nullable": true }
+            }
+          },
+          "history": {
+            "type": "object",
+            "description": "Historia clínica del paciente (todos los campos opcionales)",
+            "properties": {
+              "family_autoimmune":   { "type": "array", "items": { "type": "string" }, "example": ["Lupus (madre)"] },
+              "comorbidities":       { "type": "array", "items": { "type": "string" }, "example": ["Hipotiroidismo"] },
+              "current_medications": { "type": "array", "items": { "type": "string" }, "example": ["Levotiroxina 50mcg"] },
+              "allergies":           { "type": "array", "items": { "type": "string" } },
+              "pregnancies":         { "type": "integer", "nullable": true },
+              "miscarriages":        { "type": "integer", "nullable": true },
+              "symptom_onset_date":  { "type": "string", "nullable": true, "example": "2023-08-01" },
+              "symptom_duration_days": { "type": "integer", "nullable": true }
+            }
+          },
+          "vitals": {
+            "type": "object",
+            "properties": {
+              "blood_pressure_systolic":  { "type": "integer", "nullable": true },
+              "blood_pressure_diastolic": { "type": "integer", "nullable": true },
+              "temperature_celsius":      { "type": "number",  "nullable": true },
+              "heart_rate":               { "type": "integer", "nullable": true }
+            }
+          },
+          "physical_findings": {
+            "type": "object",
+            "properties": {
+              "affected_systems": { "type": "array", "items": { "type": "string" }, "example": ["articular", "cutáneo"] },
+              "free_text":        { "type": "string", "nullable": true }
+            }
+          },
+          "lab_series": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Serie temporal de resultados de laboratorio. El SDK mapea esto automáticamente desde `LabReport.observations`.",
+            "items": {
+              "type": "object",
+              "required": ["report_date", "results"],
+              "properties": {
+                "report_date": { "type": "string", "example": "2024-01-15" },
+                "results": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": ["test_name", "value"],
+                    "properties": {
+                      "loinc_code":      { "type": "string", "nullable": true },
+                      "test_name":       { "type": "string" },
+                      "value":           { "oneOf": [{ "type": "number" }, { "type": "string" }] },
+                      "unit":            { "type": "string", "nullable": true },
+                      "ref_low":         { "type": "number", "nullable": true },
+                      "ref_high":        { "type": "number", "nullable": true },
+                      "interpretation":  { "type": "string", "nullable": true, "enum": ["normal", "low", "high", "critical", null] }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "imaging":             { "type": "array", "items": { "type": "object" }, "default": [] },
+          "biopsies":            { "type": "array", "items": { "type": "object" }, "default": [] },
+          "clinical_diagnosis":  { "type": "string", "description": "Diagnóstico presuntivo del médico tratante", "example": "Posible lupus eritematoso sistémico" },
+          "doctor_observations": { "type": "string", "nullable": true, "description": "Notas clínicas libres del médico" },
+          "focus":               { "type": "array", "items": { "type": "string" }, "default": ["autoimmune"], "example": ["autoimmune"] },
+          "language":            { "type": "string", "enum": ["es", "en"], "default": "es" }
+        }
+      },
+      "DiagnosticResponse": {
+        "type": "object",
+        "description": "Resultado del diagnóstico diferencial generado por LLM",
+        "properties": {
+          "request_id": { "type": "string", "nullable": true },
+          "lab_abnormalities": {
+            "type": "object",
+            "properties": {
+              "abnormal_count": { "type": "integer" },
+              "abnormal_markers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "test_name":   { "type": "string" },
+                    "loinc_code":  { "type": "string", "nullable": true },
+                    "value":       { "oneOf": [{ "type": "number" }, { "type": "string" }] },
+                    "unit":        { "type": "string", "nullable": true },
+                    "ref_low":     { "type": "number", "nullable": true },
+                    "ref_high":    { "type": "number", "nullable": true },
+                    "direction":   { "type": "string", "enum": ["high", "low", "critical"] },
+                    "report_date": { "type": "string" }
+                  }
+                }
+              },
+              "correlations": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "pattern":           { "type": "string" },
+                    "markers_involved":  { "type": "array", "items": { "type": "string" } },
+                    "interpretation":    { "type": "string" }
+                  }
+                }
+              }
+            }
+          },
+          "autoimmune_flags": {
+            "type": "array",
+            "description": "Condiciones autoinmunes detectadas con probabilidad",
+            "items": {
+              "type": "object",
+              "properties": {
+                "condition":           { "type": "string", "example": "Lupus eritematoso sistémico" },
+                "likelihood":          { "type": "string", "enum": ["high", "moderate", "low"] },
+                "supporting_findings": { "type": "array", "items": { "type": "string" } },
+                "missing_workup":      { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          },
+          "differential": {
+            "type": "array",
+            "description": "Lista ordenada de diagnósticos diferenciales (más probable primero)",
+            "items": { "type": "string" },
+            "example": ["Lupus eritematoso sistémico (LES)", "Síndrome de Sjögren primario", "Artritis reumatoide"]
+          },
+          "recommended_followup": {
+            "type": "array",
+            "description": "Estudios y acciones clínicas recomendadas",
+            "items": { "type": "string" },
+            "example": ["Complemento sérico C3 y C4", "Anti-Sm", "Biopsia renal si hay proteinuria"]
+          },
+          "reasoning":   { "type": "string", "description": "Razonamiento clínico narrativo del LLM" },
+          "confidence":  { "type": "string", "enum": ["high", "moderate", "low"], "description": "Confianza del modelo en la respuesta" },
+          "disclaimer":  { "type": "string", "description": "Aviso legal obligatorio" }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "detail": { "type": "string" }
+        }
+      }
+    },
+    "responses": {
+      "Unauthorized": {
+        "description": "Credenciales inválidas o token expirado",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+      },
+      "BadRequest": {
+        "description": "Formato de archivo no soportado o archivo vacío",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+      },
+      "TooLarge": {
+        "description": "El archivo supera el límite de 25 MB",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+      },
+      "ProcessingError": {
+        "description": "El archivo no pudo ser procesado (PDF corrupto, imagen ilegible, etc.)",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+      },
+      "RateLimited": {
+        "description": "Límite de solicitudes excedido",
+        "headers": {
+          "Retry-After": { "schema": { "type": "integer" }, "description": "Segundos antes de reintentar" }
+        },
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+      },
+      "UpstreamError": {
+        "description": "Error en el motor de inferencia (reintenta en unos segundos)",
+        "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+      }
+    }
+  }
+}
