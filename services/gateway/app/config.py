@@ -21,7 +21,8 @@ class Settings(BaseSettings):
 
     # Rate limiting
     rate_limit_enabled: bool = True
-    rate_limit_auth_rpm: int = 5
+    rate_limit_auth_rpm: int = 30          # per-user limit for /auth/* routes
+    rate_limit_auth_sensitive_rpm: int = 5  # IP limit for /auth/login and /auth/refresh
     rate_limit_documents_rpm: int = 10
     rate_limit_diagnostics_rpm: int = 20
     rate_limit_clinical_chat_rpm: int = 10
