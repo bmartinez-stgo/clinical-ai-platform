@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Partner Access Management</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d1117;--surface:#161b22;--border:#30363d;--accent:#238636;
+  --accent-hover:#2ea043;--danger:#da3633;--danger-hover:#f85149;
+  --text:#e6edf3;--muted:#8b949e;--code:#f0f6fc;
+  --warn:#d29922;--disabled:#484f58;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5}
+
+/* Login */
+#view-login{display:flex;align-items:center;justify-content:center;min-height:100vh}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:32px;width:360px}
+.login-card h1{font-size:16px;font-weight:600;margin-bottom:24px;text-align:center;color:var(--text)}
+.login-card .subtitle{font-size:12px;color:var(--muted);text-align:center;margin-bottom:24px}
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.field label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+input[type=text],input[type=password]{background:#010409;border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:14px;padding:8px 12px;width:100%}
+input[type=text]:focus,input[type=password]:focus{outline:none;border-color:#388bfd;box-shadow:0 0 0 3px rgba(56,139,253,.1)}
+.error-msg{color:var(--danger);font-size:12px;min-height:18px;margin-top:4px}
+
+/* Buttons */
+button{cursor:pointer;border:none;border-radius:6px;font-size:14px;font-weight:500;padding:8px 16px;transition:background .15s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-primary:disabled{background:var(--disabled);cursor:not-allowed}
+.btn-secondary{background:transparent;color:var(--text);border:1px solid var(--border)}
+.btn-secondary:hover{background:var(--surface)}
+.btn-danger{background:transparent;color:var(--danger);border:1px solid var(--danger)}
+.btn-danger:hover{background:rgba(218,54,51,.1)}
+.btn-small{padding:4px 10px;font-size:12px}
+.btn-full{width:100%}
+
+/* Main layout */
+#view-main{display:flex;flex-direction:column;min-height:100vh}
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+header .title{font-size:15px;font-weight:600}
+header .title span{color:var(--muted);font-weight:400;font-size:13px;margin-left:8px}
+main{padding:32px 24px;max-width:1100px;width:100%;margin:0 auto;flex:1}
+.toolbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.toolbar h2{font-size:16px;font-weight:600}
+
+/* Table */
+.table-wrap{border:1px solid var(--border);border-radius:6px;overflow:hidden}
+table{width:100%;border-collapse:collapse}
+th{background:var(--surface);color:var(--muted);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:10px 16px;text-align:left;border-bottom:1px solid var(--border)}
+td{padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.client-name{font-weight:600}
+.client-id{font-family:'SF Mono',Consolas,monospace;font-size:12px;color:var(--muted)}
+.roles{display:flex;gap:4px;flex-wrap:wrap}
+.role-badge{background:rgba(56,139,253,.15);color:#58a6ff;border:1px solid rgba(56,139,253,.3);border-radius:20px;font-size:11px;padding:2px 8px}
+.role-badge.admin{background:rgba(210,153,34,.15);color:#e3b341;border-color:rgba(210,153,34,.3)}
+.status-badge{border-radius:20px;font-size:11px;padding:2px 10px;font-weight:600}
+.status-enabled{background:rgba(35,134,54,.15);color:#3fb950;border:1px solid rgba(35,134,54,.3)}
+.status-disabled{background:rgba(72,79,88,.2);color:var(--muted);border:1px solid var(--border)}
+.last-used{color:var(--muted);font-size:12px}
+.actions{display:flex;gap:6px}
+.empty-state{padding:48px;text-align:center;color:var(--muted)}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(1,4,9,.8);display:flex;align-items:center;justify-content:center;z-index:100;backdrop-filter:blur(2px)}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px;width:480px;max-width:calc(100vw - 32px)}
+.modal-box h2{font-size:16px;font-weight:600;margin-bottom:16px}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:20px}
+.modal-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.modal-field label{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.checkboxes{display:flex;gap:16px}
+.checkboxes label{display:flex;align-items:center;gap:6px;font-size:14px;cursor:pointer;color:var(--text);text-transform:none;letter-spacing:0;font-weight:400}
+
+/* Secret reveal */
+.warn-banner{background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.3);border-radius:6px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--warn);line-height:1.6}
+.secret-field{background:#010409;border:1px solid var(--border);border-radius:6px;padding:12px;margin-bottom:10px}
+.secret-field .sf-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.secret-field .sf-row{display:flex;align-items:center;gap:8px}
+.secret-field code{font-family:'SF Mono',Consolas,monospace;font-size:12px;color:var(--code);flex:1;word-break:break-all}
+.copy-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:4px 10px;font-size:11px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.copy-btn:hover{background:var(--border)}
+.copy-btn.copied{color:var(--accent);border-color:var(--accent)}
+
+/* Loading spinner */
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- Login -->
+<div id="view-login">
+  <div class="login-card">
+    <h1>Partner Access Management</h1>
+    <p class="subtitle">Sign in with your admin credentials</p>
+    <form id="form-login" onsubmit="handleLogin(event)">
+      <div class="field">
+        <label for="inp-user">Username</label>
+        <input id="inp-user" type="text" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="inp-pass">Password</label>
+        <input id="inp-pass" type="password" autocomplete="current-password" required>
+      </div>
+      <div class="error-msg" id="login-err"></div>
+      <button type="submit" class="btn-primary btn-full" id="btn-login-submit" style="margin-top:8px">Sign In</button>
+    </form>
+  </div>
+</div>
+
+<!-- Main -->
+<div id="view-main" hidden>
+  <header>
+    <div class="title">Partner Access Management <span>API Clients</span></div>
+    <button class="btn-secondary btn-small" onclick="logout()">Sign Out</button>
+  </header>
+  <main>
+    <div class="toolbar">
+      <h2>Registered Clients</h2>
+      <button class="btn-primary" onclick="openCreateModal()">+ New Client</button>
+    </div>
+    <div id="clients-container">
+      <div class="empty-state" id="loading-state">
+        <span class="spinner"></span> Loading...
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- Create modal -->
+<div id="modal-create" class="modal-overlay" hidden>
+  <div class="modal-box">
+    <h2>New API Client</h2>
+    <form id="form-create" onsubmit="handleCreate(event)">
+      <div class="modal-field">
+        <label for="create-name">Name</label>
+        <input id="create-name" type="text" placeholder="e.g. Wife Clinic System" required style="background:#010409;border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:14px;padding:8px 12px;width:100%">
+      </div>
+      <div class="modal-field">
+        <label for="create-desc">Description</label>
+        <input id="create-desc" type="text" placeholder="Optional description" style="background:#010409;border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:14px;padding:8px 12px;width:100%">
+      </div>
+      <div class="modal-field">
+        <label>Roles</label>
+        <div class="checkboxes">
+          <label><input type="checkbox" name="role" value="user" checked> user</label>
+          <label><input type="checkbox" name="role" value="admin"> admin</label>
+        </div>
+      </div>
+      <div class="error-msg" id="create-err"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" onclick="closeModal('modal-create')">Cancel</button>
+        <button type="submit" class="btn-primary" id="btn-create-submit">Create</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Secret reveal modal -->
+<div id="modal-secret" class="modal-overlay" hidden>
+  <div class="modal-box">
+    <h2>Save This Secret</h2>
+    <div class="warn-banner">
+      This secret will <strong>not be shown again</strong>. Copy it now and store it securely
+      in your partner system's secrets manager or vault.
+    </div>
+    <div class="secret-field">
+      <div class="sf-label">Client ID</div>
+      <div class="sf-row">
+        <code id="reveal-id"></code>
+        <button type="button" class="copy-btn" onclick="copyField('reveal-id', this)">Copy</button>
+      </div>
+    </div>
+    <div class="secret-field">
+      <div class="sf-label">Client Secret</div>
+      <div class="sf-row">
+        <code id="reveal-secret"></code>
+        <button type="button" class="copy-btn" onclick="copyField('reveal-secret', this)">Copy</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-primary" onclick="closeSecretModal()">I've Saved It</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const AUTH_BASE = '/auth';
+let _token = null;
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+
+function getToken() {
+  if (!_token) _token = sessionStorage.getItem('cap_mgmt_token');
+  return _token;
+}
+
+function setToken(t) {
+  _token = t;
+  sessionStorage.setItem('cap_mgmt_token', t);
+}
+
+function clearToken() {
+  _token = null;
+  sessionStorage.removeItem('cap_mgmt_token');
+}
+
+function logout() {
+  clearToken();
+  showView('login');
+}
+
+// ── API wrapper ───────────────────────────────────────────────────────────────
+
+async function api(method, path, body) {
+  const headers = { 'Content-Type': 'application/json' };
+  const tok = getToken();
+  if (tok) headers['Authorization'] = 'Bearer ' + tok;
+
+  const opts = { method, headers };
+  if (body !== undefined) opts.body = JSON.stringify(body);
+
+  let resp;
+  try {
+    resp = await fetch(AUTH_BASE + path, opts);
+  } catch (e) {
+    throw new Error('Network error: ' + e.message);
+  }
+
+  if (resp.status === 401) {
+    clearToken();
+    showView('login');
+    throw new Error('Session expired. Please sign in again.');
+  }
+
+  return resp;
+}
+
+// ── Views ─────────────────────────────────────────────────────────────────────
+
+function showView(name) {
+  document.getElementById('view-login').hidden = (name !== 'login');
+  document.getElementById('view-main').hidden  = (name !== 'main');
+  if (name === 'main') loadClients();
+}
+
+// ── Login ─────────────────────────────────────────────────────────────────────
+
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn-login-submit');
+  const errEl = document.getElementById('login-err');
+  errEl.textContent = '';
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Signing in…';
+
+  try {
+    const resp = await fetch(AUTH_BASE + '/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: document.getElementById('inp-user').value,
+        password: document.getElementById('inp-pass').value,
+      }),
+    });
+    if (!resp.ok) {
+      const d = await resp.json().catch(() => ({}));
+      errEl.textContent = d.detail || 'Invalid credentials';
+      return;
+    }
+    const data = await resp.json();
+    setToken(data.access_token);
+    document.getElementById('inp-pass').value = '';
+    showView('main');
+  } catch (err) {
+    errEl.textContent = err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sign In';
+  }
+}
+
+// ── Client list ───────────────────────────────────────────────────────────────
+
+async function loadClients() {
+  const container = document.getElementById('clients-container');
+  container.innerHTML = '<div class="empty-state"><span class="spinner"></span> Loading...</div>';
+
+  try {
+    const resp = await api('GET', '/admin/clients');
+    if (!resp.ok) throw new Error('Failed to load clients');
+    const clients = await resp.json();
+    renderClients(clients);
+  } catch (err) {
+    container.innerHTML = '<div class="empty-state" style="color:var(--danger)">' + esc(err.message) + '</div>';
+  }
+}
+
+function renderClients(clients) {
+  const container = document.getElementById('clients-container');
+  if (!clients.length) {
+    container.innerHTML = '<div class="empty-state">No API clients registered.<br>Click "+ New Client" to add one.</div>';
+    return;
+  }
+
+  const rows = clients.map(c => {
+    const roles = c.roles.map(r =>
+      `<span class="role-badge ${r === 'admin' ? 'admin' : ''}">${esc(r)}</span>`
+    ).join('');
+    const status = c.enabled
+      ? '<span class="status-badge status-enabled">Enabled</span>'
+      : '<span class="status-badge status-disabled">Disabled</span>';
+    const lastUsed = c.last_used_at
+      ? `<span class="last-used">${fmtDate(c.last_used_at)}</span>`
+      : '<span class="last-used">Never</span>';
+    const toggleLabel = c.enabled ? 'Disable' : 'Enable';
+    const toggleClass = c.enabled ? 'btn-secondary' : 'btn-primary';
+
+    return `<tr>
+      <td><div class="client-name">${esc(c.name)}</div>${c.description ? `<div class="client-id" style="margin-top:2px">${esc(c.description)}</div>` : ''}</td>
+      <td><span class="client-id">${esc(c.client_id)}</span></td>
+      <td><div class="roles">${roles}</div></td>
+      <td>${status}</td>
+      <td>${lastUsed}</td>
+      <td><div class="actions">
+        <button class="btn-small ${toggleClass}" onclick="toggleClient(${JSON.stringify(c.client_id)}, ${c.enabled})">${toggleLabel}</button>
+        <button class="btn-small btn-secondary" onclick="rotateSecret(${JSON.stringify(c.client_id)}, ${JSON.stringify(c.name)})">Rotate</button>
+        <button class="btn-small btn-danger" onclick="deleteClient(${JSON.stringify(c.client_id)}, ${JSON.stringify(c.name)})">Delete</button>
+      </div></td>
+    </tr>`;
+  }).join('');
+
+  container.innerHTML = `<div class="table-wrap"><table>
+    <thead><tr>
+      <th>Name</th><th>Client ID</th><th>Roles</th><th>Status</th><th>Last Used</th><th>Actions</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table></div>`;
+}
+
+// ── Create ────────────────────────────────────────────────────────────────────
+
+function openCreateModal() {
+  document.getElementById('create-name').value = '';
+  document.getElementById('create-desc').value = '';
+  document.getElementById('create-err').textContent = '';
+  document.querySelectorAll('#form-create input[name=role]').forEach(cb => { cb.checked = cb.value === 'user'; });
+  document.getElementById('btn-create-submit').disabled = false;
+  document.getElementById('btn-create-submit').textContent = 'Create';
+  document.getElementById('modal-create').hidden = false;
+}
+
+async function handleCreate(e) {
+  e.preventDefault();
+  const btn = document.getElementById('btn-create-submit');
+  const errEl = document.getElementById('create-err');
+  errEl.textContent = '';
+
+  const roles = [...document.querySelectorAll('#form-create input[name=role]:checked')].map(cb => cb.value);
+  if (!roles.length) { errEl.textContent = 'Select at least one role.'; return; }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Creating…';
+
+  try {
+    const resp = await api('POST', '/admin/clients', {
+      name: document.getElementById('create-name').value.trim(),
+      description: document.getElementById('create-desc').value.trim(),
+      roles,
+    });
+    const data = await resp.json();
+    if (!resp.ok) { errEl.textContent = data.detail || 'Failed to create client'; return; }
+    closeModal('modal-create');
+    showSecret(data.client_id, data.client_secret);
+    loadClients();
+  } catch (err) {
+    errEl.textContent = err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Create';
+  }
+}
+
+// ── Toggle enable/disable ─────────────────────────────────────────────────────
+
+async function toggleClient(clientId, currentEnabled) {
+  try {
+    const resp = await api('PATCH', '/admin/clients/' + encodeURIComponent(clientId), {
+      enabled: !currentEnabled,
+    });
+    if (!resp.ok) { const d = await resp.json(); alert(d.detail || 'Failed to update'); return; }
+    loadClients();
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+// ── Rotate ────────────────────────────────────────────────────────────────────
+
+async function rotateSecret(clientId, name) {
+  if (!confirm(`Rotate secret for "${name}"?\n\nThe current secret will stop working immediately.`)) return;
+  try {
+    const resp = await api('POST', '/admin/clients/' + encodeURIComponent(clientId) + '/rotate');
+    const data = await resp.json();
+    if (!resp.ok) { alert(data.detail || 'Failed to rotate'); return; }
+    showSecret(data.client_id, data.client_secret);
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+// ── Delete ────────────────────────────────────────────────────────────────────
+
+async function deleteClient(clientId, name) {
+  if (!confirm(`Delete client "${name}"?\n\nThis cannot be undone. Any systems using this client will lose access immediately.`)) return;
+  try {
+    const resp = await api('DELETE', '/admin/clients/' + encodeURIComponent(clientId));
+    if (!resp.ok) { const d = await resp.json(); alert(d.detail || 'Failed to delete'); return; }
+    loadClients();
+  } catch (err) {
+    alert(err.message);
+  }
+}
+
+// ── Secret modal ──────────────────────────────────────────────────────────────
+
+function showSecret(clientId, secret) {
+  document.getElementById('reveal-id').textContent     = clientId;
+  document.getElementById('reveal-secret').textContent = secret;
+  document.querySelectorAll('.copy-btn').forEach(b => { b.textContent = 'Copy'; b.classList.remove('copied'); });
+  document.getElementById('modal-secret').hidden = false;
+}
+
+function closeSecretModal() {
+  document.getElementById('reveal-secret').textContent = '••••••••••••••••••••••••••••••••••••••••••••';
+  document.getElementById('modal-secret').hidden = true;
+}
+
+function closeModal(id) {
+  document.getElementById(id).hidden = true;
+}
+
+async function copyField(elemId, btn) {
+  const text = document.getElementById(elemId).textContent;
+  try {
+    await navigator.clipboard.writeText(text);
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  } catch {
+    prompt('Copy this value:', text);
+  }
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function fmtDate(iso) {
+  try {
+    return new Date(iso).toLocaleString(undefined, { dateStyle:'medium', timeStyle:'short' });
+  } catch { return iso; }
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    ['modal-create','modal-secret'].forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.hidden) {
+        if (id === 'modal-secret') closeSecretModal();
+        else closeModal(id);
+      }
+    });
+  }
+});
+
+if (getToken()) {
+  showView('main');
+} else {
+  showView('login');
+}
+</script>
+</body>
+</html>

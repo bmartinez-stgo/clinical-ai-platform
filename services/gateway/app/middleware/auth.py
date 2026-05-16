@@ -12,7 +12,8 @@ from fastapi import HTTPException, Request
 from app.config import settings
 
 
-EXEMPT_PATHS = {"/health", "/ready", "/metrics", "/api/v1/status", "/"}
+EXEMPT_PATHS = {"/health", "/ready", "/metrics", "/api/v1/status", "/", "/auth/login", "/auth/refresh", "/auth/token"}
+EXEMPT_PREFIXES = ("/auth/ui/",)
 
 # ---------------------------------------------------------------------------
 # Token validation cache
@@ -119,7 +120,7 @@ async def validate_token(request: Request) -> Optional[dict]:
         return None
 
     path = request.url.path
-    if path in EXEMPT_PATHS:
+    if path in EXEMPT_PATHS or any(path.startswith(p) for p in EXEMPT_PREFIXES):
         return None
 
     auth_header = request.headers.get("Authorization")

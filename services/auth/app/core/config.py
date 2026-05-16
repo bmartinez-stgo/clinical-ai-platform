@@ -30,6 +30,9 @@ class Settings:
     auth_users_json: str = os.getenv("AUTH_USERS_JSON", "[]")
     auth_users: List[dict] = field(default_factory=list)
 
+    client_token_ttl_seconds: int = int(os.getenv("CLIENT_TOKEN_TTL_SECONDS", "3600"))
+    db_path: str = os.getenv("DB_PATH", "/data/clients.db")
+
     def __post_init__(self):
         self.auth_users = json.loads(self.auth_users_json)
         _WEAK_SECRETS = {"changeme", "changeme-refresh", "", "secret", "password"}
