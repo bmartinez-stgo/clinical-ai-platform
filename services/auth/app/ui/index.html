@@ -199,18 +199,18 @@ let _token = null;
 // ── Auth ──────────────────────────────────────────────────────────────────────
 
 function getToken() {
-  if (!_token) _token = sessionStorage.getItem('cap_mgmt_token');
+  if (!_token) _token = localStorage.getItem('cap_mgmt_token');
   return _token;
 }
 
 function setToken(t) {
   _token = t;
-  sessionStorage.setItem('cap_mgmt_token', t);
+  localStorage.setItem('cap_mgmt_token', t);
 }
 
 function clearToken() {
   _token = null;
-  sessionStorage.removeItem('cap_mgmt_token');
+  localStorage.removeItem('cap_mgmt_token');
 }
 
 function logout() {
