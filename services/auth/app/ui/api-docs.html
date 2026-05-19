@@ -139,7 +139,7 @@
   const TOKEN_KEY = 'cap_mgmt_token';
   const LOGIN_URL = '/auth/ui/';
 
-  function getToken() { return sessionStorage.getItem(TOKEN_KEY); }
+  function getToken() { return localStorage.getItem(TOKEN_KEY); }
 
   function parseJwtPayload(token) {
     try {
@@ -148,7 +148,7 @@
   }
 
   function logout() {
-    sessionStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(TOKEN_KEY);
     window.location.href = LOGIN_URL;
   }
 
