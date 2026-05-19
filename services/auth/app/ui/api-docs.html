@@ -3,51 +3,216 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Clinical AI Platform — API Reference</title>
+  <title>Clinical AI Platform — Partner API</title>
   <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
   <style>
-    body { margin: 0; background: #1a1a2e; }
-    #swagger-ui .topbar { display: none; }
-    #swagger-ui .info .title { color: #e0e0e0; }
-    .download-sdk {
-      background: #16213e;
-      padding: 12px 24px;
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f7f8fa;
+      color: #1a1a2e;
+    }
+
+    /* Top bar */
+    #topbar {
       display: flex;
       align-items: center;
-      gap: 16px;
-      border-bottom: 1px solid #0f3460;
+      justify-content: space-between;
+      padding: 0 28px;
+      height: 56px;
+      background: #1a1a2e;
+      border-bottom: 2px solid #0f3460;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
-    .download-sdk a {
-      color: #4fc3f7;
-      text-decoration: none;
-      font-family: sans-serif;
-      font-size: 14px;
+    #topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #topbar-left .logo {
+      width: 28px;
+      height: 28px;
+      background: #4fc3f7;
+      border-radius: 6px;
+    }
+    #topbar-left span {
+      color: #e0e0e0;
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+    }
+    #topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    #user-label {
+      color: #90a4ae;
+      font-size: 13px;
+    }
+    #btn-sdk {
       padding: 6px 14px;
-      border: 1px solid #4fc3f7;
-      border-radius: 4px;
+      border: 1.5px solid #4fc3f7;
+      border-radius: 5px;
+      background: transparent;
+      color: #4fc3f7;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
     }
-    .download-sdk a:hover { background: #4fc3f733; }
-    .download-sdk span { color: #90a4ae; font-family: sans-serif; font-size: 13px; }
+    #btn-sdk:hover { background: rgba(79,195,247,.1); }
+    #btn-logout {
+      padding: 6px 14px;
+      border: none;
+      border-radius: 5px;
+      background: #37474f;
+      color: #cfd8dc;
+      font-size: 13px;
+      cursor: pointer;
+    }
+    #btn-logout:hover { background: #455a64; }
+
+    /* Swagger container */
+    #swagger-ui {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+    }
+
+    /* Clean up Swagger UI chrome we don't need */
+    .swagger-ui .topbar { display: none !important; }
+    .swagger-ui .info { margin: 0 0 24px; }
+    .swagger-ui .info .title { color: #1a1a2e; font-size: 26px; font-weight: 700; }
+    .swagger-ui .info .description p { color: #455a64; font-size: 14px; line-height: 1.6; }
+
+    /* Better opblock (endpoint) cards */
+    .swagger-ui .opblock { border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08); margin-bottom: 10px; }
+    .swagger-ui .opblock-summary { border-radius: 8px; }
+    .swagger-ui .opblock.opblock-post { border-color: #4caf50; background: rgba(76,175,80,.04); }
+    .swagger-ui .opblock.opblock-get  { border-color: #2196f3; background: rgba(33,150,243,.04); }
+
+    /* Better response section */
+    .swagger-ui .responses-table td { font-size: 13px; }
+    .swagger-ui table.model tr.property-row td { font-size: 13px; }
+
+    /* Model/schema panel */
+    .swagger-ui section.models { border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+    .swagger-ui section.models h4 { font-size: 14px; font-weight: 600; }
+
+    /* Auth badge in the info area */
+    .swagger-ui .scheme-container {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    /* "Try it out" button */
+    .swagger-ui .btn.try-out__btn { border-color: #0f3460; color: #0f3460; }
+    .swagger-ui .btn.execute { background: #0f3460; border-color: #0f3460; }
   </style>
 </head>
 <body>
-  <div class="download-sdk">
-    <a href="clinical_ai_client.py" download>Download Python SDK</a>
-    <span>Auto-renewing client with <code style="color:#b2ebf2">ClinicalAIClient(base_url, client_id, client_secret)</code></span>
+
+<div id="topbar">
+  <div id="topbar-left">
+    <div class="logo"></div>
+    <span>Clinical AI Platform — Partner API</span>
   </div>
-  <div id="swagger-ui"></div>
-  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
-  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
-  <script>
-    SwaggerUIBundle({
-      url: "openapi.json",
-      dom_id: "#swagger-ui",
-      presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
-      layout: "StandaloneLayout",
+  <div id="topbar-right">
+    <span id="user-label"></span>
+    <a id="btn-sdk" href="#">Download SDK</a>
+    <button id="btn-logout">Sign out</button>
+  </div>
+</div>
+
+<div id="swagger-ui"></div>
+
+<script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+<script>
+  const TOKEN_KEY = 'cap_mgmt_token';
+  const LOGIN_URL = '/auth/ui/';
+
+  function getToken() { return sessionStorage.getItem(TOKEN_KEY); }
+
+  function parseJwtPayload(token) {
+    try {
+      return JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
+    } catch { return null; }
+  }
+
+  function logout() {
+    sessionStorage.removeItem(TOKEN_KEY);
+    window.location.href = LOGIN_URL;
+  }
+
+  (function init() {
+    const token = getToken();
+    if (!token) {
+      window.location.href = LOGIN_URL;
+      return;
+    }
+
+    const payload = parseJwtPayload(token);
+    if (!payload) { logout(); return; }
+
+    // Show user info
+    document.getElementById('user-label').textContent = payload.sub || '';
+
+    // Wire up SDK download (authenticated fetch → blob URL)
+    const sdkBtn = document.getElementById('btn-sdk');
+    sdkBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try {
+        const resp = await fetch('/auth/ui/clinical_ai_client.py', {
+          headers: { Authorization: 'Bearer ' + getToken() },
+        });
+        if (!resp.ok) throw new Error('download failed');
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'clinical_ai_client.py';
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch {
+        alert('Download failed. Your session may have expired — please sign in again.');
+        logout();
+      }
+    });
+
+    document.getElementById('btn-logout').addEventListener('click', logout);
+
+    // Mount Swagger UI
+    const ui = SwaggerUIBundle({
+      url: '/auth/ui/openapi.json',
+      dom_id: '#swagger-ui',
       deepLinking: true,
       displayRequestDuration: true,
       persistAuthorization: true,
+      defaultModelsExpandDepth: 1,
+      defaultModelExpandDepth: 2,
+      docExpansion: 'list',
+
+      // Add Bearer token to all requests (openapi.json fetch + Try it out)
+      requestInterceptor(req) {
+        const t = getToken();
+        if (t) req.headers['Authorization'] = 'Bearer ' + t;
+        return req;
+      },
+
+      onComplete() {
+        // Pre-authorize Swagger UI so "Try it out" works without manual input
+        ui.preauthorizeApiKey('bearerAuth', getToken());
+      },
     });
-  </script>
+  })();
+</script>
 </body>
 </html>
