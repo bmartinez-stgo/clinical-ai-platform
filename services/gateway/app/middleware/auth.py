@@ -142,8 +142,10 @@ async def validate_token(request: Request) -> Optional[dict]:
                 f"{settings.auth_service_url}/validate",
                 headers={"Authorization": f"Bearer {token}"},
             )
-        if response.status_code != 200:
+        if response.status_code >= 500:
             _cb_failure()
+            raise HTTPException(status_code=503, detail="auth service unavailable")
+        if response.status_code != 200:
             raise HTTPException(status_code=401, detail="invalid token")
 
         _cb_success()
