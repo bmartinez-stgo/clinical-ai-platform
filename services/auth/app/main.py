@@ -2,7 +2,6 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.responses import PlainTextResponse
-from fastapi.staticfiles import StaticFiles
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 
 from app.core.config import get_settings
@@ -13,6 +12,7 @@ from app.observability.middleware import RequestContextMiddleware
 from app.observability.tracing import setup_tracing
 from app.routes.auth import router as auth_router
 from app.routes.clients import router as clients_router
+from app.routes.docs import router as docs_router
 from app.routes.health import router as health_router
 from app.routes.token import router as token_router
 
@@ -68,7 +68,7 @@ app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(token_router)
 app.include_router(clients_router)
-app.mount("/ui", StaticFiles(directory="app/ui", html=True), name="ui")
+app.include_router(docs_router)
 
 
 @app.get("/metrics", include_in_schema=False)
