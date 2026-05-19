@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     # IP blocking
     ip_block_enabled: bool = True
     ip_blocklist: str = ""  # comma-separated CIDRs for static deny list
-    ip_auto_block_threshold: int = 20  # failed auth attempts before auto-block
+    ip_auto_block_threshold: int = 10  # failed auth attempts before auto-block
     ip_auto_block_window_seconds: int = 300  # sliding window for counting failures
     ip_auto_block_duration_seconds: int = 3600  # auto-block duration
 
