@@ -45,8 +45,18 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                 extra={"identifier": identifier, "count": len(self.request_history[identifier])},
             )
             return JSONResponse(
-                {"detail": "Rate limit exceeded: 10 requests per minute"},
+                {
+                    "detail": (
+                        f"Límite de consultas alcanzado. Este servicio permite un máximo de "
+                        f"{self.requests_per_minute} consultas por minuto por razones de seguridad. "
+                        f"Espera unos segundos antes de continuar. "
+                        f"— Rate limit reached: max {self.requests_per_minute} requests/min. "
+                        "Please wait before retrying."
+                    ),
+                    "retry_after_seconds": 60,
+                },
                 status_code=429,
+                headers={"Retry-After": "60"},
             )
 
         # Record this request

@@ -14,6 +14,31 @@ settings = get_settings()
 logger = logging.getLogger(__name__)
 
 
+_GUARDRAIL_MSG = {
+    "injection": {
+        "es": "Consulta no permitida. El mensaje contiene patrones no autorizados en este sistema clínico.",
+        "en": "Query not allowed. The message contains patterns that are not permitted in this clinical system.",
+    },
+    "off_topic": {
+        "es": "Consulta fuera de contexto. Este asistente está diseñado exclusivamente para seguimiento clínico del paciente. Por favor formula una pregunta relacionada con el diagnóstico, los resultados de laboratorio o el tratamiento.",
+        "en": "Off-topic query. This assistant is designed exclusively for clinical patient follow-up. Please ask a question related to the diagnosis, lab results, or treatment.",
+    },
+    "no_medical": {
+        "es": "Tu consulta no parece estar relacionada con un tema clínico o médico. Por favor formula una pregunta sobre el paciente, sus resultados o su diagnóstico.",
+        "en": "Your query does not appear to be related to a clinical or medical topic. Please ask a question about the patient, their results, or their diagnosis.",
+    },
+}
+
+
+def _guardrail_detail(reason: str | None, language: str) -> str:
+    lang = "en" if language == "en" else "es"
+    if reason and "injection" in reason.lower():
+        return _GUARDRAIL_MSG["injection"][lang]
+    if reason and ("appears to be about" in reason or "no está relacionad" in reason):
+        return _GUARDRAIL_MSG["off_topic"][lang]
+    return _GUARDRAIL_MSG["no_medical"][lang]
+
+
 async def run_chat(req: ChatRequest) -> ChatResponse:
     # Extract language from request
     language = req.language if hasattr(req, 'language') else 'es'
@@ -37,7 +62,7 @@ async def run_chat(req: ChatRequest) -> ChatResponse:
                 )
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail=f"This chat is for clinical follow-up only. {rejection_reason}",
+                    detail=_guardrail_detail(rejection_reason, language),
                 )
 
     system_prompt = build_system_prompt(
