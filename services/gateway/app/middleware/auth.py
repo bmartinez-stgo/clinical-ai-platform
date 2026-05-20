@@ -12,7 +12,7 @@ from fastapi import HTTPException, Request
 from app.config import settings
 
 
-EXEMPT_PATHS = {"/health", "/ready", "/metrics", "/api/v1/status", "/", "/auth/login", "/auth/refresh", "/auth/token"}
+EXEMPT_PATHS = {"/health", "/ready", "/metrics", "/api/v1/status", "/", "/auth/login", "/auth/refresh", "/auth/token", "/portal", "/portal/"}
 EXEMPT_PREFIXES = ("/auth/ui/",)
 
 # ---------------------------------------------------------------------------
