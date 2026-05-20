@@ -31,7 +31,7 @@ async def run_chat(req: ChatRequest) -> ChatResponse:
                     "query_rejected_guardrail",
                     extra={
                         "reason": rejection_reason,
-                        "message": latest_user_msg[:100],
+                        "query": latest_user_msg[:100],
                         "user_id": getattr(req, 'user_id', 'unknown'),
                     }
                 )
