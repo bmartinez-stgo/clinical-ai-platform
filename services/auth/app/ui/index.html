@@ -331,9 +331,9 @@ function renderClients(clients) {
       <td>${status}</td>
       <td>${lastUsed}</td>
       <td><div class="actions">
-        <button class="btn-small ${toggleClass}" onclick="toggleClient(${JSON.stringify(c.client_id)}, ${c.enabled})">${toggleLabel}</button>
-        <button class="btn-small btn-secondary" onclick="rotateSecret(${JSON.stringify(c.client_id)}, ${JSON.stringify(c.name)})">Rotate</button>
-        <button class="btn-small btn-danger" onclick="deleteClient(${JSON.stringify(c.client_id)}, ${JSON.stringify(c.name)})">Delete</button>
+        <button class="btn-small ${toggleClass}" onclick="toggleClient(${JSON.stringify(c.client_id).replace(/"/g,'&quot;')}, ${c.enabled})">${toggleLabel}</button>
+        <button class="btn-small btn-secondary" onclick="rotateSecret(${JSON.stringify(c.client_id).replace(/"/g,'&quot;')}, ${JSON.stringify(c.name).replace(/"/g,'&quot;')})">Rotate</button>
+        <button class="btn-small btn-danger" onclick="deleteClient(${JSON.stringify(c.client_id).replace(/"/g,'&quot;')}, ${JSON.stringify(c.name).replace(/"/g,'&quot;')})">Delete</button>
       </div></td>
     </tr>`;
   }).join('');
