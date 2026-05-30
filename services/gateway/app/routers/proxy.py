@@ -57,7 +57,8 @@ def _route_rpm(prefix: str) -> int:
 )
 async def proxy_request(full_path: str, request: Request):
     path = f"/{full_path}"
-    ip = request.client.host if request.client else "unknown"
+    # Prefer X-Real-IP set by Nginx ingress over the pod-network IP of the proxy
+    ip = request.headers.get("x-real-ip") or (request.client.host if request.client else "unknown")
 
     # 1. IP block — static + dynamic deny list
     check_ip_block(

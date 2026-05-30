@@ -70,7 +70,7 @@ def record_failure(ip: str, window_seconds: int, threshold: int, block_duration:
 def check_ip_block(request: Request, blocklist_csv: str, enabled: bool) -> None:
     if not enabled:
         return
-    ip = request.client.host if request.client else None
+    ip = request.headers.get("x-real-ip") or (request.client.host if request.client else None)
     if not ip:
         return
     _load_static(blocklist_csv)
