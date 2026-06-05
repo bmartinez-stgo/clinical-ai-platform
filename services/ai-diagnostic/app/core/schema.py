@@ -74,7 +74,7 @@ class DiagnosticRequest(BaseModel):
     biopsies: list[Biopsy] = Field(default_factory=list)
     clinical_diagnosis: str
     doctor_observations: str | None = None
-    focus: list[str] = Field(default_factory=lambda: ["autoimmune"])
+    focus: list[str] = Field(default_factory=list)
     language: str = "es"
 
 

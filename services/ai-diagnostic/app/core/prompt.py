@@ -118,9 +118,11 @@ _LANGUAGE_RULES = {
 
 
 def get_system_prompt(language: str = "es", focus: list[str] | None = None) -> str:
+    focus_lower = [f.lower().strip() for f in (focus or [])]
+    autoimmune_excluded = bool(focus_lower) and "autoimmune" not in focus_lower
+
     focus_blocks: list[str] = []
-    for f in (focus or []):
-        key = f.lower().strip()
+    for key in focus_lower:
         if key in _FOCUS_KNOWLEDGE:
             focus_blocks.append(_FOCUS_KNOWLEDGE[key])
 
@@ -129,6 +131,13 @@ def get_system_prompt(language: str = "es", focus: list[str] | None = None) -> s
     extra = ""
     if focus_blocks:
         extra = "\n\nACTIVE FOCUS AREAS:\n" + "\n".join(f"- {b}" for b in focus_blocks)
+
+    if autoimmune_excluded:
+        extra += (
+            "\n\nAUTOIMMUNE SCREENING DISABLED: The physician did not request autoimmune evaluation. "
+            "`autoimmune_flags` MUST be an empty array []. Do not suggest, mention, or imply any "
+            "autoimmune condition anywhere in the response, including `differential` and `reasoning`."
+        )
 
     return _SYSTEM_PROMPT_BASE.replace(
         "Rules:",
