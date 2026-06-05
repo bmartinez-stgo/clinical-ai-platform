@@ -66,6 +66,10 @@ def _validate_autoimmune_flags(
     flags: list[AutoimmuneFlag],
     payload: DiagnosticRequest,
 ) -> list[AutoimmuneFlag]:
+    focus_lower = [f.lower() for f in payload.focus]
+    if focus_lower and "autoimmune" not in focus_lower:
+        return []
+
     history = payload.history
     lab_series = payload.lab_series
 
