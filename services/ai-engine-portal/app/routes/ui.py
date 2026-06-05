@@ -717,7 +717,6 @@ HTML = """<!doctype html>
 
         const affected_systems = [...document.querySelectorAll("#systemChecks input:checked")].map(el => el.value);
         const focus = [...document.querySelectorAll("#focusChecks input:checked")].map(el => el.value);
-        if (!focus.length) throw new Error("Selecciona al menos un foco de análisis.");
 
         const imagingRaw = document.getElementById("imagingJson").value.trim();
         let imaging = [];
