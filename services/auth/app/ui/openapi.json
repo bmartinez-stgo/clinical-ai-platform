@@ -149,9 +149,9 @@
                     ]
                   }
                 ],
-                "clinical_diagnosis": "Posible lupus eritematoso sistémico",
-                "doctor_observations": "Paciente refiere fatiga crónica y artralgia bilateral de 6 meses de evolución",
-                "focus": ["autoimmune"],
+                "clinical_diagnosis": "Síndrome metabólico en estudio",
+                "doctor_observations": "Paciente refiere fatiga crónica y aumento de peso en últimos 6 meses",
+                "focus": ["metabolic", "cardiovascular"],
                 "language": "es"
               }
             }
@@ -363,7 +363,7 @@
           "biopsies":            { "type": "array", "items": { "type": "object" }, "default": [] },
           "clinical_diagnosis":  { "type": "string", "description": "Diagnóstico presuntivo del médico tratante", "example": "Posible lupus eritematoso sistémico" },
           "doctor_observations": { "type": "string", "nullable": true, "description": "Notas clínicas libres del médico" },
-          "focus":               { "type": "array", "items": { "type": "string" }, "default": ["autoimmune"], "example": ["autoimmune"] },
+          "focus":               { "type": "array", "items": { "type": "string", "enum": ["autoimmune", "metabolic", "cardiovascular", "infectious", "oncologic"] }, "default": [], "description": "Dominios de análisis. Vacío = evaluación general de todos los dominios. Incluir 'autoimmune' solo si se sospecha patología autoinmune.", "example": ["metabolic", "cardiovascular"] },
           "language":            { "type": "string", "enum": ["es", "en"], "default": "es" }
         }
       },
