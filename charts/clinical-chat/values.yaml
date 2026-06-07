@@ -18,7 +18,7 @@ app:
   serviceVersion: "0.1.0"
   environment: prod
   vllmReasoningUrl: http://vllm-reasoning.cap-prod-vllm-reasoning.svc.cluster.local:8000
-  vllmReasoningModel: hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+  vllmReasoningModel: Qwen/Qwen2.5-32B-Instruct-AWQ
   vllmTimeoutSeconds: "120"
   maxTokens: "512"
   temperature: "0.3"
