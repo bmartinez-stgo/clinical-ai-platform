@@ -13,10 +13,10 @@ service:
 app:
   name: vllm-reasoning
   namespace: cap-prod-vllm-reasoning
-  modelId: hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4
+  modelId: Qwen/Qwen2.5-32B-Instruct-AWQ
   dtype: half
-  maxModelLen: "8192"
-  gpuMemoryUtilization: "0.85"
+  maxModelLen: "16384"
+  gpuMemoryUtilization: "0.90"
   quantization: awq
   port: 8000
   hfHome: /var/cache/huggingface
@@ -27,11 +27,11 @@ gpu:
 
 resources:
   requests:
-    cpu: "2"
-    memory: 8Gi
-  limits:
     cpu: "4"
     memory: 16Gi
+  limits:
+    cpu: "8"
+    memory: 32Gi
 
 cache:
   mountPath: /var/cache/huggingface
@@ -39,13 +39,13 @@ cache:
     storageClassName: local-path
     accessModes:
       - ReadWriteOnce
-    size: 20Gi
+    size: 60Gi
 
 podLabels: {}
 podAnnotations: {}
 
 runtimeClassName: nvidia
 nodeSelector:
-  workload: small-models
+  gpu: rtx3090
 tolerations: []
 affinity: {}
