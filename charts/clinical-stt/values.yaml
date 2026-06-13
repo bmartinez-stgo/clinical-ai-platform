@@ -1,0 +1,74 @@
+replicaCount: 1
+
+image:
+  repository: registry:5000/clinical-stt
+  tag: prod-latest
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 8087
+  targetPort: 8087
+
+app:
+  name: clinical-stt
+  namespace: cap-prod-clinical-stt
+  port: 8087
+  logLevel: INFO
+  serviceVersion: "0.1.0"
+  environment: prod
+
+  whisperModel: large-v3-turbo
+  whisperDevice: cpu
+  whisperComputeType: int8
+  hfHome: /var/cache/huggingface
+
+  vllmReasoningUrl: http://vllm-reasoning.cap-prod-vllm-reasoning.svc.cluster.local:8000
+  vllmReasoningModel: Qwen/Qwen2.5-32B-Instruct-AWQ
+  vllmTimeoutSeconds: "120"
+  maxTokens: "1500"
+  temperature: "0.1"
+
+  maxAudioSizeBytes: "52428800"  # 50MB
+  jobTtlSeconds: "3600"
+
+redis:
+  image: redis:7.4-alpine
+  port: 6379
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  persistence:
+    storageClassName: local-path
+    size: 2Gi
+
+resources:
+  api:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  worker:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: 2
+      memory: 4Gi
+
+modelCache:
+  enabled: true
+  mountPath: /var/cache/huggingface
+  persistence:
+    storageClassName: local-path
+    size: 5Gi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
