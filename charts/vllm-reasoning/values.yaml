@@ -15,9 +15,9 @@ app:
   namespace: cap-prod-vllm-reasoning
   modelId: Qwen/Qwen2.5-32B-Instruct-AWQ
   dtype: half
-  maxModelLen: "16384"
-  gpuMemoryUtilization: "0.90"
-  quantization: awq
+  maxModelLen: "8192"
+  gpuMemoryUtilization: "0.92"
+  quantization: awq_marlin
   port: 8000
   hfHome: /var/cache/huggingface
 
