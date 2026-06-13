@@ -14,7 +14,8 @@
   "tags": [
     { "name": "Authentication", "description": "Obtención y renovación de tokens de acceso" },
     { "name": "Lab Reports",    "description": "Extracción y normalización de resultados de laboratorio desde PDF o imagen" },
-    { "name": "Diagnostics",    "description": "Diagnóstico diferencial con LLM especializado" }
+    { "name": "Diagnostics",    "description": "Diagnóstico diferencial con LLM especializado" },
+    { "name": "Speech to SOAP", "description": "Transcripción de consultas médicas y generación de nota SOAP con códigos ICD-10" }
   ],
   "paths": {
     "/auth/token": {
@@ -118,6 +119,111 @@
           "413": { "$ref": "#/components/responses/TooLarge" },
           "422": { "$ref": "#/components/responses/ProcessingError" },
           "429": { "$ref": "#/components/responses/RateLimited" }
+        }
+      }
+    },
+    "/stt/soap": {
+      "post": {
+        "tags": ["Speech to SOAP"],
+        "summary": "Enviar audio para transcripción y nota SOAP",
+        "description": "Recibe un archivo de audio de la consulta médico-paciente. Devuelve un `job_id` inmediatamente — la transcripción y generación de SOAP ocurren de forma asíncrona. Consulta el estado con `GET /stt/soap/{job_id}`.\n\n**Formatos aceptados:** wav, mp3, m4a, ogg, webm  \n**Tamaño máximo:** 50 MB  \n**Tiempo de procesamiento:** 30–120 segundos según duración del audio.",
+        "operationId": "enqueueSoap",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": ["file"],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Archivo de audio de la consulta"
+                  },
+                  "language": {
+                    "type": "string",
+                    "enum": ["es", "en"],
+                    "default": "es",
+                    "description": "Idioma del audio"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Job encolado correctamente",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SOAPJob" },
+                "example": { "job_id": "arq:job:abc123", "status": "queued" }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "413": { "$ref": "#/components/responses/TooLarge" },
+          "429": { "$ref": "#/components/responses/RateLimited" }
+        }
+      }
+    },
+    "/stt/soap/{job_id}": {
+      "get": {
+        "tags": ["Speech to SOAP"],
+        "summary": "Consultar estado y resultado de un job SOAP",
+        "description": "Polling endpoint. Consulta cada 3–5 segundos hasta que `status` sea `done` o `failed`.\n\n**Estados posibles:** `queued` → `processing` → `done` | `failed`",
+        "operationId": "getSoapStatus",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "job_id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "ID del job devuelto por `POST /stt/soap`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Estado del job",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/SOAPJob" },
+                "examples": {
+                  "queued":     { "value": { "job_id": "arq:job:abc123", "status": "queued", "position": 2 } },
+                  "processing": { "value": { "job_id": "arq:job:abc123", "status": "processing" } },
+                  "done": {
+                    "value": {
+                      "job_id": "arq:job:abc123",
+                      "status": "done",
+                      "result": {
+                        "subjective": "Paciente refiere cefalea intensa de 3 días, con náusea y fotofobia.",
+                        "objective": "No se mencionaron signos vitales ni exploración física.",
+                        "assessment": "Cuadro compatible con migraña sin aura. Se descarta infección activa.",
+                        "plan": "Ibuprofeno 600mg cada 8h. Reposo en cuarto oscuro. Cita de seguimiento en 1 semana.",
+                        "transcript": "Doctor: ¿Qué la trae hoy? Paciente: Llevo 3 días con un dolor de cabeza muy fuerte...",
+                        "language": "es",
+                        "duration_seconds": 142.3,
+                        "icd10_suggestions": [
+                          { "code": "G43.909", "description": "Migraña no especificada, sin estado migrañoso", "confidence": "high" },
+                          { "code": "R51.9",   "description": "Cefalea no especificada", "confidence": "low" }
+                        ]
+                      }
+                    }
+                  },
+                  "failed": { "value": { "job_id": "arq:job:abc123", "status": "failed", "error": "transcription is empty" } }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/components/responses/Unauthorized" },
+          "404": {
+            "description": "Job no encontrado o expirado (los resultados se conservan 1 hora)",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          }
         }
       }
     },
@@ -433,6 +539,43 @@
           "reasoning":   { "type": "string", "description": "Razonamiento clínico narrativo del LLM" },
           "confidence":  { "type": "string", "enum": ["high", "moderate", "low"], "description": "Confianza del modelo en la respuesta" },
           "disclaimer":  { "type": "string", "description": "Aviso legal obligatorio" }
+        }
+      },
+      "ICD10Code": {
+        "type": "object",
+        "properties": {
+          "code":        { "type": "string", "example": "G43.909", "description": "Código ICD-10-CM" },
+          "description": { "type": "string", "example": "Migraña no especificada, sin estado migrañoso" },
+          "confidence":  { "type": "string", "enum": ["high", "medium", "low"], "description": "Confianza del modelo: high = explícito en la valoración, medium = implícito, low = especulativo" }
+        }
+      },
+      "SOAPNote": {
+        "type": "object",
+        "description": "Nota SOAP estructurada generada por LLM a partir de la transcripción",
+        "properties": {
+          "subjective":        { "type": "string", "description": "S — Lo que refiere el paciente: síntomas, motivo de consulta, antecedentes mencionados" },
+          "objective":         { "type": "string", "description": "O — Datos objetivos mencionados: signos vitales, hallazgos físicos, estudios previos" },
+          "assessment":        { "type": "string", "description": "A — Impresión diagnóstica o diagnósticos diferenciales" },
+          "plan":              { "type": "string", "description": "P — Acciones acordadas: estudios, medicamentos, seguimiento, derivaciones" },
+          "transcript":        { "type": "string", "description": "Transcripción completa del audio" },
+          "language":          { "type": "string", "enum": ["es", "en"] },
+          "duration_seconds":  { "type": "number", "nullable": true, "description": "Duración del audio en segundos" },
+          "icd10_suggestions": {
+            "type": "array",
+            "description": "Códigos ICD-10-CM sugeridos a partir de la valoración. Vacío si no hay información suficiente.",
+            "items": { "$ref": "#/components/schemas/ICD10Code" }
+          }
+        }
+      },
+      "SOAPJob": {
+        "type": "object",
+        "description": "Estado de un job de transcripción y generación de SOAP",
+        "properties": {
+          "job_id":   { "type": "string", "description": "ID único del job" },
+          "status":   { "type": "string", "enum": ["queued", "processing", "done", "failed"] },
+          "position": { "type": "integer", "nullable": true, "description": "Posición en la cola (solo cuando status=queued)" },
+          "result":   { "$ref": "#/components/schemas/SOAPNote", "nullable": true },
+          "error":    { "type": "string", "nullable": true, "description": "Descripción del error (solo cuando status=failed)" }
         }
       },
       "ErrorResponse": {

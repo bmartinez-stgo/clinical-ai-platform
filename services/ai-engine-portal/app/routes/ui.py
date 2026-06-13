@@ -109,6 +109,22 @@ HTML = """<!doctype html>
       [hidden] { display: none !important; }
       code { font-family: "IBM Plex Mono", "SFMono-Regular", monospace; }
 
+      /* ── STT / SOAP ──────────────────────────────────────── */
+      .rec-btn { background: var(--danger); }
+      .rec-btn.recording { animation: pulse-rec 1.2s ease-in-out infinite; }
+      @keyframes pulse-rec { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+      .soap-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+      @media(max-width:640px){ .soap-grid { grid-template-columns: 1fr; } }
+      .soap-section { background: #f6f2e8; border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+      .soap-section h3 { margin: 0 0 8px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+      .soap-section p { margin: 0; font-size: 0.9rem; line-height: 1.6; white-space: pre-wrap; }
+      .icd-row { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid rgba(216,209,192,0.5); }
+      .icd-row:last-child { border-bottom: none; }
+      .icd-badge { font-family: "IBM Plex Mono",monospace; font-size: 0.8rem; font-weight: 700; background: rgba(13,122,95,0.10); color: var(--brand-dark); padding: 3px 8px; border-radius: 6px; min-width: 60px; text-align: center; }
+      .icd-conf-high   { background: rgba(163,61,42,0.10);  color: var(--danger); }
+      .icd-conf-medium { background: rgba(179,122,10,0.12); color: var(--warn); }
+      .icd-conf-low    { background: rgba(30,80,200,0.10);  color: #1e50c8; }
+
       /* ── Mobile step navigator ───────────────────────────── */
       .mobile-step-nav {
         display: none;
@@ -459,6 +475,44 @@ HTML = """<!doctype html>
           <div class="status" id="chatStatus"></div>
         </article>
 
+        <!-- STEP 5: STT / SOAP -->
+        <article class="card" id="sttCard">
+          <div class="card-header">
+            <h2>Paso 5 — Nota SOAP por voz</h2>
+            <span class="pill pill-green">Transcripción + ICD-10</span>
+          </div>
+          <p>Graba la conversación médico-paciente. Al detener, la IA transcribe el audio y genera la nota SOAP con códigos ICD-10 sugeridos.</p>
+          <div class="row">
+            <label style="max-width:200px;">Idioma del audio
+              <select id="sttLang">
+                <option value="es" selected>Español</option>
+                <option value="en">English</option>
+              </select>
+            </label>
+          </div>
+          <div class="actions" style="margin-top:8px;">
+            <button id="recBtn" class="rec-btn" type="button">&#9679; Iniciar grabación</button>
+            <button id="recStopBtn" class="danger" type="button" disabled>&#9632; Detener y procesar</button>
+            <span class="timing-badge" id="recTimer" hidden>00:00</span>
+          </div>
+          <div class="status" id="sttStatus">Listo para grabar.</div>
+          <div id="sttResultArea" hidden>
+            <div class="soap-grid" id="soapGrid"></div>
+            <div class="result-section" id="icdSection" hidden>
+              <h3>Códigos ICD-10 sugeridos</h3>
+              <div id="icdList"></div>
+            </div>
+            <div class="result-section">
+              <h3>Transcripción</h3>
+              <div class="reasoning-box" id="transcriptBox"></div>
+            </div>
+            <details style="margin-top:16px;">
+              <summary style="cursor:pointer;font-size:0.85rem;color:var(--muted);">Ver JSON completo</summary>
+              <pre id="sttOutput" style="margin-top:8px;">{}</pre>
+            </details>
+          </div>
+        </article>
+
         <!-- SESSION -->
         <article class="card">
           <h2>Sesión</h2>
@@ -483,6 +537,9 @@ HTML = """<!doctype html>
       <button class="step-nav-btn" id="stepNavBtn4" type="button" disabled>
         <span class="step-num">4</span>Chat
       </button>
+      <button class="step-nav-btn" id="stepNavBtn5" type="button">
+        <span class="step-num">5</span>SOAP
+      </button>
     </nav>
 
     <script>
@@ -505,8 +562,8 @@ HTML = """<!doctype html>
       const resultCard = document.getElementById("resultCard");
 
       // Mobile step navigator
-      const stepNavBtns = [1, 2, 3, 4].map(n => document.getElementById(`stepNavBtn${n}`));
-      const stepCardIds = ["step1Card", "step2Card", "resultCard", "chatCard"];
+      const stepNavBtns = [1, 2, 3, 4, 5].map(n => document.getElementById(`stepNavBtn${n}`));
+      const stepCardIds = ["step1Card", "step2Card", "resultCard", "chatCard", "sttCard"];
 
       function setActiveStep(idx) {
         stepNavBtns.forEach((btn, i) => btn && btn.classList.toggle("active", i === idx));
@@ -1044,6 +1101,153 @@ HTML = """<!doctype html>
           setActiveStep(3);
         }
       }
+
+      // ── STT / SOAP ────────────────────────────────────────────
+      (function() {
+        const recBtn     = document.getElementById("recBtn");
+        const recStopBtn = document.getElementById("recStopBtn");
+        const recTimer   = document.getElementById("recTimer");
+        const sttStatus  = document.getElementById("sttStatus");
+        const sttResultArea = document.getElementById("sttResultArea");
+        const soapGrid   = document.getElementById("soapGrid");
+        const icdSection = document.getElementById("icdSection");
+        const icdList    = document.getElementById("icdList");
+        const transcriptBox = document.getElementById("transcriptBox");
+        const sttOutput  = document.getElementById("sttOutput");
+
+        let mediaRecorder = null;
+        let chunks = [];
+        let timerInterval = null;
+        let startTime = null;
+
+        function formatTime(ms) {
+          const s = Math.floor(ms / 1000);
+          const m = Math.floor(s / 60);
+          return `${String(m).padStart(2,"0")}:${String(s % 60).padStart(2,"0")}`;
+        }
+
+        function startTimer() {
+          startTime = Date.now();
+          recTimer.hidden = false;
+          timerInterval = setInterval(() => {
+            recTimer.textContent = formatTime(Date.now() - startTime);
+          }, 500);
+        }
+
+        function stopTimer() {
+          clearInterval(timerInterval);
+          recTimer.hidden = true;
+        }
+
+        recBtn.addEventListener("click", async () => {
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            const mimeType = ["audio/webm", "audio/ogg", "audio/mp4"].find(t => MediaRecorder.isTypeSupported(t)) || "";
+            mediaRecorder = new MediaRecorder(stream, mimeType ? { mimeType } : {});
+            chunks = [];
+            mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+            mediaRecorder.start(1000);
+            recBtn.disabled = true;
+            recBtn.classList.add("recording");
+            recStopBtn.disabled = false;
+            sttResultArea.hidden = true;
+            setStatus(sttStatus, "Grabando...");
+            startTimer();
+          } catch(err) {
+            setStatus(sttStatus, "No se pudo acceder al micrófono: " + err.message, "error");
+          }
+        });
+
+        recStopBtn.addEventListener("click", async () => {
+          if (!mediaRecorder) return;
+          recStopBtn.disabled = true;
+          mediaRecorder.stop();
+          mediaRecorder.stream.getTracks().forEach(t => t.stop());
+          stopTimer();
+          recBtn.disabled = false;
+          recBtn.classList.remove("recording");
+
+          await new Promise(r => mediaRecorder.addEventListener("stop", r, { once: true }));
+
+          const ext = (mediaRecorder.mimeType || "audio/webm").split("/")[1].split(";")[0];
+          const blob = new Blob(chunks, { type: mediaRecorder.mimeType || "audio/webm" });
+          const token = readToken();
+          if (!token) { clearSession(); return; }
+
+          setStatus(sttStatus, "Enviando audio a la cola...");
+          const form = new FormData();
+          form.append("file", blob, `recording.${ext}`);
+          form.append("language", document.getElementById("sttLang").value);
+
+          let jobId;
+          try {
+            const res = await requestJson("/stt/soap", {
+              method: "POST",
+              headers: { "Authorization": `Bearer ${token}` },
+              body: form,
+            });
+            jobId = res.job_id;
+          } catch(err) {
+            setStatus(sttStatus, "Error al enviar: " + err.message, "error");
+            return;
+          }
+
+          // Poll
+          let attempts = 0;
+          const poll = setInterval(async () => {
+            attempts++;
+            try {
+              const status = await requestJson(`/stt/soap/${jobId}`, {
+                headers: { "Authorization": `Bearer ${token}` },
+              });
+
+              if (status.status === "queued") {
+                const pos = status.position ? ` (posición #${status.position})` : "";
+                setStatus(sttStatus, `En cola${pos}...`);
+              } else if (status.status === "processing") {
+                setStatus(sttStatus, "Procesando audio y generando nota SOAP...");
+              } else if (status.status === "done") {
+                clearInterval(poll);
+                renderSOAP(status.result);
+                setStatus(sttStatus, "Nota SOAP generada.", "ok");
+              } else if (status.status === "failed") {
+                clearInterval(poll);
+                setStatus(sttStatus, "Error: " + (status.error || "fallo desconocido"), "error");
+              }
+            } catch(e) {
+              if (attempts > 60) { clearInterval(poll); setStatus(sttStatus, "Timeout esperando resultado.", "error"); }
+            }
+          }, 3000);
+        });
+
+        function renderSOAP(result) {
+          const labels = { subjective: "S — Subjetivo", objective: "O — Objetivo", assessment: "A — Valoración", plan: "P — Plan" };
+          soapGrid.innerHTML = Object.entries(labels).map(([k, label]) =>
+            `<div class="soap-section"><h3>${label}</h3><p>${result[k] || "—"}</p></div>`
+          ).join("");
+
+          const codes = result.icd10_suggestions || [];
+          if (codes.length) {
+            icdList.innerHTML = codes.map(c => {
+              const confCls = c.confidence === "high" ? "icd-conf-high" : c.confidence === "medium" ? "icd-conf-medium" : "icd-conf-low";
+              const confLabel = c.confidence === "high" ? "Alta" : c.confidence === "medium" ? "Media" : "Baja";
+              return `<div class="icd-row">
+                <span class="icd-badge">${c.code}</span>
+                <span style="flex:1;font-size:0.9rem;">${c.description}</span>
+                <span class="pill ${confCls}" style="font-size:0.75rem;padding:3px 8px;">${confLabel}</span>
+              </div>`;
+            }).join("");
+            icdSection.hidden = false;
+          } else {
+            icdSection.hidden = true;
+          }
+
+          transcriptBox.textContent = result.transcript || "";
+          sttOutput.textContent = pretty(result);
+          sttResultArea.hidden = false;
+          sttResultArea.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      })();
 
       bootstrapSession();
     </script>
