@@ -90,6 +90,11 @@ tr:hover td{background:rgba(255,255,255,.02)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 [hidden]{display:none!important}
+.ip-block-table{width:100%;border-collapse:collapse;font-size:0.88rem}
+.ip-block-table th{text-align:left;color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:.04em;padding:6px 12px;border-bottom:1px solid var(--border)}
+.ip-block-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
+.ip-block-table tr:last-child td{border-bottom:none}
+.countdown{font-family:monospace;color:var(--warn)}
 </style>
 </head>
 <body>
@@ -129,6 +134,17 @@ tr:hover td{background:rgba(255,255,255,.02)}
       <div class="empty-state" id="loading-state">
         <span class="spinner"></span> Loading...
       </div>
+    </div>
+
+    <div class="toolbar" style="margin-top:32px;">
+      <h2>IP Blocks <span id="ip-block-count" style="font-size:0.85rem;font-weight:400;color:var(--muted);"></span></h2>
+      <div style="display:flex;gap:8px;">
+        <button class="btn-secondary btn-small" onclick="loadIpBlocks()">Refresh</button>
+        <button class="btn-danger btn-small" onclick="flushAllIpBlocks()">Clear All</button>
+      </div>
+    </div>
+    <div id="ip-blocks-container">
+      <div class="empty-state" style="padding:16px 0;font-size:0.9rem;color:var(--muted);">No IPs currently blocked.</div>
     </div>
   </main>
 </div>
@@ -249,7 +265,7 @@ async function api(method, path, body) {
 function showView(name) {
   document.getElementById('view-login').hidden = (name !== 'login');
   document.getElementById('view-main').hidden  = (name !== 'main');
-  if (name === 'main') loadClients();
+  if (name === 'main') { loadClients(); loadIpBlocks(); }
 }
 
 // ── Login ─────────────────────────────────────────────────────────────────────
@@ -490,6 +506,58 @@ if (getToken()) {
   showView('main');
 } else {
   showView('login');
+}
+
+// ── IP Block management ───────────────────────────────────────────────────────
+
+const GATEWAY_BASE = '';  // same origin
+
+async function loadIpBlocks() {
+  const container = document.getElementById('ip-blocks-container');
+  const countEl   = document.getElementById('ip-block-count');
+  try {
+    const resp = await api('GET', '/admin/ip-blocks');
+    const data = await resp.json();
+    const blocks = data.blocked || [];
+    countEl.textContent = blocks.length ? `(${blocks.length} active)` : '';
+    if (!blocks.length) {
+      container.innerHTML = '<div class="empty-state" style="padding:16px 0;font-size:0.9rem;color:var(--muted);">No IPs currently blocked.</div>';
+      return;
+    }
+    const rows = blocks.map(b => {
+      const mins = Math.ceil(b.seconds_remaining / 60);
+      return `<tr>
+        <td><code>${esc(b.ip)}</code></td>
+        <td class="countdown">${mins} min remaining</td>
+        <td><button class="btn-small btn-secondary" onclick="unblockIp(${JSON.stringify(b.ip).replace(/"/g,'&quot;')})">Unblock</button></td>
+      </tr>`;
+    }).join('');
+    container.innerHTML = `<table class="ip-block-table">
+      <thead><tr><th>IP Address</th><th>Expires</th><th>Action</th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  } catch (e) {
+    container.innerHTML = `<div class="empty-state" style="color:var(--danger)">Error loading IP blocks: ${esc(String(e.message || e))}</div>`;
+  }
+}
+
+async function unblockIp(ip) {
+  if (!confirm(`Unblock ${ip}?`)) return;
+  try {
+    const resp = await api('DELETE', '/admin/ip-blocks/' + encodeURIComponent(ip));
+    if (!resp.ok) { const d = await resp.json(); alert(d.detail || 'Failed'); return; }
+    loadIpBlocks();
+  } catch (e) { alert('Error: ' + e.message); }
+}
+
+async function flushAllIpBlocks() {
+  if (!confirm('Clear all IP blocks? All currently blocked IPs will regain access immediately.')) return;
+  try {
+    const resp = await api('DELETE', '/admin/ip-blocks');
+    const data = await resp.json();
+    alert(`Cleared ${data.flushed} IP block(s).`);
+    loadIpBlocks();
+  } catch (e) { alert('Error: ' + e.message); }
 }
 </script>
 </body>
