@@ -24,6 +24,27 @@ Reglas:
 - Si el idioma de la consulta es español, responde en español"""
 
 
+ICD10_SYSTEM_PROMPT = """You are a medical coding specialist with expertise in ICD-10-CM.
+Given a clinical assessment, return the most appropriate ICD-10-CM diagnosis codes.
+
+Respond ONLY with a valid JSON array, no other text:
+[
+  {"code": "E11.9", "description": "Type 2 diabetes mellitus without complications", "confidence": "high"}
+]
+
+Rules:
+- Suggest 1 to 5 codes maximum
+- Include only codes clearly supported by the assessment
+- Order by clinical relevance (primary diagnosis first)
+- Use ICD-10-CM format: letter + 2 digits + optional decimal subdivision (e.g. E11.9, J06.9)
+- confidence values: "high" = explicitly stated, "medium" = strongly implied, "low" = differential/speculative
+- If the assessment is insufficient to suggest any code, return an empty array []"""
+
+
+def build_icd10_prompt(assessment: str) -> str:
+    return f"Clinical assessment:\n\n{assessment}\n\nReturn ICD-10-CM codes as JSON array."
+
+
 def build_soap_prompt(transcript: str, language: str = "es") -> str:
     lang_label = "español" if language == "es" else "English"
     return f"""Transcripción de consulta médica (idioma: {lang_label}):
