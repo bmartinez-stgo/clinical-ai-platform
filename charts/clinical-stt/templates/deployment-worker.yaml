@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "clinical-stt.fullname" . }}-worker
+  labels:
+    {{- include "clinical-stt.labels" . | nindent 4 }}
+    app.kubernetes.io/component: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "clinical-stt.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: worker
+  template:
+    metadata:
+      labels:
+        {{- include "clinical-stt.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: worker
+    spec:
+      containers:
+        - name: worker
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["python", "-m", "arq", "worker.WorkerSettings"]
+          envFrom:
+            - configMapRef:
+                name: {{ include "clinical-stt.fullname" . }}
+          {{- if .Values.modelCache.enabled }}
+          volumeMounts:
+            - name: model-cache
+              mountPath: {{ .Values.modelCache.mountPath }}
+          {{- end }}
+          resources:
+            {{- toYaml .Values.resources.worker | nindent 12 }}
+      {{- if .Values.modelCache.enabled }}
+      volumes:
+        - name: model-cache
+          persistentVolumeClaim:
+            claimName: {{ include "clinical-stt.fullname" . }}-model-cache
+      {{- end }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
