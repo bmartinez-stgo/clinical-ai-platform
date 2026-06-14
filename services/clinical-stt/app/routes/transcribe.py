@@ -11,7 +11,7 @@ from fastapi import APIRouter, File, Form, HTTPException, Request, UploadFile, s
 from app.core.config import get_settings
 from app.core.schema import JobStatus, SOAPNote
 
-router = APIRouter(prefix="/stt")
+router = APIRouter()
 logger = logging.getLogger(__name__)
 settings = get_settings()
 
