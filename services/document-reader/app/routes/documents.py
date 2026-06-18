@@ -63,7 +63,20 @@ def _validate_upload(file: UploadFile, file_bytes: bytes) -> None:
         )
 
 
-@router.post("/parse")
+@router.post(
+    "/parse",
+    summary="Parse document (synchronous)",
+    description=(
+        "Extract raw structure from a PDF or image without AI processing. "
+        "Returns immediately. Use `/labs/parse` for full lab-report extraction with AI."
+    ),
+    responses={
+        200: {"description": "Parsed document structure"},
+        400: {"description": "Unsupported file type or empty file"},
+        413: {"description": "File exceeds maximum allowed size"},
+        422: {"description": "Document could not be parsed"},
+    },
+)
 async def parse_document(request: Request, file: UploadFile = File(...)):
     """Synchronous generic document parse (lightweight — no AI call)."""
     file_bytes = await file.read()
@@ -90,11 +103,35 @@ async def parse_document(request: Request, file: UploadFile = File(...)):
         ) from exc
 
 
-@router.post("/labs/parse", status_code=202, response_model=JobStatus)
+@router.post(
+    "/labs/parse",
+    status_code=202,
+    response_model=JobStatus,
+    summary="Submit lab report for extraction (async)",
+    description=(
+        "Enqueue a PDF or image lab report for AI-powered structured extraction. "
+        "Returns **202 Accepted** immediately with a `job_id` and queue position.\n\n"
+        "**Workflow:**\n"
+        "1. `POST /labs/parse` — upload the file, receive `job_id` and `estimated_seconds`.\n"
+        "2. `GET /labs/parse/{job_id}` — poll until `status` is `done` or `failed`.\n"
+        "3. Read `result` from the final response.\n\n"
+        "Queue position reflects how many jobs are ahead. Each job takes roughly 60 seconds. "
+        "Only one job runs at a time to avoid GPU contention."
+    ),
+    responses={
+        202: {"description": "Job accepted. Poll `GET /labs/parse/{job_id}` for progress and result."},
+        400: {"description": "Unsupported file type or empty file"},
+        413: {"description": "File exceeds maximum allowed size"},
+    },
+)
 async def enqueue_lab_parse(
     request: Request,
-    file: UploadFile = File(...),
-    language: str = Query(default="es", pattern="^(es|en)$"),
+    file: UploadFile = File(..., description="PDF or image file of the lab report."),
+    language: str = Query(
+        default="es",
+        pattern="^(es|en)$",
+        description="Report language for AI extraction: `es` (Spanish) or `en` (English).",
+    ),
 ) -> JobStatus:
     """Enqueue a lab PDF for async extraction. Poll GET /labs/parse/{job_id} for result."""
     file_bytes = await file.read()
@@ -131,7 +168,24 @@ async def enqueue_lab_parse(
     )
 
 
-@router.get("/labs/parse/{job_id}", response_model=JobStatus)
+@router.get(
+    "/labs/parse/{job_id}",
+    response_model=JobStatus,
+    summary="Get lab extraction job status",
+    description=(
+        "Poll the status of a lab extraction job submitted via `POST /labs/parse`.\n\n"
+        "**Response by status:**\n"
+        "- `queued` — job is waiting; `position` and `estimated_seconds` are set.\n"
+        "- `processing` — extraction is running; `position` and `estimated_seconds` are null.\n"
+        "- `done` — extraction complete; `result` contains the parsed lab report.\n"
+        "- `failed` — extraction failed; `error` contains a description.\n\n"
+        "Jobs expire after 1 hour. A 404 means the job ID is unknown or has expired."
+    ),
+    responses={
+        200: {"description": "Current job status"},
+        404: {"description": "Job not found or expired"},
+    },
+)
 async def get_lab_parse_status(job_id: str, request: Request) -> JobStatus:
     """Poll extraction job status. Returns result when done."""
     queue = _queue(request)
