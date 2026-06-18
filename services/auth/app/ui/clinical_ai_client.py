@@ -3,7 +3,8 @@ Clinical AI Platform — Python SDK
 ==================================
 Requires: requests (stdlib only otherwise)
 
-Usage:
+Usage (blocking — waits for extraction to finish):
+
     from clinical_ai_client import ClinicalAIClient, PatientContext
 
     client = ClinicalAIClient(
@@ -19,6 +20,21 @@ Usage:
         clinical_diagnosis="Fatigue and joint pain, rule out autoimmune",
     )
     print(result.assessment)
+
+Usage (non-blocking — submit and poll manually):
+
+    job = client.submit_lab_report("hemograma.pdf", language="es")
+    print(f"Queued at position {job.position}, ~{job.estimated_seconds}s wait")
+
+    while True:
+        status = client.get_lab_status(job.job_id)
+        if status.status == "done":
+            report = status.result
+            break
+        if status.status == "failed":
+            raise RuntimeError(status.error)
+        print(f"Status: {status.status}, position: {status.position}")
+        time.sleep(5)
 """
 
 from __future__ import annotations
@@ -120,6 +136,17 @@ class AbnormalMarker:
 
 
 @dataclass
+class LabJob:
+    """Returned by submit_lab_report(). Use job_id to poll get_lab_status()."""
+    job_id: str
+    status: str  # queued | processing | done | failed
+    position: Optional[int] = None
+    estimated_seconds: Optional[int] = None
+    result: Optional["LabReport"] = None
+    error: Optional[str] = None
+
+
+@dataclass
 class DiagnosisResult:
     assessment: str = ""
     differential: list[str] = field(default_factory=list)
@@ -213,16 +240,55 @@ class ClinicalAIClient:
         self,
         pdf: "str | Path | bytes",
         language: str = "es",
+        poll_interval: int = 5,
+        timeout: int = 600,
     ) -> LabReport:
         """
-        Upload a PDF lab report for structured extraction.
+        Upload a PDF lab report and wait for structured extraction to complete.
+
+        Submits the file to the async queue, then polls until the job is done.
+        Raises ClinicalAIError if the job fails or the timeout is exceeded.
+
+        Args:
+            pdf: File path (str or Path) or raw PDF bytes.
+            language: "es" (default) or "en".
+            poll_interval: Seconds between status checks (default 5).
+            timeout: Maximum seconds to wait for extraction (default 600).
+
+        Returns:
+            LabReport dataclass with patient info, observations, and warnings.
+        """
+        job = self.submit_lab_report(pdf, language=language)
+        deadline = time.monotonic() + timeout
+        while True:
+            status = self.get_lab_status(job.job_id)
+            if status.status == "done":
+                return status.result  # type: ignore[return-value]
+            if status.status == "failed":
+                raise ClinicalAIError(f"Lab extraction failed: {status.error}")
+            if time.monotonic() > deadline:
+                raise ClinicalAIError(
+                    f"Lab extraction timed out after {timeout}s (job_id={job.job_id})"
+                )
+            time.sleep(poll_interval)
+
+    def submit_lab_report(
+        self,
+        pdf: "str | Path | bytes",
+        language: str = "es",
+    ) -> LabJob:
+        """
+        Submit a PDF lab report to the extraction queue without waiting.
+
+        Returns immediately with a LabJob containing the job_id, queue position,
+        and estimated wait time. Call get_lab_status(job.job_id) to poll.
 
         Args:
             pdf: File path (str or Path) or raw PDF bytes.
             language: "es" (default) or "en".
 
         Returns:
-            LabReport dataclass with patient info, observations, and warnings.
+            LabJob with job_id, position, and estimated_seconds.
         """
         if isinstance(pdf, (str, Path)):
             pdf_bytes = Path(pdf).read_bytes()
@@ -236,7 +302,39 @@ class ClinicalAIClient:
             f"/documents/labs/parse?language={language}",
             files={"file": (filename, pdf_bytes, "application/pdf")},
         )
-        return self._parse_lab_report(resp.json())
+        data = resp.json()
+        return LabJob(
+            job_id=data["job_id"],
+            status=data["status"],
+            position=data.get("position"),
+            estimated_seconds=data.get("estimated_seconds"),
+        )
+
+    def get_lab_status(self, job_id: str) -> LabJob:
+        """
+        Poll the status of a lab extraction job.
+
+        Args:
+            job_id: The job_id returned by submit_lab_report().
+
+        Returns:
+            LabJob with updated status. When status is "done", result is a LabReport.
+            When status is "failed", error contains the reason.
+
+        Raises:
+            APIError with status_code=404 if the job has expired or is unknown.
+        """
+        resp = self._request("GET", f"/documents/labs/parse/{job_id}")
+        data = resp.json()
+        result = self._parse_lab_report(data["result"]) if data.get("result") else None
+        return LabJob(
+            job_id=data["job_id"],
+            status=data["status"],
+            position=data.get("position"),
+            estimated_seconds=data.get("estimated_seconds"),
+            result=result,
+            error=data.get("error"),
+        )
 
     def diagnose(
         self,
@@ -301,14 +399,14 @@ class ClinicalAIClient:
 
         observations = [
             Observation(
-                test_name=o.get("test_name", ""),
+                test_name=o.get("test_name_raw", ""),
                 test_name_normalized=o.get("test_name_normalized", ""),
                 loinc_code=o.get("loinc_code", ""),
                 value=o.get("value"),
-                unit=o.get("unit", ""),
+                unit=o.get("unit_raw", ""),
                 unit_ucum=o.get("unit_ucum", ""),
                 interpretation=o.get("interpretation", ""),
-                reference_range=o.get("reference_range", ""),
+                reference_range=o.get("reference_range_raw", ""),
                 delta_from_range=o.get("delta_from_range"),
             )
             for o in obs_raw
@@ -317,15 +415,15 @@ class ClinicalAIClient:
         return LabReport(
             patient=Patient(
                 name=p.get("name", ""),
-                dob=p.get("dob", ""),
+                dob=p.get("date_of_birth", ""),
                 sex=p.get("sex", ""),
-                id=p.get("id", ""),
+                id=p.get("external_id", ""),
             ),
             report=ReportMeta(
-                lab_name=r.get("lab_name", ""),
+                lab_name=r.get("laboratory_name", ""),
                 report_date=r.get("report_date", ""),
                 ordering_physician=r.get("ordering_physician", ""),
-                report_id=r.get("report_id", ""),
+                report_id=r.get("accession_number", ""),
             ),
             observations=observations,
             warnings=data.get("warnings") or [],
