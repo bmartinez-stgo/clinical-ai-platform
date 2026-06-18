@@ -26,18 +26,41 @@ app:
   ocrBackend: ai-engine
   ocrEngineUrl: http://ocr-engine.cap-prod-ocr-engine.svc.cluster.local:8091/extract/lab-report
   ocrEngineTimeoutSeconds: "120"
+  jobTtlSeconds: "3600"
 
 gpu:
   enabled: false
   count: 1
 
+redis:
+  image: redis:7.4-alpine
+  port: 6379
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 200m
+      memory: 128Mi
+  persistence:
+    storageClassName: local-path
+    size: 2Gi
+
 resources:
-  requests:
-    cpu: 250m
-    memory: 512Mi
-  limits:
-    cpu: "1"
-    memory: 1Gi
+  api:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
+  worker:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 1Gi
 
 podLabels: {}
 podAnnotations: {}

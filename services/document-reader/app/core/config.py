@@ -26,6 +26,8 @@ class Settings:
         "http://ocr-engine.cap-prod-ocr-engine.svc.cluster.local:8091/extract/lab-report",
     )
     ocr_engine_timeout_seconds: int = int(os.getenv("OCR_ENGINE_TIMEOUT_SECONDS", "120"))
+    redis_url: str = os.getenv("REDIS_URL", "redis://localhost:6379")
+    job_ttl_seconds: int = int(os.getenv("JOB_TTL_SECONDS", "3600"))
 
 
 @lru_cache

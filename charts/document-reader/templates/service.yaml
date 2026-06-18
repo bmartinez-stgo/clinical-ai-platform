@@ -8,8 +8,27 @@ spec:
   type: {{ .Values.service.type }}
   selector:
     {{- include "document-reader.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: api
   ports:
     - name: http
       port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "document-reader.fullname" . }}-redis
+  labels:
+    {{- include "document-reader.labels" . | nindent 4 }}
+    app.kubernetes.io/component: redis
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "document-reader.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: redis
+  ports:
+    - name: redis
+      port: {{ .Values.redis.port }}
+      targetPort: {{ .Values.redis.port }}
       protocol: TCP
