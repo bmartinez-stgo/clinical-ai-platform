@@ -9,10 +9,12 @@ spec:
   selector:
     matchLabels:
       {{- include "document-reader.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: api
   template:
     metadata:
       labels:
         {{- include "document-reader.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: api
         {{- with .Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
@@ -46,12 +48,12 @@ spec:
             periodSeconds: 15
           resources:
             limits:
-              {{- toYaml .Values.resources.limits | nindent 14 }}
+              {{- toYaml .Values.resources.api.limits | nindent 14 }}
               {{- if .Values.gpu.enabled }}
               nvidia.com/gpu: {{ .Values.gpu.count }}
               {{- end }}
             requests:
-              {{- toYaml .Values.resources.requests | nindent 14 }}
+              {{- toYaml .Values.resources.api.requests | nindent 14 }}
       nodeSelector:
         {{- toYaml .Values.nodeSelector | nindent 8 }}
       tolerations:

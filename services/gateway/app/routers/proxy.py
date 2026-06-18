@@ -1,8 +1,12 @@
 from __future__ import annotations
 
+import logging
+
 import httpx
 from fastapi import APIRouter, HTTPException, Request, Response
 from fastapi.responses import JSONResponse, RedirectResponse
+
+logger = logging.getLogger(__name__)
 
 from app.config import settings
 from app.core.proxy_config import load_proxy_config, match_route, strip_prefix
@@ -102,10 +106,8 @@ async def proxy_request(full_path: str, request: Request):
     if not route:
         if path in ("/", ""):
             return RedirectResponse(url="/webui", status_code=302)
-        return JSONResponse(
-            status_code=404,
-            content={"detail": "route not found in gateway proxy config", "path": path},
-        )
+        logger.warning("no route matched", extra={"path": path})
+        return JSONResponse(status_code=404, content={"detail": "not found", "path": path})
 
     # 6. Per-user rate limit (post-auth, keyed by subject + prefix)
     if settings.rate_limit_enabled and token_data:
@@ -144,9 +146,14 @@ async def proxy_request(full_path: str, request: Request):
                 headers=headers,
             )
     except httpx.RequestError as exc:
+        logger.error(
+            "upstream unreachable",
+            extra={"upstream": route.upstream, "error": str(exc)},
+        )
+        service = route.prefix.lstrip("/")
         return JSONResponse(
-            status_code=502,
-            content={"detail": "upstream request failed", "upstream": route.upstream, "error": str(exc)},
+            status_code=503,
+            content={"detail": "service temporarily unavailable", "service": service},
         )
 
     response_headers = {
