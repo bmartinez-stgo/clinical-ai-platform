@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 from app.config import settings
 from app.core.proxy_config import load_proxy_config, match_route, strip_prefix
 from app.middleware.auth import check_rbac, validate_token
-from app.middleware.ip_block import check_ip_block, record_failure
+from app.middleware.ip_block import check_ip_block
 from app.middleware.rate_limit import check_rate_limit, ip_key, user_key
 
 router = APIRouter()
@@ -91,14 +91,7 @@ async def proxy_request(full_path: str, request: Request):
     if path not in ("/", ""):
         try:
             token_data = await validate_token(request)
-        except HTTPException as exc:
-            if exc.status_code == 401 and settings.ip_block_enabled:
-                record_failure(
-                    ip,
-                    window_seconds=settings.ip_auto_block_window_seconds,
-                    threshold=settings.ip_auto_block_threshold,
-                    block_duration=settings.ip_auto_block_duration_seconds,
-                )
+        except HTTPException:
             raise
 
     # 5. Route matching
