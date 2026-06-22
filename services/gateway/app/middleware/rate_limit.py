@@ -30,8 +30,9 @@ def check_rate_limit(key: str, limit: int, window_seconds: int = 60) -> None:
         history.append(now)
 
 
-def ip_key(request: Request, prefix: str) -> str:
-    ip = request.client.host if request.client else "unknown"
+def ip_key(request: Request, prefix: str, trusted_proxies: int = 1) -> str:
+    from app.middleware.ip_block import get_client_ip
+    ip = get_client_ip(request, trusted_proxies)
     return f"ip:{ip}:{prefix}"
 
 

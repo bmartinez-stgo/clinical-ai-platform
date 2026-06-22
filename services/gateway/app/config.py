@@ -34,9 +34,14 @@ class Settings(BaseSettings):
     # IP blocking
     ip_block_enabled: bool = True
     ip_blocklist: str = ""  # comma-separated CIDRs for static deny list
-    ip_auto_block_threshold: int = 10  # failed auth attempts before auto-block
-    ip_auto_block_window_seconds: int = 300  # sliding window for counting failures
-    ip_auto_block_duration_seconds: int = 3600  # auto-block duration
+    ip_trusted_proxies: int = 1  # number of trusted reverse proxies in front of gateway
+
+    # Anomaly scoring — block when score reaches threshold within window
+    ip_score_threshold: int = 20   # total points to trigger a block
+    ip_score_window_seconds: int = 300  # sliding window (seconds)
+    ip_score_404: int = 1   # unknown route probe
+    ip_score_400: int = 1   # malformed request / fuzzing
+    ip_score_403: int = 2   # authenticated user probing unauthorized routes
 
     tracing_enabled: bool = False
     otel_service_name: str = "gateway"
