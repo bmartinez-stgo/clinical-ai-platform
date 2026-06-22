@@ -1,15 +1,12 @@
 from __future__ import annotations
 
-import time
-
 import httpx
 from fastapi import APIRouter, Header, HTTPException, status
-from fastapi.responses import JSONResponse
 
 from app.config import settings
-from app.middleware.ip_block import _dynamic_blocked, _dynamic_lock, _failure_lock, _failure_windows
+from app.middleware.ip_block import list_blocks, unblock, unblock_all
 
-router = APIRouter(prefix="/admin")
+router = APIRouter(prefix="/gw/admin")
 
 
 async def _require_admin(authorization: str | None = Header(default=None)) -> dict:
@@ -35,38 +32,20 @@ async def _require_admin(authorization: str | None = Header(default=None)) -> di
 @router.get("/ip-blocks")
 async def list_ip_blocks(authorization: str | None = Header(default=None)):
     await _require_admin(authorization)
-    now = time.time()
-    with _dynamic_lock:
-        blocks = [
-            {
-                "ip": ip,
-                "unblocks_at": int(unblock_at),
-                "seconds_remaining": max(0, int(unblock_at - now)),
-            }
-            for ip, unblock_at in _dynamic_blocked.items()
-            if unblock_at > now
-        ]
+    blocks = list_blocks()
     return {"blocked": blocks, "count": len(blocks)}
 
 
 @router.delete("/ip-blocks", status_code=200)
 async def flush_all_ip_blocks(authorization: str | None = Header(default=None)):
     await _require_admin(authorization)
-    with _dynamic_lock:
-        count = len(_dynamic_blocked)
-        _dynamic_blocked.clear()
-    with _failure_lock:
-        _failure_windows.clear()
+    count = unblock_all()
     return {"flushed": count}
 
 
 @router.delete("/ip-blocks/{ip}", status_code=200)
 async def unblock_ip(ip: str, authorization: str | None = Header(default=None)):
     await _require_admin(authorization)
-    with _dynamic_lock:
-        if ip not in _dynamic_blocked:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{ip} is not currently blocked")
-        del _dynamic_blocked[ip]
-    with _failure_lock:
-        _failure_windows.pop(ip, None)
+    if not unblock(ip):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"{ip} is not currently blocked")
     return {"unblocked": ip}

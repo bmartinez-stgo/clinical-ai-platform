@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 from app.config import settings
 from app.core.proxy_config import load_proxy_config, match_route, strip_prefix
 from app.middleware.auth import check_rbac, validate_token
-from app.middleware.ip_block import check_ip_block
+from app.middleware.ip_block import check_ip_block, get_client_ip, record_score
 from app.middleware.rate_limit import check_rate_limit, ip_key, user_key
 
 router = APIRouter()
@@ -61,15 +61,10 @@ def _route_rpm(prefix: str) -> int:
 )
 async def proxy_request(full_path: str, request: Request):
     path = f"/{full_path}"
-    # Prefer X-Real-IP set by Nginx ingress over the pod-network IP of the proxy
-    ip = request.headers.get("x-real-ip") or (request.client.host if request.client else "unknown")
+    ip = get_client_ip(request, settings.ip_trusted_proxies)
 
     # 1. IP block — static + dynamic deny list
-    check_ip_block(
-        request,
-        blocklist_csv=settings.ip_blocklist,
-        enabled=settings.ip_block_enabled,
-    )
+    check_ip_block(ip, blocklist_csv=settings.ip_blocklist, enabled=settings.ip_block_enabled)
 
     # 2. Content-Length pre-check (fast reject before reading body into memory)
     cl_header = request.headers.get("content-length")
@@ -100,6 +95,8 @@ async def proxy_request(full_path: str, request: Request):
         if path in ("/", ""):
             return RedirectResponse(url="/webui", status_code=302)
         logger.warning("no route matched", extra={"path": path})
+        if settings.ip_block_enabled:
+            record_score(ip, settings.ip_score_404, settings.ip_score_window_seconds, settings.ip_score_threshold)
         return JSONResponse(status_code=404, content={"detail": "not found", "path": path})
 
     # 6. Per-user rate limit (post-auth, keyed by subject + prefix)
@@ -111,7 +108,12 @@ async def proxy_request(full_path: str, request: Request):
 
     # 7. RBAC — role enforcement per route
     if token_data:
-        check_rbac(route.prefix, token_data)
+        try:
+            check_rbac(route.prefix, token_data)
+        except HTTPException:
+            if settings.ip_block_enabled:
+                record_score(ip, settings.ip_score_403, settings.ip_score_window_seconds, settings.ip_score_threshold)
+            raise
 
     # 8. Read body + enforce actual size (catches chunked transfer bypasses)
     body = await request.body()
@@ -148,6 +150,9 @@ async def proxy_request(full_path: str, request: Request):
             status_code=503,
             content={"detail": "service temporarily unavailable", "service": service},
         )
+
+    if settings.ip_block_enabled and upstream_response.status_code == 400:
+        record_score(ip, settings.ip_score_400, settings.ip_score_window_seconds, settings.ip_score_threshold)
 
     response_headers = {
         k: v
