@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-import asyncio
-import time
+import urllib.parse
 from dataclasses import dataclass
 from datetime import datetime, timezone
 
@@ -11,9 +10,8 @@ from fastapi.responses import HTMLResponse
 
 router = APIRouter()
 
-_TIMEOUT = 5.0
-_DEGRADED_MS = 1_000
-_PARTIAL_MS = 3_000
+_PROMETHEUS = "http://kube-prometheus-stack-prometheus.observability.svc.cluster.local:9090"
+_TIMEOUT = 8.0
 
 
 @dataclass
@@ -22,19 +20,20 @@ class _Svc:
     name_es: str
     name_en: str
     group: str
-    url: str
+    namespace: str
+    pod_prefix: str  # regex prefix for matching the main deployment pods
 
 
 _SERVICES: list[_Svc] = [
-    _Svc("auth",            "Autenticación",               "Authentication",      "core",   "http://auth.cap-prod-auth.svc.cluster.local:8081/health"),
-    _Svc("document-reader", "Procesamiento de Documentos", "Document Processing", "core",   "http://document-reader.cap-prod-document-reader.svc.cluster.local:8082/health"),
-    _Svc("ai-diagnostic",   "Diagnóstico AI",              "AI Diagnostics",      "core",   "http://ai-diagnostic.cap-prod-ai-diagnostic.svc.cluster.local:8083/health"),
-    _Svc("clinical-chat",   "Chat Clínico",                "Clinical Chat",       "core",   "http://clinical-chat.cap-prod-clinical-chat.svc.cluster.local:8086/health"),
-    _Svc("clinical-rag",    "Base de Conocimiento",        "Knowledge Base",      "core",   "http://clinical-rag.cap-prod-clinical-rag.svc.cluster.local:8085/health"),
-    _Svc("ai-engine",       "Motor de Extracción",         "Extraction Engine",   "models", "http://ai-engine.cap-prod-ai-engine.svc.cluster.local:8090/health"),
-    _Svc("ocr-engine",      "Motor OCR",                   "OCR Engine",          "models", "http://ocr-engine.cap-prod-ocr-engine.svc.cluster.local:8091/health"),
-    _Svc("vllm-reasoning",  "Modelo de Lenguaje",          "Language Model",      "models", "http://vllm-reasoning.cap-prod-vllm-reasoning.svc.cluster.local:8000/health"),
-    _Svc("vllm-server",     "Modelo de Visión",            "Vision Model",        "models", "http://vllm-server.cap-prod-vllm-server.svc.cluster.local:8000/health"),
+    _Svc("auth",            "Autenticación",               "Authentication",      "core",   "cap-prod-auth",            "auth-"),
+    _Svc("document-reader", "Procesamiento de Documentos", "Document Processing", "core",   "cap-prod-document-reader", "document-reader-[^rw]"),
+    _Svc("ai-diagnostic",   "Diagnóstico AI",              "AI Diagnostics",      "core",   "cap-prod-ai-diagnostic",   "ai-diagnostic-"),
+    _Svc("clinical-chat",   "Chat Clínico",                "Clinical Chat",       "core",   "cap-prod-clinical-chat",   "clinical-chat-"),
+    _Svc("clinical-rag",    "Base de Conocimiento",        "Knowledge Base",      "core",   "cap-prod-clinical-rag",    "clinical-rag-"),
+    _Svc("ai-engine",       "Motor de Extracción",         "Extraction Engine",   "models", "cap-prod-ai-engine",       "ai-engine-"),
+    _Svc("ocr-engine",      "Motor OCR",                   "OCR Engine",          "models", "cap-prod-ocr-engine",      "ocr-engine-"),
+    _Svc("vllm-reasoning",  "Modelo de Lenguaje",          "Language Model",      "models", "cap-prod-vllm-reasoning",  "vllm-reasoning-"),
+    _Svc("vllm-server",     "Modelo de Visión",            "Vision Model",        "models", "cap-prod-vllm-server",     "vllm-server-"),
 ]
 
 _SEVERITY: dict[str, int] = {
@@ -46,36 +45,54 @@ _SEVERITY: dict[str, int] = {
 }
 
 
-async def _check(svc: _Svc) -> dict:
-    t0 = time.monotonic()
+async def _fetch_pod_readiness() -> dict[str, dict[str, list[int]]]:
+    """
+    Returns {namespace: {pod_name: [ready_values]}} using kube_pod_status_ready.
+    ready value is 1 (ready) or 0 (not ready) for condition="true".
+    """
+    query = 'kube_pod_status_ready{namespace=~"cap-prod-.*",condition="true"}'
+    url = f"{_PROMETHEUS}/api/v1/query?query={urllib.parse.quote(query)}"
     try:
         async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
-            r = await client.get(svc.url)
-        ms = int((time.monotonic() - t0) * 1000)
-        if r.status_code >= 500:
-            status = "major_outage"
-        elif r.status_code >= 400:
-            status = "partial_outage"
-        elif ms >= _PARTIAL_MS:
-            status = "partial_outage"
-        elif ms >= _DEGRADED_MS:
-            status = "degraded"
-        else:
-            status = "operational"
-    except (httpx.TimeoutException, httpx.ConnectError):
-        ms = int(_TIMEOUT * 1000)
-        status = "major_outage"
+            r = await client.get(url)
+        data = r.json()
+        results: dict[str, dict[str, int]] = {}
+        for item in data.get("data", {}).get("result", []):
+            ns = item["metric"].get("namespace", "")
+            pod = item["metric"].get("pod", "")
+            val = int(float(item["value"][1]))
+            if ns not in results:
+                results[ns] = {}
+            results[ns][pod] = val
+        return results
     except Exception:
-        ms = None
-        status = "unknown"
-    return {
-        "id": svc.id,
-        "name_es": svc.name_es,
-        "name_en": svc.name_en,
-        "group": svc.group,
-        "status": status,
-        "latency_ms": ms,
-    }
+        return {}
+
+
+def _svc_status(svc: _Svc, readiness: dict[str, dict[str, int]]) -> tuple[str, int | None]:
+    """Returns (status, ready_count) for a service based on pod readiness data."""
+    ns_pods = readiness.get(svc.namespace)
+    if ns_pods is None:
+        return "unknown", None
+
+    # Filter to main deployment pods using prefix match
+    prefix = svc.pod_prefix
+    import re
+    pattern = re.compile(prefix)
+    matching = {pod: val for pod, val in ns_pods.items() if pattern.match(pod)}
+
+    if not matching:
+        return "unknown", None
+
+    total = len(matching)
+    ready = sum(1 for v in matching.values() if v == 1)
+
+    if ready == 0:
+        return "major_outage", 0
+    elif ready < total:
+        return "degraded", ready
+    else:
+        return "operational", ready
 
 
 def _overall(services: list[dict]) -> str:
@@ -85,11 +102,23 @@ def _overall(services: list[dict]) -> str:
 
 @router.get("/status/api", include_in_schema=False)
 async def status_api():
-    services = list(await asyncio.gather(*[_check(s) for s in _SERVICES]))
+    readiness = await _fetch_pod_readiness()
+    services = []
+    for svc in _SERVICES:
+        status, ready = _svc_status(svc, readiness)
+        services.append({
+            "id": svc.id,
+            "name_es": svc.name_es,
+            "name_en": svc.name_en,
+            "group": svc.group,
+            "status": status,
+            "latency_ms": None,
+        })
     return {
         "overall": _overall(services),
         "checked_at": datetime.now(timezone.utc).isoformat(),
         "services": services,
+        "source": "kube-state-metrics",
     }
 
 
@@ -115,10 +144,8 @@ _PAGE = r"""<!DOCTYPE html>
 body{background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
 .container{max-width:720px;margin:0 auto;padding:0 20px;width:100%}
 
-/* Header */
 header{background:var(--card);border-bottom:1px solid var(--border);padding:16px 0}
 .header-inner{display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:10px}
 .brand-name{font-size:1rem;font-weight:600;color:var(--text)}
 .brand-sub{font-size:0.75rem;color:var(--text-muted);margin-top:1px}
 .lang-btn{
@@ -129,10 +156,8 @@ header{background:var(--card);border-bottom:1px solid var(--border);padding:16px
 }
 .lang-btn:hover{border-color:#94a3b8;color:var(--text)}
 
-/* Main */
 main{flex:1;padding:32px 0}
 
-/* Overall banner */
 .overall-card{
   border-radius:var(--radius);padding:22px 24px;
   display:flex;align-items:center;gap:18px;
@@ -144,15 +169,10 @@ main{flex:1;padding:32px 0}
 .overall-card.partial_outage{background:var(--orange-bg);border-color:var(--orange-border)}
 .overall-card.major_outage{background:var(--red-bg);border-color:var(--red-border)}
 .overall-card.checking{background:var(--gray-bg);border-color:var(--gray-border)}
-.overall-icon{flex-shrink:0}
 .overall-title{font-size:1.125rem;font-weight:700;color:var(--text);line-height:1.3}
 .overall-sub{font-size:0.875rem;color:var(--text-muted);margin-top:3px}
 
-/* Status dot */
-.dot{
-  display:inline-block;border-radius:50%;flex-shrink:0;
-  transition:background .3s
-}
+.dot{display:inline-block;border-radius:50%;flex-shrink:0;transition:background .3s}
 .dot-lg{width:20px;height:20px}
 .dot-sm{width:10px;height:10px}
 .dot.operational{background:var(--green)}
@@ -163,7 +183,6 @@ main{flex:1;padding:32px 0}
 .dot.checking{background:var(--gray);animation:pulse 1.2s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* Service sections */
 .section{margin-bottom:24px}
 .section-title{
   font-size:0.6875rem;font-weight:700;text-transform:uppercase;
@@ -182,28 +201,19 @@ main{flex:1;padding:32px 0}
 .service-status-text.partial_outage{color:var(--orange)}
 .service-status-text.major_outage{color:var(--red)}
 .service-status-text.unknown{color:var(--gray)}
-.service-latency{
-  font-size:0.75rem;color:var(--text-light);text-align:right;
-  min-width:52px;font-variant-numeric:tabular-nums
-}
-.skeleton-row{
-  display:flex;align-items:center;gap:12px;padding:13px 20px;
-  border-bottom:1px solid #f8fafc
-}
+.skeleton-row{display:flex;align-items:center;gap:12px;padding:13px 20px;border-bottom:1px solid #f8fafc}
 .skeleton-row:last-child{border-bottom:none}
 .skel{background:#e2e8f0;border-radius:4px;animation:skel .9s ease infinite alternate}
 @keyframes skel{from{opacity:.6}to{opacity:1}}
 .skel-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .skel-name{height:14px;flex:1}
 .skel-status{height:12px;width:72px}
-.skel-lat{height:11px;width:38px}
 
-/* Footer */
 footer{background:var(--card);border-top:1px solid var(--border);padding:14px 0}
 .footer-inner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
 .footer-text{font-size:0.8125rem;color:var(--text-light)}
 .footer-refresh{font-size:0.8125rem;color:var(--text-muted)}
-.dot-indicator{width:6px;height:6px;display:inline-block;border-radius:50%;background:#22c55e;margin-right:5px;animation:live 2s ease-in-out infinite}
+.dot-live{width:6px;height:6px;display:inline-block;border-radius:50%;background:#22c55e;margin-right:5px;animation:live 2s ease-in-out infinite}
 @keyframes live{0%,100%{opacity:1}50%{opacity:.2}}
 
 @media(max-width:480px){
@@ -215,58 +225,47 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:14px 0}
 </style>
 </head>
 <body>
-
 <header>
   <div class="container">
     <div class="header-inner">
-      <div class="brand">
-        <div>
-          <div class="brand-name">Clinical AI Platform</div>
-          <div class="brand-sub" id="brand-sub">Estado del Sistema</div>
-        </div>
+      <div>
+        <div class="brand-name">Clinical AI Platform</div>
+        <div class="brand-sub" id="brand-sub">Estado del Sistema</div>
       </div>
       <button class="lang-btn" id="lang-btn" onclick="toggleLang()">EN</button>
     </div>
   </div>
 </header>
-
 <main>
   <div class="container">
-
     <div class="overall-card checking" id="overall-card">
-      <div class="overall-icon">
-        <div class="dot dot-lg checking" id="overall-dot"></div>
-      </div>
+      <div class="dot dot-lg checking" id="overall-dot"></div>
       <div>
         <div class="overall-title" id="overall-title">Verificando...</div>
         <div class="overall-sub" id="overall-sub"></div>
       </div>
     </div>
-
     <div class="section">
       <div class="section-title" id="header-core">Servicios Principales</div>
       <div class="card" id="group-core">
-        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div><div class="skel skel-lat"></div></div>
-        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div><div class="skel skel-lat"></div></div>
-        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div><div class="skel skel-lat"></div></div>
-        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div><div class="skel skel-lat"></div></div>
-        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div><div class="skel skel-lat"></div></div>
+        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div></div>
+        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div></div>
+        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div></div>
+        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div></div>
+        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div></div>
       </div>
     </div>
-
     <div class="section">
       <div class="section-title" id="header-models">Modelos de IA</div>
       <div class="card" id="group-models">
-        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div><div class="skel skel-lat"></div></div>
-        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div><div class="skel skel-lat"></div></div>
-        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div><div class="skel skel-lat"></div></div>
-        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div><div class="skel skel-lat"></div></div>
+        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div></div>
+        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div></div>
+        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div></div>
+        <div class="skeleton-row"><div class="skel skel-dot"></div><div class="skel skel-name"></div><div class="skel skel-status"></div></div>
       </div>
     </div>
-
   </div>
 </main>
-
 <footer>
   <div class="container">
     <div class="footer-inner">
@@ -275,148 +274,122 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:14px 0}
     </div>
   </div>
 </footer>
-
 <script>
-var lang = localStorage.getItem('cap_lang') || 'es';
-var lastData = null;
-var countdownSec = 30;
-var countdownId = null;
+var lang=localStorage.getItem('cap_lang')||'es';
+var lastData=null;
+var countdownSec=30;
+var countdownId=null;
 
-var STRINGS = {
-  brand_sub:       {es:'Estado del Sistema',             en:'System Status'},
-  checking:        {es:'Verificando…',               en:'Checking…'},
-  overall_op:      {es:'Todos los Sistemas Operacionales',en:'All Systems Operational'},
-  overall_deg:     {es:'Rendimiento Degradado',           en:'Degraded Performance'},
-  overall_partial: {es:'Interrupción Parcial del Servicio',en:'Partial Service Outage'},
-  overall_major:   {es:'Interrupción Mayor del Servicio',  en:'Major Service Outage'},
-  svc_count:       {es:'servicios operacionales',         en:'services operational'},
-  of:              {es:'de',                              en:'of'},
-  header_core:     {es:'Servicios Principales',           en:'Core Services'},
-  header_models:   {es:'Modelos de IA',                  en:'AI Models'},
-  status_op:       {es:'Operacional',                    en:'Operational'},
-  status_deg:      {es:'Rendimiento Degradado',           en:'Degraded Performance'},
-  status_partial:  {es:'Interrupción Parcial',       en:'Partial Outage'},
-  status_major:    {es:'Interrupción Mayor',         en:'Major Outage'},
-  status_unknown:  {es:'Desconocido',                    en:'Unknown'},
-  last_checked:    {es:'Verificado: ',                   en:'Last checked: '},
-  refresh_in:      {es:'Actualizando en ',               en:'Refreshing in '},
-  refresh_now:     {es:'Actualizando…',              en:'Refreshing…'},
-  fetch_error:     {es:'Error de conexión',         en:'Connection error'},
+var STRINGS={
+  brand_sub:      {es:'Estado del Sistema',              en:'System Status'},
+  checking:       {es:'Verificando…',               en:'Checking…'},
+  overall_op:     {es:'Todos los Sistemas Operacionales',en:'All Systems Operational'},
+  overall_deg:    {es:'Rendimiento Degradado',           en:'Degraded Performance'},
+  overall_partial:{es:'Interrupción Parcial',       en:'Partial Outage'},
+  overall_major:  {es:'Interrupción Mayor del Servicio',en:'Major Service Outage'},
+  svc_of:         {es:'de',                             en:'of'},
+  svc_ok:         {es:'servicios operacionales',        en:'services operational'},
+  header_core:    {es:'Servicios Principales',          en:'Core Services'},
+  header_models:  {es:'Modelos de IA',                  en:'AI Models'},
+  status_op:      {es:'Operacional',                    en:'Operational'},
+  status_deg:     {es:'Degradado',                      en:'Degraded'},
+  status_partial: {es:'Interrupción Parcial',      en:'Partial Outage'},
+  status_major:   {es:'Interrupción Mayor',        en:'Major Outage'},
+  status_unknown: {es:'Desconocido',                    en:'Unknown'},
+  last_checked:   {es:'Verificado: ',                   en:'Last checked: '},
+  refresh_in:     {es:'Actualizando en ',               en:'Refreshing in '},
+  refresh_now:    {es:'Actualizando…',             en:'Refreshing…'},
+  error:          {es:'Error de conexión',         en:'Connection error'},
 };
 
-var OVERALL_KEY = {
-  operational:   'overall_op',
-  degraded:      'overall_deg',
-  partial_outage:'overall_partial',
-  major_outage:  'overall_major',
-};
+var OVERALL_KEY={operational:'overall_op',degraded:'overall_deg',partial_outage:'overall_partial',major_outage:'overall_major'};
+var STATUS_KEY={operational:'status_op',degraded:'status_deg',partial_outage:'status_partial',major_outage:'status_major',unknown:'status_unknown'};
 
-var STATUS_KEY = {
-  operational:   'status_op',
-  degraded:      'status_deg',
-  partial_outage:'status_partial',
-  major_outage:  'status_major',
-  unknown:       'status_unknown',
-};
+function s(k){return(STRINGS[k]&&STRINGS[k][lang])||k;}
+function el(id){return document.getElementById(id);}
 
-function s(key) { return (STRINGS[key] && STRINGS[key][lang]) || key; }
-
-function el(id) { return document.getElementById(id); }
-
-function toggleLang() {
-  lang = lang === 'es' ? 'en' : 'es';
-  localStorage.setItem('cap_lang', lang);
+function toggleLang(){
+  lang=lang==='es'?'en':'es';
+  localStorage.setItem('cap_lang',lang);
   applyLang();
-  if (lastData) renderStatus(lastData);
+  if(lastData)renderStatus(lastData);
 }
 
-function applyLang() {
-  document.documentElement.lang = lang;
-  el('lang-btn').textContent = lang === 'es' ? 'EN' : 'ES';
-  el('brand-sub').textContent = s('brand_sub');
-  if (!lastData) el('overall-title').textContent = s('checking');
-  el('header-core').textContent = s('header_core');
-  el('header-models').textContent = s('header_models');
+function applyLang(){
+  document.documentElement.lang=lang;
+  el('lang-btn').textContent=lang==='es'?'EN':'ES';
+  el('brand-sub').textContent=s('brand_sub');
+  if(!lastData)el('overall-title').textContent=s('checking');
+  el('header-core').textContent=s('header_core');
+  el('header-models').textContent=s('header_models');
 }
 
-function renderStatus(data) {
-  var overall = data.overall;
-  var card = el('overall-card');
-  card.className = 'overall-card ' + overall;
-  var dot = el('overall-dot');
-  dot.className = 'dot dot-lg ' + overall;
-  el('overall-title').textContent = s(OVERALL_KEY[overall] || 'checking');
+function renderStatus(data){
+  var overall=data.overall;
+  var card=el('overall-card');
+  card.className='overall-card '+overall;
+  el('overall-dot').className='dot dot-lg '+overall;
+  el('overall-title').textContent=s(OVERALL_KEY[overall]||'checking');
+  var ops=data.services.filter(function(x){return x.status==='operational';}).length;
+  var total=data.services.length;
+  el('overall-sub').textContent=ops+' '+s('svc_of')+' '+total+' '+s('svc_ok');
 
-  var ops = data.services.filter(function(x){return x.status==='operational';}).length;
-  var total = data.services.length;
-  el('overall-sub').textContent = ops + ' ' + s('of') + ' ' + total + ' ' + s('svc_count');
+  var groups={core:[],models:[]};
+  data.services.forEach(function(sv){if(groups[sv.group])groups[sv.group].push(sv);});
 
-  var groups = {core:[], models:[]};
-  data.services.forEach(function(sv) {
-    if (groups[sv.group]) groups[sv.group].push(sv);
-  });
-
-  ['core','models'].forEach(function(gid) {
-    var container = el('group-' + gid);
-    if (!container) return;
-    var html = '';
-    groups[gid].forEach(function(sv) {
-      var name = lang === 'es' ? sv.name_es : sv.name_en;
-      var stKey = STATUS_KEY[sv.status] || 'status_unknown';
-      var lat = sv.latency_ms != null ? sv.latency_ms + 'ms' : '—';
-      html += '<div class="service-row">'
-        + '<div class="dot dot-sm ' + sv.status + '"></div>'
-        + '<div class="service-name">' + htmlEsc(name) + '</div>'
-        + '<div class="service-status-text ' + sv.status + '">' + s(stKey) + '</div>'
-        + '<div class="service-latency">' + lat + '</div>'
-        + '</div>';
+  ['core','models'].forEach(function(gid){
+    var container=el('group-'+gid);
+    if(!container)return;
+    var html='';
+    groups[gid].forEach(function(sv){
+      var name=lang==='es'?sv.name_es:sv.name_en;
+      var stKey=STATUS_KEY[sv.status]||'status_unknown';
+      html+='<div class="service-row">'
+        +'<div class="dot dot-sm '+sv.status+'"></div>'
+        +'<div class="service-name">'+esc(name)+'</div>'
+        +'<div class="service-status-text '+sv.status+'">'+s(stKey)+'</div>'
+        +'</div>';
     });
-    container.innerHTML = html;
+    container.innerHTML=html;
   });
 
-  var checkedAt = new Date(data.checked_at);
-  var locale = lang === 'es' ? 'es-MX' : 'en-US';
-  el('last-checked').innerHTML = '<span class="dot-indicator"></span>' + s('last_checked')
-    + checkedAt.toLocaleTimeString(locale, {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  var checkedAt=new Date(data.checked_at);
+  var locale=lang==='es'?'es-MX':'en-US';
+  el('last-checked').innerHTML='<span class="dot-live"></span>'+s('last_checked')
+    +checkedAt.toLocaleTimeString(locale,{hour:'2-digit',minute:'2-digit',second:'2-digit'});
 }
 
-function htmlEsc(str) {
-  return String(str)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;');
-}
+function esc(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 
-function startCountdown() {
-  countdownSec = 30;
-  if (countdownId) clearInterval(countdownId);
-  countdownId = setInterval(function() {
+function startCountdown(){
+  countdownSec=30;
+  if(countdownId)clearInterval(countdownId);
+  countdownId=setInterval(function(){
     countdownSec--;
-    if (countdownSec <= 0) {
+    if(countdownSec<=0){
       clearInterval(countdownId);
-      el('countdown').textContent = s('refresh_now');
+      el('countdown').textContent=s('refresh_now');
       fetchStatus();
-    } else {
-      el('countdown').textContent = s('refresh_in') + countdownSec + 's';
+    }else{
+      el('countdown').textContent=s('refresh_in')+countdownSec+'s';
     }
-  }, 1000);
-  el('countdown').textContent = s('refresh_in') + countdownSec + 's';
+  },1000);
+  el('countdown').textContent=s('refresh_in')+countdownSec+'s';
 }
 
-function fetchStatus() {
+function fetchStatus(){
   fetch('/status/api')
-    .then(function(r){ return r.json(); })
-    .then(function(data) {
-      lastData = data;
+    .then(function(r){return r.json();})
+    .then(function(data){
+      lastData=data;
       renderStatus(data);
       startCountdown();
     })
-    .catch(function() {
-      var card = el('overall-card');
-      card.className = 'overall-card major_outage';
-      el('overall-dot').className = 'dot dot-lg major_outage';
-      el('overall-title').textContent = s('fetch_error');
-      el('overall-sub').textContent = '';
+    .catch(function(){
+      el('overall-card').className='overall-card major_outage';
+      el('overall-dot').className='dot dot-lg major_outage';
+      el('overall-title').textContent=s('error');
+      el('overall-sub').textContent='';
       startCountdown();
     });
 }
