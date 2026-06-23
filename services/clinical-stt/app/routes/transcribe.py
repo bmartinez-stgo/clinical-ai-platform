@@ -15,6 +15,8 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 settings = get_settings()
 
+_SUPPORTED_FORMATS = "wav, mp3, m4a, ogg, webm, flac"
+
 # (offset, magic_bytes) for supported audio formats
 _AUDIO_SIGNATURES: list[tuple[int, bytes]] = [
     (0, b"RIFF"),           # WAV
@@ -41,11 +43,34 @@ def _queue(request: Request) -> ArqRedis:
     return request.app.state.arq
 
 
-@router.post("/soap", status_code=202, response_model=JobStatus)
+@router.post(
+    "/soap",
+    status_code=202,
+    response_model=JobStatus,
+    summary="Enqueue SOAP note generation from audio",
+    description=(
+        "Accepts a clinical consultation audio recording and enqueues it for transcription "
+        "and SOAP note generation.\n\n"
+        "**Limits:**\n"
+        "- Maximum file size: **100 MB**\n"
+        "- Maximum duration: **30 minutes**\n\n"
+        f"**Supported formats:** {_SUPPORTED_FORMATS}\n\n"
+        "Returns a `job_id` immediately. Poll `GET /soap/{job_id}` for status and result."
+    ),
+    responses={
+        202: {"description": "Job accepted and queued"},
+        400: {"description": "Empty audio file"},
+        413: {"description": "File exceeds 100 MB size limit"},
+        415: {"description": "Unsupported media type or invalid audio file"},
+    },
+)
 async def enqueue_soap(
     request: Request,
-    file: Annotated[UploadFile, File(description="Audio file — wav, mp3, m4a, ogg, webm")],
-    language: Annotated[str, Form()] = "es",
+    file: Annotated[
+        UploadFile,
+        File(description=f"Audio recording ({_SUPPORTED_FORMATS}). Max 100 MB, max 30 min."),
+    ],
+    language: Annotated[str, Form(description="BCP-47 language code (e.g. 'es', 'en') or 'auto'")] = "es",
 ) -> JobStatus:
     content_type = (file.content_type or "").lower()
     if not content_type.startswith("audio/") and content_type not in (
@@ -72,7 +97,24 @@ async def enqueue_soap(
     return JobStatus(job_id=job.job_id, status="queued")
 
 
-@router.get("/soap/{job_id}", response_model=JobStatus)
+@router.get(
+    "/soap/{job_id}",
+    response_model=JobStatus,
+    summary="Poll SOAP job status",
+    description=(
+        "Returns the current status of a SOAP generation job.\n\n"
+        "**Status values:**\n"
+        "- `queued` — waiting in queue (includes `position`)\n"
+        "- `processing` — transcription and note generation in progress\n"
+        "- `done` — complete, `result` contains the SOAP note\n"
+        "- `failed` — error, `error` contains the reason\n\n"
+        "Results expire after 1 hour."
+    ),
+    responses={
+        200: {"description": "Job status (check `status` field)"},
+        404: {"description": "Job not found or expired"},
+    },
+)
 async def get_soap_status(job_id: str, request: Request) -> JobStatus:
     queue = _queue(request)
     job = Job(job_id, queue)
