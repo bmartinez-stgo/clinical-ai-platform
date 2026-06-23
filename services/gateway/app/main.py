@@ -11,6 +11,7 @@ from app.routers.health import router as health_router
 from app.routers.metrics import router as metrics_router
 from app.routers.proxy import router as proxy_router
 from app.routers.root import router as root_router
+from app.routers.status import router as status_router
 
 
 @asynccontextmanager
@@ -32,6 +33,7 @@ app.middleware("http")(request_context_middleware)
 app.include_router(health_router)
 app.include_router(root_router)
 app.include_router(admin_router)
+app.include_router(status_router)
 
 if settings.metrics_enabled:
     app.include_router(metrics_router)
