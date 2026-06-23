@@ -28,6 +28,7 @@ def transcribe(
     device: str,
     compute_type: str,
     language: str = "es",
+    max_duration_seconds: int = 1800,
 ) -> tuple[str, float]:
     model = get_model(model_name, device, compute_type)
 
@@ -43,6 +44,12 @@ def transcribe(
             vad_filter=True,
             vad_parameters={"min_silence_duration_ms": 500},
         )
+        # info.duration is available immediately (reads file header, before GPU work)
+        if info.duration > max_duration_seconds:
+            limit_min = max_duration_seconds // 60
+            raise ValueError(
+                f"audio duration {info.duration / 60:.1f} min exceeds the {limit_min}-minute limit"
+            )
         transcript = " ".join(seg.text.strip() for seg in segments)
         return transcript.strip(), info.duration
     finally:

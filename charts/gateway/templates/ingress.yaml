@@ -2,6 +2,37 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  name: {{ include "gateway.fullname" . }}-stt
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    cert-manager.io/cluster-issuer: {{ .Values.ingress.clusterIssuer | quote }}
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-body-size: "100m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+spec:
+  ingressClassName: nginx
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ .Values.ingress.host }}
+      secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end }}
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /stt
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "gateway.fullname" . }}
+                port:
+                  number: {{ .Values.service.port }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
   name: {{ include "gateway.fullname" . }}
   namespace: {{ .Release.Namespace }}
   annotations:

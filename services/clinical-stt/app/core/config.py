@@ -31,7 +31,8 @@ class Settings:
     max_tokens: int = int(os.getenv("MAX_TOKENS", "1500"))
     temperature: float = float(os.getenv("TEMPERATURE", "0.1"))
 
-    max_audio_size_bytes: int = int(os.getenv("MAX_AUDIO_SIZE_BYTES", str(50 * 1024 * 1024)))
+    max_audio_size_bytes: int = int(os.getenv("MAX_AUDIO_SIZE_BYTES", str(100 * 1024 * 1024)))
+    max_audio_duration_seconds: int = int(os.getenv("MAX_AUDIO_DURATION_SECONDS", "1800"))  # 30 min
     job_ttl_seconds: int = int(os.getenv("JOB_TTL_SECONDS", "3600"))
     metrics_enabled: bool = os.getenv("METRICS_ENABLED", "true").lower() == "true"
 

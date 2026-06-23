@@ -31,7 +31,8 @@ HOP_BY_HOP_HEADERS = {
 
 # Body size limits per route prefix (bytes)
 _BODY_LIMITS: dict[str, int] = {
-    "/documents": 26_214_400,  # 25 MB — PDF uploads
+    "/documents": 26_214_400,   # 25 MB — PDF uploads
+    "/stt":       104_857_600,  # 100 MB — audio uploads (30 min WAV worst case ~55 MB)
 }
 _DEFAULT_BODY_LIMIT = 1_048_576  # 1 MB
 
