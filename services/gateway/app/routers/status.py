@@ -38,8 +38,8 @@ _SERVICES: list[_Svc] = [
 
 _SEVERITY: dict[str, int] = {
     "operational": 0,
+    "unknown": 0,      # missing namespace = service not deployed, not a degradation
     "degraded": 1,
-    "unknown": 1,
     "partial_outage": 2,
     "major_outage": 3,
 }
