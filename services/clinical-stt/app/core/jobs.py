@@ -25,6 +25,7 @@ async def process_soap_job(ctx: dict, audio_bytes: bytes, language: str) -> dict
             settings.whisper_device,
             settings.whisper_compute_type,
             language=language,
+            max_duration_seconds=settings.max_audio_duration_seconds,
         )
     except Exception as exc:
         logger.exception("transcription failed")

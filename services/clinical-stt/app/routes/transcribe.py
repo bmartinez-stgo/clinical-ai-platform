@@ -15,6 +15,27 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 settings = get_settings()
 
+# (offset, magic_bytes) for supported audio formats
+_AUDIO_SIGNATURES: list[tuple[int, bytes]] = [
+    (0, b"RIFF"),           # WAV
+    (0, b"ID3"),            # MP3 with ID3 tag
+    (0, b"\xff\xfb"),       # MP3 frame sync
+    (0, b"\xff\xf3"),
+    (0, b"\xff\xf2"),
+    (0, b"\x1a\x45\xdf\xa3"),  # WebM / MKV (EBML)
+    (0, b"OggS"),           # OGG
+    (0, b"fLaC"),           # FLAC
+    (4, b"ftyp"),           # M4A / MP4
+]
+
+
+def _is_audio(data: bytes) -> bool:
+    for offset, sig in _AUDIO_SIGNATURES:
+        end = offset + len(sig)
+        if len(data) >= end and data[offset:end] == sig:
+            return True
+    return False
+
 
 def _queue(request: Request) -> ArqRedis:
     return request.app.state.arq
@@ -26,12 +47,20 @@ async def enqueue_soap(
     file: Annotated[UploadFile, File(description="Audio file — wav, mp3, m4a, ogg, webm")],
     language: Annotated[str, Form()] = "es",
 ) -> JobStatus:
+    content_type = (file.content_type or "").lower()
+    if not content_type.startswith("audio/") and content_type not in (
+        "application/octet-stream", "video/webm",  # browsers sometimes send these for audio
+    ):
+        raise HTTPException(status_code=415, detail="unsupported media type — audio file required")
+
     audio_bytes = await file.read()
     if not audio_bytes:
         raise HTTPException(status_code=400, detail="audio file is empty")
     if len(audio_bytes) > settings.max_audio_size_bytes:
         limit_mb = settings.max_audio_size_bytes // (1024 * 1024)
-        raise HTTPException(status_code=413, detail=f"audio exceeds {limit_mb}MB limit")
+        raise HTTPException(status_code=413, detail=f"audio exceeds {limit_mb} MB limit")
+    if not _is_audio(audio_bytes):
+        raise HTTPException(status_code=415, detail="file does not appear to be a valid audio file")
 
     queue = _queue(request)
     job = await queue.enqueue_job("process_soap_job", audio_bytes, language)
