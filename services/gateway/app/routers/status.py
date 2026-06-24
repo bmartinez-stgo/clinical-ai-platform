@@ -35,7 +35,7 @@ _SERVICES: list[_Svc] = [
     _Svc("document-reader", "Procesamiento de Documentos", "Document Processing", "core",   "cap-prod-document-reader", r"document-reader-[^rw]"),
     _Svc("ai-diagnostic",   "Diagnóstico AI",              "AI Diagnostics",      "core",   "cap-prod-ai-diagnostic",   r"ai-diagnostic-"),
     _Svc("clinical-chat",   "Chat Clínico",                "Clinical Chat",       "core",   "cap-prod-clinical-chat",   r"clinical-chat-"),
-    _Svc("clinical-rag",    "Base de Conocimiento",        "Knowledge Base",      "core",   "cap-prod-clinical-rag",    r"clinical-rag-"),
+    _Svc("clinical-rag",    "Base de Conocimiento (RAG)",  "Knowledge Base (RAG)", "core",  "cap-prod-clinical-rag",    r"clinical-rag-"),
     _Svc("ai-engine",       "Motor de Extracción",         "Extraction Engine",   "models", "cap-prod-ai-engine",       r"ai-engine-"),
     _Svc("vllm-reasoning",  "Modelo de Lenguaje",          "Language Model",      "models", "cap-prod-vllm-reasoning",  r"vllm-reasoning-"),
     _Svc("vllm-server",     "Modelo de Visión",            "Vision Model",        "models", "cap-prod-vllm-server",     r"vllm-server-"),
