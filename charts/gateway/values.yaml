@@ -53,10 +53,10 @@ env:
   METRICS_PATH: "/metrics"
   TOKEN_VALIDATION_ENABLED: "true"
   READINESS_CHECK_AUTH: "false"
-  TRACING_ENABLED: "false"
+  TRACING_ENABLED: "true"
   OTEL_SERVICE_NAME: gateway
   OTEL_SERVICE_NAMESPACE: cap-prod-gateway
-  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector.observability:4318/v1/traces
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo.observability.svc.cluster.local:4318/v1/traces
 
 serviceMonitor:
   enabled: true
