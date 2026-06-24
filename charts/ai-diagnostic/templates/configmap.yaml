@@ -19,3 +19,7 @@ data:
   CLINICAL_RAG_URL: {{ .Values.app.clinicalRagUrl | quote }}
   CLINICAL_RAG_ENABLED: {{ .Values.app.clinicalRagEnabled | quote }}
   CLINICAL_RAG_TOP_K: {{ .Values.app.clinicalRagTopK | quote }}
+  TRACING_ENABLED: {{ .Values.tracing.enabled | quote }}
+  OTEL_SERVICE_NAME: {{ .Values.tracing.serviceName | quote }}
+  OTEL_SERVICE_NAMESPACE: {{ .Values.tracing.serviceNamespace | quote }}
+  OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.tracing.endpoint | quote }}

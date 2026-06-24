@@ -32,6 +32,14 @@ tempo:
         wal:
           path: /var/tempo/wal
 
+    processor:
+      service_graphs:
+        enable_virtual_node_label: true
+        peer_attributes:
+          - db.name
+          - db.system
+          - peer.service
+
     overrides:
       defaults:
         metrics_generator:

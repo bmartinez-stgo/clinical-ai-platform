@@ -35,6 +35,10 @@ class Settings:
     max_audio_duration_seconds: int = int(os.getenv("MAX_AUDIO_DURATION_SECONDS", "1800"))  # 30 min
     job_ttl_seconds: int = int(os.getenv("JOB_TTL_SECONDS", "3600"))
     metrics_enabled: bool = os.getenv("METRICS_ENABLED", "true").lower() == "true"
+    tracing_enabled: bool = os.getenv("TRACING_ENABLED", "false").lower() == "true"
+    otel_service_name: str = os.getenv("OTEL_SERVICE_NAME", "clinical-stt")
+    otel_service_namespace: str = os.getenv("OTEL_SERVICE_NAMESPACE", "cap-prod-clinical-stt")
+    otel_exporter_otlp_endpoint: str = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://tempo.observability.svc.cluster.local:4318/v1/traces")
 
 
 @lru_cache

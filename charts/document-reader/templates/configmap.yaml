@@ -22,3 +22,7 @@ data:
   OCR_ENGINE_TIMEOUT_SECONDS: {{ .Values.app.ocrEngineTimeoutSeconds | quote }}
   REDIS_URL: "redis://{{ include "document-reader.fullname" . }}-redis:{{ .Values.redis.port }}"
   JOB_TTL_SECONDS: {{ .Values.app.jobTtlSeconds | quote }}
+  TRACING_ENABLED: {{ .Values.tracing.enabled | quote }}
+  OTEL_SERVICE_NAME: {{ .Values.tracing.serviceName | quote }}
+  OTEL_SERVICE_NAMESPACE: {{ .Values.tracing.serviceNamespace | quote }}
+  OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.tracing.endpoint | quote }}

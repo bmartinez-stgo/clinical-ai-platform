@@ -40,3 +40,9 @@ podAnnotations: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+tracing:
+  enabled: "true"
+  serviceName: ai-diagnostic
+  serviceNamespace: cap-prod-ai-diagnostic
+  endpoint: http://tempo.observability.svc.cluster.local:4318/v1/traces

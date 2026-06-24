@@ -8,3 +8,8 @@ faster-whisper==1.1.1
 requests==2.32.3
 python-multipart==0.0.20
 prometheus-client==0.21.1
+
+opentelemetry-sdk==1.30.0
+opentelemetry-instrumentation-fastapi==0.51b0
+opentelemetry-instrumentation-httpx==0.51b0
+opentelemetry-exporter-otlp-proto-http==1.30.0

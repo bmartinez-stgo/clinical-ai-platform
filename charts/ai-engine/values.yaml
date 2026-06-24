@@ -59,3 +59,9 @@ runtimeClassName: nvidia
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+tracing:
+  enabled: "true"
+  serviceName: ai-engine
+  serviceNamespace: cap-prod-ai-engine
+  endpoint: http://tempo.observability.svc.cluster.local:4318/v1/traces

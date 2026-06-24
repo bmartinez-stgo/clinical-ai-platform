@@ -23,6 +23,10 @@ class Settings:
     vllm_url: str = os.getenv("VLLM_URL", "http://vllm-server.cap-prod-vllm-server.svc.cluster.local:8000")
     vllm_timeout_seconds: int = int(os.getenv("VLLM_TIMEOUT_SECONDS", "120"))
     max_image_dimension: int = int(os.getenv("MAX_IMAGE_DIMENSION", "768"))
+    tracing_enabled: bool = os.getenv("TRACING_ENABLED", "false").lower() == "true"
+    otel_service_name: str = os.getenv("OTEL_SERVICE_NAME", "ai-engine")
+    otel_service_namespace: str = os.getenv("OTEL_SERVICE_NAMESPACE", "cap-prod-ai-engine")
+    otel_exporter_otlp_endpoint: str = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://tempo.observability.svc.cluster.local:4318/v1/traces")
 
 
 @lru_cache

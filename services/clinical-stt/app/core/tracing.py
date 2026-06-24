@@ -36,3 +36,4 @@ def setup_tracing(app, settings) -> None:
         "tracing enabled",
         extra={"endpoint": settings.otel_exporter_otlp_endpoint, "service": settings.otel_service_name},
     )
+

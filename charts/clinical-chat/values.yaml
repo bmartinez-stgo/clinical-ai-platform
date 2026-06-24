@@ -37,3 +37,9 @@ podAnnotations: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+tracing:
+  enabled: "true"
+  serviceName: clinical-chat
+  serviceNamespace: cap-prod-clinical-chat
+  endpoint: http://tempo.observability.svc.cluster.local:4318/v1/traces
