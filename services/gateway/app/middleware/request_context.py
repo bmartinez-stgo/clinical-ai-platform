@@ -4,6 +4,7 @@ import uuid
 
 from fastapi import Request
 from fastapi.responses import JSONResponse
+from opentelemetry import trace as otel_trace
 
 from app.config import settings
 from app.observability import (
@@ -73,6 +74,11 @@ async def request_context_middleware(request: Request, call_next):
         response.headers["Permissions-Policy"] = "camera=(), microphone=(self), geolocation=()"
         response.headers["Cache-Control"] = "no-store"
 
+        span = otel_trace.get_current_span()
+        span_ctx = span.get_span_context()
+        trace_id = format(span_ctx.trace_id, "032x") if span_ctx.trace_id else None
+        span_id = format(span_ctx.span_id, "016x") if span_ctx.span_id else None
+
         logger.info(
             "request completed",
             extra={
@@ -81,8 +87,8 @@ async def request_context_middleware(request: Request, call_next):
                 "service_version": settings.service_version,
                 "environment": settings.app_env,
                 "request_id": request_id,
-                "trace_id": None,
-                "span_id": None,
+                "trace_id": trace_id,
+                "span_id": span_id,
                 "http_method": http_method,
                 "http_route": http_route,
                 "http_status_code": http_status_code,
@@ -126,8 +132,8 @@ async def request_context_middleware(request: Request, call_next):
                 "service_version": settings.service_version,
                 "environment": settings.app_env,
                 "request_id": request_id,
-                "trace_id": None,
-                "span_id": None,
+                "trace_id": trace_id,
+                "span_id": span_id,
                 "http_method": http_method,
                 "http_route": http_route,
                 "http_status_code": 500,
