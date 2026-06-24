@@ -1,0 +1,124 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboard-service-map
+  namespace: observability
+  labels:
+    grafana_dashboard: "1"
+data:
+  service-dependency-map.json: |
+    {
+      "title": "Service Dependency Map",
+      "uid": "service-dependency-map",
+      "tags": ["observability", "tracing", "service-map"],
+      "refresh": "30s",
+      "time": {"from": "now-1h", "to": "now"},
+      "schemaVersion": 36,
+      "panels": [
+        {
+          "id": 1,
+          "type": "nodeGraph",
+          "title": "Service Dependency Map — Live Traces",
+          "description": "Auto-generated from distributed traces. Nodes = services, edges = request flow with latency.",
+          "gridPos": {"x": 0, "y": 0, "w": 24, "h": 20},
+          "datasource": {"type": "tempo", "uid": "tempo"},
+          "targets": [
+            {
+              "datasource": {"type": "tempo", "uid": "tempo"},
+              "queryType": "serviceMap",
+              "serviceMapQuery": "{}",
+              "refId": "A"
+            }
+          ],
+          "options": {
+            "nodes": {
+              "mainStatUnit": "ms",
+              "secondaryStatUnit": "reqps"
+            },
+            "edges": {
+              "mainStatUnit": "reqps"
+            }
+          }
+        },
+        {
+          "id": 2,
+          "type": "stat",
+          "title": "Active Services",
+          "gridPos": {"x": 0, "y": 20, "w": 4, "h": 4},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {
+              "expr": "count(count by(server) (traces_service_graph_request_total))",
+              "refId": "A",
+              "instant": true
+            }
+          ],
+          "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "value", "graphMode": "none"},
+          "fieldConfig": {"defaults": {"unit": "short", "color": {"mode": "thresholds"}, "thresholds": {"steps": [{"color": "green", "value": null}]}}}
+        },
+        {
+          "id": 3,
+          "type": "stat",
+          "title": "Total Request Rate",
+          "gridPos": {"x": 4, "y": 20, "w": 4, "h": 4},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {
+              "expr": "sum(rate(traces_service_graph_request_total[5m]))",
+              "refId": "A",
+              "instant": true
+            }
+          ],
+          "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "value", "graphMode": "area"},
+          "fieldConfig": {"defaults": {"unit": "reqps", "color": {"mode": "thresholds"}, "thresholds": {"steps": [{"color": "blue", "value": null}]}}}
+        },
+        {
+          "id": 4,
+          "type": "stat",
+          "title": "Error Rate",
+          "gridPos": {"x": 8, "y": 20, "w": 4, "h": 4},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {
+              "expr": "sum(rate(traces_service_graph_request_failed_total[5m])) / sum(rate(traces_service_graph_request_total[5m])) * 100",
+              "refId": "A",
+              "instant": true
+            }
+          ],
+          "options": {"reduceOptions": {"calcs": ["lastNotNull"]}, "colorMode": "value", "graphMode": "none"},
+          "fieldConfig": {"defaults": {"unit": "percent", "decimals": 2, "color": {"mode": "thresholds"}, "thresholds": {"steps": [{"color": "green", "value": null}, {"color": "yellow", "value": 1}, {"color": "red", "value": 5}]}}}
+        },
+        {
+          "id": 5,
+          "type": "timeseries",
+          "title": "Request Rate by Service Edge",
+          "gridPos": {"x": 0, "y": 24, "w": 12, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {
+              "expr": "sum by(client, server) (rate(traces_service_graph_request_total[5m]))",
+              "legendFormat": "{{client}} → {{server}}",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {"defaults": {"unit": "reqps"}},
+          "options": {"legend": {"displayMode": "list", "placement": "bottom"}}
+        },
+        {
+          "id": 6,
+          "type": "timeseries",
+          "title": "P95 Latency by Service Edge",
+          "gridPos": {"x": 12, "y": 24, "w": 12, "h": 8},
+          "datasource": {"type": "prometheus", "uid": "prometheus"},
+          "targets": [
+            {
+              "expr": "histogram_quantile(0.95, sum by(client, server, le) (rate(traces_service_graph_request_duration_seconds_bucket[5m]))) * 1000",
+              "legendFormat": "{{client}} → {{server}}",
+              "refId": "A"
+            }
+          ],
+          "fieldConfig": {"defaults": {"unit": "ms"}},
+          "options": {"legend": {"displayMode": "list", "placement": "bottom"}}
+        }
+      ]
+    }
