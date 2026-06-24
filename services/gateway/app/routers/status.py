@@ -37,7 +37,6 @@ _SERVICES: list[_Svc] = [
     _Svc("clinical-chat",   "Chat Clínico",                "Clinical Chat",       "core",   "cap-prod-clinical-chat",   r"clinical-chat-"),
     _Svc("clinical-rag",    "Base de Conocimiento",        "Knowledge Base",      "core",   "cap-prod-clinical-rag",    r"clinical-rag-"),
     _Svc("ai-engine",       "Motor de Extracción",         "Extraction Engine",   "models", "cap-prod-ai-engine",       r"ai-engine-"),
-    _Svc("ocr-engine",      "Motor OCR",                   "OCR Engine",          "models", "cap-prod-ocr-engine",      r"ocr-engine-"),
     _Svc("vllm-reasoning",  "Modelo de Lenguaje",          "Language Model",      "models", "cap-prod-vllm-reasoning",  r"vllm-reasoning-"),
     _Svc("vllm-server",     "Modelo de Visión",            "Vision Model",        "models", "cap-prod-vllm-server",     r"vllm-server-"),
 ]
@@ -410,7 +409,6 @@ footer{background:var(--card);border-top:1px solid var(--border);padding:12px 0}
     <div class="section">
       <div class="section-title" id="header-models">Modelos de IA</div>
       <div class="card" id="group-models">
-        <div class="skeleton-row"><div class="skel sk-dot"></div><div class="skel sk-name"></div><div class="skel sk-bars"></div><div class="skel sk-pct"></div></div>
         <div class="skeleton-row"><div class="skel sk-dot"></div><div class="skel sk-name"></div><div class="skel sk-bars"></div><div class="skel sk-pct"></div></div>
         <div class="skeleton-row"><div class="skel sk-dot"></div><div class="skel sk-name"></div><div class="skel sk-bars"></div><div class="skel sk-pct"></div></div>
         <div class="skeleton-row"><div class="skel sk-dot"></div><div class="skel sk-name"></div><div class="skel sk-bars"></div><div class="skel sk-pct"></div></div>
