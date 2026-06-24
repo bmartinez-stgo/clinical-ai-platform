@@ -37,6 +37,37 @@ grafana:
         hosts:
           - nahui-ai.ddns.net
 
+  additionalDataSources:
+    - name: Tempo
+      type: tempo
+      uid: tempo
+      url: http://tempo.observability.svc.cluster.local:3100
+      access: proxy
+      jsonData:
+        tracesToLogsV2:
+          datasourceUid: loki
+          spanStartTimeShift: "-1m"
+          spanEndTimeShift: "1m"
+          filterByTraceID: true
+          filterBySpanID: false
+        serviceMap:
+          datasourceUid: prometheus
+        nodeGraph:
+          enabled: true
+        lokiSearch:
+          datasourceUid: loki
+    - name: Loki
+      type: loki
+      uid: loki
+      url: http://loki-gateway.observability.svc.cluster.local
+      access: proxy
+      jsonData:
+        derivedFields:
+          - datasourceUid: tempo
+            matcherRegex: '"trace_id":"(\w+)"'
+            name: TraceID
+            url: "$${__value.raw}"
+
   persistence:
     enabled: true
     type: pvc

@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.config import settings
+from app.core.tracing import setup_tracing
 from app.logging_config import configure_logging
 from app.middleware.request_context import request_context_middleware
 from app.observability import initialize_service_metrics, update_uptime
@@ -27,6 +28,8 @@ app = FastAPI(
     version=settings.service_version,
     lifespan=lifespan,
 )
+
+setup_tracing(app, settings)
 
 app.middleware("http")(request_context_middleware)
 
