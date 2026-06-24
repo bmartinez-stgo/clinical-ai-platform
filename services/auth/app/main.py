@@ -30,7 +30,6 @@ async def lifespan(app: FastAPI):
         service_version=settings.service_version,
         environment=settings.environment,
     )
-    setup_tracing(app, settings)
     logger.info(
         "service startup complete",
         extra={
@@ -62,6 +61,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+setup_tracing(app, settings)
 app.add_middleware(RequestContextMiddleware)
 
 app.include_router(health_router)

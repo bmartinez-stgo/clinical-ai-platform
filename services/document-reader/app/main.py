@@ -17,7 +17,6 @@ configure_logging(settings.log_level)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.arq = await create_pool(RedisSettings.from_dsn(settings.redis_url))
-    setup_tracing(app, settings)
     yield
     await app.state.arq.close()
 
@@ -27,6 +26,7 @@ app = FastAPI(
     version=settings.service_version,
     lifespan=lifespan,
 )
+setup_tracing(app, settings)
 
 app.include_router(health_router)
 app.include_router(documents_router)
