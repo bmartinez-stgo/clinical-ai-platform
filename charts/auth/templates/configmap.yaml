@@ -15,8 +15,9 @@ data:
   REFRESH_TOKEN_EXPIRATION_SECONDS: {{ .Values.auth.refreshTokenExpirationSeconds | int | quote }}
   JWT_ISSUER: {{ .Values.auth.jwtIssuer | quote }}
   JWT_AUDIENCE: {{ .Values.auth.jwtAudience | quote }}
-  OTEL_ENABLED: {{ .Values.otel.enabled | quote }}
-  OTEL_SERVICE_NAME: {{ .Values.otel.serviceName | quote }}
-  OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.otel.exporterOtlpEndpoint | quote }}
+  TRACING_ENABLED: {{ .Values.tracing.enabled | quote }}
+  OTEL_SERVICE_NAME: {{ .Values.tracing.serviceName | quote }}
+  OTEL_SERVICE_NAMESPACE: {{ .Values.tracing.serviceNamespace | quote }}
+  OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.tracing.endpoint | quote }}
   CLIENT_TOKEN_TTL_SECONDS: {{ .Values.auth.clientTokenTtlSeconds | quote }}
   DB_PATH: {{ .Values.persistence.dbPath | quote }}

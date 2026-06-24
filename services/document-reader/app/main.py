@@ -5,6 +5,7 @@ from arq.connections import RedisSettings
 from fastapi import FastAPI
 
 from app.core.config import get_settings
+from app.core.tracing import setup_tracing
 from app.core.logging import configure_logging
 from app.routes.documents import router as documents_router
 from app.routes.health import router as health_router
@@ -16,6 +17,7 @@ configure_logging(settings.log_level)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.arq = await create_pool(RedisSettings.from_dsn(settings.redis_url))
+    setup_tracing(app, settings)
     yield
     await app.state.arq.close()
 

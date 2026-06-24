@@ -23,3 +23,7 @@ data:
   PYTORCH_CUDA_ALLOC_CONF: {{ .Values.app.pytorchCudaAllocConf | quote }}
   VLLM_URL: {{ .Values.app.vllmUrl | quote }}
   VLLM_TIMEOUT_SECONDS: {{ .Values.app.vllmTimeoutSeconds | quote }}
+  TRACING_ENABLED: {{ .Values.tracing.enabled | quote }}
+  OTEL_SERVICE_NAME: {{ .Values.tracing.serviceName | quote }}
+  OTEL_SERVICE_NAMESPACE: {{ .Values.tracing.serviceNamespace | quote }}
+  OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.tracing.endpoint | quote }}

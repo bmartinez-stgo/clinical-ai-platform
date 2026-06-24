@@ -14,3 +14,7 @@ data:
   CHROMADB_HOST: {{ .Values.app.chromadbHost | quote }}
   CHROMADB_PORT: {{ .Values.app.chromadbPort | quote }}
   EMBEDDING_MODEL: {{ .Values.app.embeddingModel | quote }}
+  TRACING_ENABLED: {{ .Values.tracing.enabled | quote }}
+  OTEL_SERVICE_NAME: {{ .Values.tracing.serviceName | quote }}
+  OTEL_SERVICE_NAMESPACE: {{ .Values.tracing.serviceNamespace | quote }}
+  OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.tracing.endpoint | quote }}

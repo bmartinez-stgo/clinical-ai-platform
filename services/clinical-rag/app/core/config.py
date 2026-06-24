@@ -21,7 +21,10 @@ class Settings:
         "EMBEDDING_MODEL", "paraphrase-multilingual-MiniLM-L12-v2"
     )
 
-    otel_enabled: bool = os.getenv("OTEL_ENABLED", "false").lower() == "true"
+    tracing_enabled: bool = os.getenv("TRACING_ENABLED", "false").lower() == "true"
+    otel_service_name: str = os.getenv("OTEL_SERVICE_NAME", "clinical-rag")
+    otel_service_namespace: str = os.getenv("OTEL_SERVICE_NAMESPACE", "cap-prod-clinical-rag")
+    otel_exporter_otlp_endpoint: str = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://tempo.observability.svc.cluster.local:4318/v1/traces")
 
 
 @lru_cache

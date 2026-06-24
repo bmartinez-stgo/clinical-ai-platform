@@ -72,3 +72,9 @@ modelCache:
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+tracing:
+  enabled: "true"
+  serviceName: clinical-stt
+  serviceNamespace: cap-prod-clinical-stt
+  endpoint: http://tempo.observability.svc.cluster.local:4318/v1/traces

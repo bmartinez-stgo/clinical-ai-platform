@@ -112,7 +112,7 @@ data:
           "datasource": {"type": "prometheus", "uid": "prometheus"},
           "targets": [
             {
-              "expr": "histogram_quantile(0.95, sum by(client, server, le) (rate(traces_service_graph_request_duration_seconds_bucket[5m]))) * 1000",
+              "expr": "histogram_quantile(0.95, sum by(client, server, le) (rate(traces_service_graph_request_server_seconds_bucket[5m]))) * 1000",
               "legendFormat": "{{client}} → {{server}}",
               "refId": "A"
             }

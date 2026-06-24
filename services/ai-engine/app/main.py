@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 
 from app.core.config import get_settings
+from app.core.tracing import setup_tracing
 from app.core.engine import warmup_pipeline
 from app.core.logging import configure_logging
 from app.routes.extract import router as extract_router
@@ -14,6 +15,8 @@ app = FastAPI(
     title="ai-engine",
     version=settings.service_version,
 )
+
+setup_tracing(app, settings)
 
 
 @app.on_event("startup")

@@ -34,10 +34,6 @@ persistence:
   storageClass: ""
   dbPath: /data/clients.db
 
-otel:
-  enabled: false
-  serviceName: auth
-  exporterOtlpEndpoint: ""
 
 serviceMonitor:
   enabled: true
@@ -54,3 +50,9 @@ podAnnotations: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+tracing:
+  enabled: "true"
+  serviceName: auth
+  serviceNamespace: cap-prod-auth
+  endpoint: http://tempo.observability.svc.cluster.local:4318/v1/traces

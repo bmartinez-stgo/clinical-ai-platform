@@ -50,3 +50,9 @@ podAnnotations: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+tracing:
+  enabled: "true"
+  serviceName: clinical-rag
+  serviceNamespace: cap-prod-clinical-rag
+  endpoint: http://tempo.observability.svc.cluster.local:4318/v1/traces

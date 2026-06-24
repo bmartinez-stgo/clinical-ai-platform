@@ -23,3 +23,7 @@ data:
   TEMPERATURE: {{ .Values.app.temperature | quote }}
   MAX_AUDIO_SIZE_BYTES: {{ .Values.app.maxAudioSizeBytes | quote }}
   JOB_TTL_SECONDS: {{ .Values.app.jobTtlSeconds | quote }}
+  TRACING_ENABLED: {{ .Values.tracing.enabled | quote }}
+  OTEL_SERVICE_NAME: {{ .Values.tracing.serviceName | quote }}
+  OTEL_SERVICE_NAMESPACE: {{ .Values.tracing.serviceNamespace | quote }}
+  OTEL_EXPORTER_OTLP_ENDPOINT: {{ .Values.tracing.endpoint | quote }}

@@ -28,6 +28,10 @@ class Settings:
     )
     clinical_rag_enabled: bool = os.getenv("CLINICAL_RAG_ENABLED", "true").lower() == "true"
     clinical_rag_top_k: int = int(os.getenv("CLINICAL_RAG_TOP_K", "3"))
+    tracing_enabled: bool = os.getenv("TRACING_ENABLED", "false").lower() == "true"
+    otel_service_name: str = os.getenv("OTEL_SERVICE_NAME", "ai-diagnostic")
+    otel_service_namespace: str = os.getenv("OTEL_SERVICE_NAMESPACE", "cap-prod-ai-diagnostic")
+    otel_exporter_otlp_endpoint: str = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://tempo.observability.svc.cluster.local:4318/v1/traces")
 
 
 @lru_cache

@@ -28,6 +28,10 @@ class Settings:
     ocr_engine_timeout_seconds: int = int(os.getenv("OCR_ENGINE_TIMEOUT_SECONDS", "120"))
     redis_url: str = os.getenv("REDIS_URL", "redis://localhost:6379")
     job_ttl_seconds: int = int(os.getenv("JOB_TTL_SECONDS", "3600"))
+    tracing_enabled: bool = os.getenv("TRACING_ENABLED", "false").lower() == "true"
+    otel_service_name: str = os.getenv("OTEL_SERVICE_NAME", "document-reader")
+    otel_service_namespace: str = os.getenv("OTEL_SERVICE_NAMESPACE", "cap-prod-document-reader")
+    otel_exporter_otlp_endpoint: str = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://tempo.observability.svc.cluster.local:4318/v1/traces")
 
 
 @lru_cache

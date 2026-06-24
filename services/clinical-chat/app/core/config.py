@@ -23,6 +23,10 @@ class Settings:
     vllm_timeout_seconds: int = int(os.getenv("VLLM_TIMEOUT_SECONDS", "120"))
     max_tokens: int = int(os.getenv("MAX_TOKENS", "512"))
     temperature: float = float(os.getenv("TEMPERATURE", "0.3"))
+    tracing_enabled: bool = os.getenv("TRACING_ENABLED", "false").lower() == "true"
+    otel_service_name: str = os.getenv("OTEL_SERVICE_NAME", "clinical-chat")
+    otel_service_namespace: str = os.getenv("OTEL_SERVICE_NAMESPACE", "cap-prod-clinical-chat")
+    otel_exporter_otlp_endpoint: str = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://tempo.observability.svc.cluster.local:4318/v1/traces")
 
 
 @lru_cache

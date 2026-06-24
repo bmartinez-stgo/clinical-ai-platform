@@ -23,9 +23,10 @@ class Settings:
     jwt_issuer: str = os.getenv("JWT_ISSUER", "clinical-ai-platform-auth")
     jwt_audience: str = os.getenv("JWT_AUDIENCE", "clinical-ai-platform")
 
-    otel_enabled: bool = os.getenv("OTEL_ENABLED", "false").lower() == "true"
+    tracing_enabled: bool = os.getenv("TRACING_ENABLED", "false").lower() == "true"
     otel_service_name: str = os.getenv("OTEL_SERVICE_NAME", "auth")
-    otel_exporter_otlp_endpoint: str = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "")
+    otel_service_namespace: str = os.getenv("OTEL_SERVICE_NAMESPACE", "cap-prod-auth")
+    otel_exporter_otlp_endpoint: str = os.getenv("OTEL_EXPORTER_OTLP_ENDPOINT", "http://tempo.observability.svc.cluster.local:4318/v1/traces")
 
     auth_users_json: str = os.getenv("AUTH_USERS_JSON", "[]")
     auth_users: List[dict] = field(default_factory=list)

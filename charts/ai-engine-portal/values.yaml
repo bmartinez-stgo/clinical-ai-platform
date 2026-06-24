@@ -28,3 +28,9 @@ podAnnotations: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+tracing:
+  enabled: "true"
+  serviceName: ai-engine-portal
+  serviceNamespace: cap-prod-ai-engine-portal
+  endpoint: http://tempo.observability.svc.cluster.local:4318/v1/traces

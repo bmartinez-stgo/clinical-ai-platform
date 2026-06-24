@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
         service_version=settings.service_version,
         environment=settings.environment,
     )
-    setup_tracing(settings)
+    setup_tracing(app, settings)
     logger.info(
         "service startup complete",
         extra={
