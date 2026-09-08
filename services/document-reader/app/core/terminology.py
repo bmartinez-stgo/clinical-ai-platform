@@ -534,6 +534,62 @@ LAB_DEFINITIONS: tuple[LabDefinition, ...] = (
         loinc_code="5794-3",
         aliases=("hemoglobina",),
     ),
+    # Panel serológico autoinmune -- antes ausente del catálogo, por lo que
+    # nunca recibía LOINC ni unidad por defecto (siempre caía a None).
+    LabDefinition(
+        canonical_name="Antinuclear antibody",
+        canonical_name_es="Anticuerpos Antinucleares (ANA)",
+        loinc_code="5048-4",
+        aliases=("ana", "anticuerpos antinucleares", "anticuerpos antinuclear",
+                  "antinuclear antibody", "antinuclear antibodies"),
+    ),
+    LabDefinition(
+        canonical_name="Double stranded DNA antibody",
+        canonical_name_es="Anti-DNA de doble cadena",
+        loinc_code="14169-3",
+        aliases=("anti-dsdna", "anti dsdna", "dsdna", "anti-dna de doble cadena",
+                  "anti dna de doble cadena", "dna de doble cadena"),
+    ),
+    LabDefinition(
+        canonical_name="SS-A antibody",
+        canonical_name_es="Anti-SSA (Ro)",
+        loinc_code="24081-4",
+        aliases=("anti-ssa", "anti ssa", "ssa", "anti-ssa (ro)", "ssa (ro)", "anti-ro"),
+    ),
+    LabDefinition(
+        canonical_name="SS-B antibody",
+        canonical_name_es="Anti-SSB (La)",
+        loinc_code="24082-2",
+        aliases=("anti-ssb", "anti ssb", "ssb", "anti-ssb (la)", "ssb (la)", "anti-la"),
+    ),
+    LabDefinition(
+        canonical_name="Rheumatoid factor",
+        canonical_name_es="Factor Reumatoide",
+        loinc_code="11572-5",
+        aliases=("factor reumatoide", "factor reumatoides", "fr", "rheumatoid factor"),
+    ),
+    LabDefinition(
+        canonical_name="Cyclic citrullinated peptide antibody",
+        canonical_name_es="Anti-CCP",
+        loinc_code="34505-9",
+        aliases=("anti-ccp", "anti ccp", "ccp", "anticuerpos anti-ccp",
+                  "peptido citrulinado ciclico"),
+    ),
+    LabDefinition(
+        canonical_name="Cardiolipin antibody IgG",
+        canonical_name_es="Anticuerpos Anticardiolipina IgG",
+        loinc_code="16097-9",
+        aliases=("anticardiolipina igg", "anticuerpos anticardiolipina igg",
+                  "anticardiolipina", "anticuerpos anticardiolipina", "acl igg",
+                  "cardiolipin antibody igg"),
+    ),
+    LabDefinition(
+        canonical_name="Lupus anticoagulant",
+        canonical_name_es="Anticoagulante Lúpico",
+        loinc_code="22599-7",
+        aliases=("anticoagulante lupico", "anticoagulante lipico", "anticoagulante",
+                  "lupus anticoagulant"),
+    ),
 )
 
 
