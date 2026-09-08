@@ -2,10 +2,16 @@ from __future__ import annotations
 
 import re
 import unicodedata
+from difflib import SequenceMatcher
 from typing import Any
 from uuid import uuid4
 
 from app.core.terminology import LAB_DEFINITIONS, UNIT_NORMALIZATION
+
+# Umbral conservador: preferimos dejar un analito sin mapear (y marcado para
+# revisión) a mapearlo mal en un sistema clínico. Solo entra en juego cuando
+# el match exacto/prefijo de abajo no encontró nada.
+FUZZY_MATCH_THRESHOLD = 0.85
 
 RANGE_PATTERN = re.compile(
     r"(?P<low>-?[\d,]+(?:\.\d+)?)\s*[-–]\s*(?P<high>-?[\d,]+(?:\.\d+)?)\s*(?P<unit>[A-Za-z/{}\._0-9^%µ ]+)?"
@@ -84,8 +90,21 @@ def normalize_sex(value: str | None) -> str | None:
     return None
 
 
+def _all_names(definition: Any) -> list[str]:
+    names = list(definition.aliases)
+    if definition.canonical_name:
+        names.append(normalize_text(definition.canonical_name))
+    if definition.canonical_name_es:
+        names.append(normalize_text(definition.canonical_name_es))
+    return names
+
+
 def find_definition(test_name_raw: str) -> Any:
     normalized = normalize_text(test_name_raw)
+
+    # Paso 1: match exacto o de prefijo -- rápido y sin ambigüedad, se
+    # mantiene como primera opción para no alterar el comportamiento en
+    # los casos que ya funcionaban.
     matches: list[tuple[int, Any]] = []
     for definition in LAB_DEFINITIONS:
         for alias in definition.aliases:
@@ -96,10 +115,22 @@ def find_definition(test_name_raw: str) -> Any:
             ):
                 matches.append((len(alias), definition))
                 break
-
     if matches:
         matches.sort(key=lambda item: item[0], reverse=True)
         return matches[0][1]
+
+    # Paso 2: fallback difuso -- cubre typos del extractor (ej. "Lípico" en
+    # vez de "Lúpico") y nombres truncados/reordenados (ej. "Anticuerpos"
+    # solo, o "Anticardiolipina IgG" sin el prefijo "Anticuerpos"), sin
+    # necesitar una entrada nueva en el catálogo por cada variante posible.
+    best_definition, best_score = None, 0.0
+    for definition in LAB_DEFINITIONS:
+        for name in _all_names(definition):
+            score = SequenceMatcher(None, normalized, name).ratio()
+            if score > best_score:
+                best_definition, best_score = definition, score
+    if best_definition is not None and best_score >= FUZZY_MATCH_THRESHOLD:
+        return best_definition
     return None
 
 
