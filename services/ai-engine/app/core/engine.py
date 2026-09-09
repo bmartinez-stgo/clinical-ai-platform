@@ -62,6 +62,7 @@ Field definitions:
 - reference_range_raw: the reference range exactly as printed (e.g., "4,600.00 - 10,200.00", ">0.50"). Null if absent.
 - specimen_raw: the biological specimen type if explicitly stated (e.g., "Sangre", "Suero", "Orina"). Null if not stated.
 - confidence: 0.0 to 1.0 extraction confidence.
+- report_date: the date the report was ISSUED/RELEASED (labeled "Reporte", "Fecha de reporte", "Emisión", or the second date when the text says "...reportada el <date>"). This is a DIFFERENT date from when the sample was collected (labeled "Toma", "Fecha de toma", "Recolección", or "...tomada el <date>") — never confuse the two, and never return both concatenated in one string. If a report shows both a collection date and a report date, use only the report/emission one.
 
 Rules:
 - Return one JSON object only. No markdown fences. No text outside JSON.

@@ -24,7 +24,11 @@ class RawObservation(BaseModel):
     unit_raw: str | None = None
     reference_range_raw: str | None = None
     specimen_raw: str | None = None
-    page: int
+    # Optional: some models (e.g. OCR-specialized fine-tunes) don't echo
+    # back a page number per observation. Defaults to the first page of
+    # the batch; multi-page attribution degrades gracefully instead of
+    # failing the whole extraction.
+    page: int = 1
     confidence: float = Field(..., ge=0, le=1)
 
 
