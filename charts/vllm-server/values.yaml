@@ -13,13 +13,17 @@ service:
 app:
   name: vllm-server
   namespace: cap-prod-vllm-server
-  modelId: Qwen/Qwen3-VL-8B-Instruct
+  modelId: reducto/RolmOCR
   dtype: bfloat16
   maxModelLen: "8192"
   gpuMemoryUtilization: "0.90"
   port: 8000
   hfHome: /var/cache/huggingface
-  extraArgs: []
+  # enforce-eager avoids a host-memory spike during CUDA graph capture on
+  # first load (OOMKilled at the 40Gi pod limit otherwise -- see revert
+  # history on the 32B attempt for the same underlying vLLM V1 behavior).
+  extraArgs:
+    - "--enforce-eager"
 
 gpu:
   enabled: true

@@ -13,6 +13,52 @@ from app.core.terminology import LAB_DEFINITIONS, UNIT_NORMALIZATION
 # el match exacto/prefijo de abajo no encontró nada.
 FUZZY_MATCH_THRESHOLD = 0.85
 
+# Fecha de reporte vs. fecha de toma: en vez de pedirle al modelo de visión
+# que distinga cuál es cuál (falla de forma sistemática en algunos modelos,
+# ver hallazgos del benchmark), se busca en el texto embebido del PDF
+# (cuando existe -- documentos "nacidos digitales", no escaneados) con
+# regex determinístico. Solo se usa como override cuando encuentra una
+# coincidencia inequívoca; si no, se deja el valor que dio el modelo.
+_DATE_TOKEN = r"\d{4}-\d{2}-\d{2}|\d{1,2}/\d{1,2}/\d{2,4}"
+_REPORT_DATE_CONTEXT = re.compile(
+    r"(?:reporte|reportad[ao]|emision|emitid[ao]|report date|issued|\brep\b\.?)\D{0,15}(" + _DATE_TOKEN + r")",
+    re.IGNORECASE,
+)
+_COLLECTION_DATE_CONTEXT = re.compile(
+    r"(?:toma|tomad[ao]|recolec|collected|collection)\D{0,15}(" + _DATE_TOKEN + r")",
+    re.IGNORECASE,
+)
+_FOLIO_CONTEXT = re.compile(
+    r"(?:folio|accession|no\.?\s*de\s*reporte|\breporte\b)\s*[:#]?\s*([A-Z]{2,}-[A-Z0-9\-\.]{4,})",
+    re.IGNORECASE,
+)
+
+
+def extract_deterministic_report_fields(text: str) -> dict[str, str | None]:
+    """Busca fecha de reporte y folio en el texto embebido del PDF.
+
+    Devuelve None para un campo si no hay una coincidencia clara -- nunca
+    adivina, para no reemplazar un valor del modelo por uno peor.
+    """
+    if not text:
+        return {"report_date": None, "accession_number": None}
+
+    report_date = None
+    report_match = _REPORT_DATE_CONTEXT.search(text)
+    if report_match:
+        candidate = report_match.group(1)
+        # Evita falsos positivos si esa misma fecha también aparece
+        # etiquetada como fecha de toma en otro lugar del texto (ambigua).
+        collection_match = _COLLECTION_DATE_CONTEXT.search(text)
+        if not collection_match or collection_match.group(1) != candidate:
+            report_date = candidate
+
+    folio_match = _FOLIO_CONTEXT.search(text)
+    accession_number = folio_match.group(1).rstrip(".-") if folio_match else None
+
+    return {"report_date": report_date, "accession_number": accession_number}
+
+
 RANGE_PATTERN = re.compile(
     r"(?P<low>-?[\d,]+(?:\.\d+)?)\s*[-–]\s*(?P<high>-?[\d,]+(?:\.\d+)?)\s*(?P<unit>[A-Za-z/{}\._0-9^%µ ]+)?"
 )

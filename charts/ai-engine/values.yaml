@@ -19,7 +19,7 @@ app:
   serviceVersion: "0.1.0"
   environment: prod
   engineBackend: vllm
-  engineId: Qwen/Qwen3-VL-8B-Instruct
+  engineId: reducto/RolmOCR
   maxNewTokens: "2048"
   temperature: "0"
   devicePreference: cpu

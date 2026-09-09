@@ -5,7 +5,7 @@ import logging
 
 from app.core.config import get_settings
 from app.core.document_profile import detect_document_profile
-from app.core.lab_normalization import build_normalized_response
+from app.core.lab_normalization import build_normalized_response, extract_deterministic_report_fields
 from app.core.vision_client import extract_laboratory_observations
 
 settings = get_settings()
@@ -118,6 +118,17 @@ async def normalize_lab_document(document_payload: dict, language: str = "en") -
 
     extraction_payload = merge_extraction_payloads(document_payload["document_id"], extraction_payloads)
     result = build_normalized_response(document_payload, extraction_payload, language=language)
+
+    # Override determinístico de fecha de reporte / folio a partir del texto
+    # embebido del PDF, cuando existe uno confiable (documento no-escaneado).
+    # El modelo de visión sigue siendo la única fuente para los analitos.
+    if not profile.requires_ocr and document_payload.get("pages"):
+        first_page_text = document_payload["pages"][0].get("text", "")
+        deterministic = extract_deterministic_report_fields(first_page_text)
+        if deterministic["report_date"]:
+            result["report"]["report_date"] = deterministic["report_date"]
+        if deterministic["accession_number"]:
+            result["report"]["accession_number"] = deterministic["accession_number"]
     result["extraction_profile"] = profile.profile_name
     result["requires_ocr"] = profile.requires_ocr
     result["confidence"] = calculate_result_confidence(result, profile.profile_name)
