@@ -23,7 +23,14 @@ app:
   maxTokens: "1024"
   temperature: "0.1"
   clinicalRagUrl: http://clinical-rag.cap-prod-clinical-rag.svc.cluster.local:8085
-  clinicalRagEnabled: "true"
+  # Deshabilitado: con el store actual (pocos casos, embedding genérico
+  # multilingüe) no hay separación confiable entre coincidencias genuinas y
+  # falsas -- un caso verdaderamente similar puede dar menor similitud que
+  # uno sin relación (ver research/paper/results/findings_estudio2.md).
+  # Subir el umbral no lo resuelve; reactivar requiere repensar el método
+  # de recuperación (ej. ponderar por coincidencia de código LOINC, no solo
+  # similitud semántica de texto) y/o un store con más volumen.
+  clinicalRagEnabled: "false"
   clinicalRagTopK: "3"
 
 resources:
