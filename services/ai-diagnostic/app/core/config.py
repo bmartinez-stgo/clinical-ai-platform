@@ -28,6 +28,11 @@ class Settings:
     )
     clinical_rag_enabled: bool = os.getenv("CLINICAL_RAG_ENABLED", "true").lower() == "true"
     clinical_rag_top_k: int = int(os.getenv("CLINICAL_RAG_TOP_K", "3"))
+    # Un caso "similar" con score bajo (store chico o poco poblado) hace más
+    # daño que ayuda: se presenta como "base de datos validada" aunque no
+    # tenga relación real con el cuadro del paciente. Por debajo de este
+    # umbral se descarta en vez de inyectarse como contexto.
+    clinical_rag_min_similarity: float = float(os.getenv("CLINICAL_RAG_MIN_SIMILARITY", "0.6"))
     tracing_enabled: bool = os.getenv("TRACING_ENABLED", "false").lower() == "true"
     otel_service_name: str = os.getenv("OTEL_SERVICE_NAME", "ai-diagnostic")
     otel_service_namespace: str = os.getenv("OTEL_SERVICE_NAMESPACE", "cap-prod-ai-diagnostic")

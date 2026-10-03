@@ -462,10 +462,16 @@ def _fetch_rag_context(payload: DiagnosticRequest) -> str:
             resp.raise_for_status()
 
         data = resp.json()
-        cases = data.get("cases", [])
         total = data.get("total_cases_in_store", 0)
+        cases = [c for c in data.get("cases", []) if c.get("similarity", 0) >= s.clinical_rag_min_similarity]
 
         if not cases or total == 0:
+            if data.get("cases"):
+                logger.info(
+                    "RAG cases found but below similarity threshold (%.2f), skipping context",
+                    s.clinical_rag_min_similarity,
+                    extra={"request_id": payload.request_id},
+                )
             return ""
 
         lines = ["REFERENCE CASES FROM VALIDATED DATABASE (use as clinical context):"]
