@@ -14,6 +14,12 @@ data:
   CHROMADB_HOST: {{ .Values.app.chromadbHost | quote }}
   CHROMADB_PORT: {{ .Values.app.chromadbPort | quote }}
   EMBEDDING_MODEL: {{ .Values.app.embeddingModel | quote }}
+  # El modelo ya está en caché local; la política de red no permite salida a
+  # internet desde este namespace. Sin esto, cada embedding intenta primero
+  # verificar actualizaciones contra Hugging Face y agota varios reintentos
+  # con backoff antes de usar el caché -- vuelve lenta cada consulta RAG.
+  HF_HUB_OFFLINE: "1"
+  TRANSFORMERS_OFFLINE: "1"
   TRACING_ENABLED: {{ .Values.tracing.enabled | quote }}
   OTEL_SERVICE_NAME: {{ .Values.tracing.serviceName | quote }}
   OTEL_SERVICE_NAMESPACE: {{ .Values.tracing.serviceNamespace | quote }}
