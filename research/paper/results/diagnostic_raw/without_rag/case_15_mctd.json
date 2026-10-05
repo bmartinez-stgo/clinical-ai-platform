@@ -1,0 +1,78 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 4,
+    "abnormal_markers": [
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": "1:640 patrón moteado",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-U1-RNP",
+        "loinc_code": null,
+        "value": "Fuertemente positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Hemoglobina",
+        "loinc_code": null,
+        "value": 10.5,
+        "unit": "g/dL",
+        "ref_low": 11.0,
+        "ref_high": 14.5,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "VSG",
+        "loinc_code": null,
+        "value": 115.0,
+        "unit": "mm/h",
+        "ref_low": null,
+        "ref_high": 30.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Síndrome de Múltiples Componentes (MCTD)",
+      "likelihood": "high",
+      "supporting_findings": [
+        "ANA 1:640 patrón moteado",
+        "Anti-U1-RNP fuertemente positivo",
+        "VSG 115.0 mm/h"
+      ],
+      "missing_workup": [
+        "Estudios de función tiroidea",
+        "Prueba de esfuerzo o imagenología para evaluar debilidad muscular"
+      ]
+    }
+  ],
+  "differential": [
+    "Síndrome de Múltiples Componentes (MCTD)",
+    "Esclerosis sistémica",
+    "Artritis reumatoide",
+    "Anemia ferropénica"
+  ],
+  "recommended_followup": [
+    "Estudios de función tiroidea",
+    "Prueba de esfuerzo o imagenología para evaluar debilidad muscular",
+    "Estudios de hierro sérico (ferretinas, ferritina, transferrina)"
+  ],
+  "reasoning": "El paciente presenta hallazgos que sugieren una condición autoinmune, con ANA altamente positiva y patrón moteado, así como Anti-U1-RNP fuertemente positivo, lo cual es característico del síndrome de múltiples componentes (MCTD). La VSG elevada también apoya esta sospecha. La anemia leve puede estar relacionada con la enfermedad autoinmune o tener otra causa, por lo que se recomienda evaluar la función tiroidea y los niveles de hierro.",
+  "confidence": "high",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

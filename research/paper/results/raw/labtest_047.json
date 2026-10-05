@@ -1,0 +1,405 @@
+{
+  "document_id": "696769d2-b9f0-4dba-8f32-f1b3eedf699c",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_047.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 523.0
+  },
+  "patient": {
+    "external_id": "ID:RGM-769997-X3",
+    "name": "Ricardo Garcia Mendoza",
+    "sex": null,
+    "date_of_birth": "1966-08-27"
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clinico Nahui",
+    "report_date": "2026-03-28",
+    "accession_number": "NHI-2026-23526"
+  },
+  "observation_count": 8,
+  "observations": [
+    {
+      "observation_id": "a000a9d5-dcc1-4cab-a06c-20617e8f52a7",
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "* COL-T",
+      "test_name_normalized": "* COL-T",
+      "loinc_code": null,
+      "value": 235,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "[N: 125-200]",
+      "reference_range": {
+        "low": 125.0,
+        "high": 200.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 35.0,
+        "relative_to_upper": 0.175,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "62beda71-4851-4d34-9833-d9b194613a7f",
+      "panel_raw": "",
+      "test_name_raw": "TG",
+      "test_name_normalized": "TG",
+      "loinc_code": null,
+      "value": 45,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "[N: 35-150]",
+      "reference_range": {
+        "low": 35.0,
+        "high": 150.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "d4ba5595-a17f-48eb-bb93-e6acb0ee6a60",
+      "panel_raw": "",
+      "test_name_raw": "HDL",
+      "test_name_normalized": "HDL",
+      "loinc_code": null,
+      "value": 44,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "[N: 40-60]",
+      "reference_range": {
+        "low": 40.0,
+        "high": 60.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "6e90f966-9a0f-458e-aef9-889381ba00eb",
+      "panel_raw": "PRUEBAS DE FUNCIÓN HEPÁTICA",
+      "test_name_raw": "AST",
+      "test_name_normalized": "Aspartato aminotransferasa (AST)",
+      "loinc_code": "1920-8",
+      "value": 30,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "[N: 8-40]",
+      "reference_range": {
+        "low": 8.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "54753037-465f-4254-8c24-ecb8951690c4",
+      "panel_raw": "",
+      "test_name_raw": "ALP",
+      "test_name_normalized": "ALP",
+      "loinc_code": null,
+      "value": 116,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "[N: 44-147]",
+      "reference_range": {
+        "low": 44.0,
+        "high": 147.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "04c71c9a-2d92-44e5-92f7-4ca83a0fcbad",
+      "panel_raw": "PANEL SEROLÓGICO AUTOINMUNE",
+      "test_name_raw": "aCL-IgG",
+      "test_name_normalized": "Anticuerpos Anticardiolipina IgG",
+      "loinc_code": "16097-9",
+      "value": 6,
+      "value_type": "numeric",
+      "unit_raw": "GPL-U/mL",
+      "unit_ucum": "GPL-U/mL",
+      "reference_range_raw": "[Normal <15]",
+      "reference_range": null,
+      "interpretation": null,
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "5ae1026a-b0ce-4568-a790-0bd7c3c6f9a8",
+      "panel_raw": "",
+      "test_name_raw": "CCP",
+      "test_name_normalized": "Anti-CCP",
+      "loinc_code": "34505-9",
+      "value": 9,
+      "value_type": "numeric",
+      "unit_raw": "U/mL",
+      "unit_ucum": "U/mL",
+      "reference_range_raw": "[Normal <20]",
+      "reference_range": null,
+      "interpretation": null,
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "eaca630d-6a3b-453b-86a8-a64de0ac70bb",
+      "panel_raw": "",
+      "test_name_raw": "Anti-dsDNA",
+      "test_name_normalized": "Anti-DNA de doble cadena",
+      "loinc_code": "14169-3",
+      "value": 18,
+      "value_type": "numeric",
+      "unit_raw": "UI/mL",
+      "unit_ucum": "UI/mL",
+      "reference_range_raw": "[Normal <30]",
+      "reference_range": null,
+      "interpretation": null,
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 1.0
+    }
+  ],
+  "review_items": [
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "* COL-T",
+      "value_raw": "235",
+      "unit_raw": "mg/dL",
+      "reference_range_raw": "[N: 125-200]",
+      "specimen_raw": "Sangre",
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "",
+      "test_name_raw": "TG",
+      "value_raw": "45",
+      "unit_raw": "mg/dL",
+      "reference_range_raw": "[N: 35-150]",
+      "specimen_raw": "Sangre",
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "",
+      "test_name_raw": "HDL",
+      "value_raw": "44",
+      "unit_raw": "mg/dL",
+      "reference_range_raw": "[N: 40-60]",
+      "specimen_raw": "Sangre",
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "",
+      "test_name_raw": "ALP",
+      "value_raw": "116",
+      "unit_raw": "U/L",
+      "reference_range_raw": "[N: 44-147]",
+      "specimen_raw": "Sangre",
+      "confidence": 1.0
+    },
+    {
+      "stage": "interpretation",
+      "reason": "reference_range_unparsed",
+      "message": "A reference range was present, but it could not be parsed into structured low/high bounds.",
+      "page": 1,
+      "panel_raw": "PANEL SEROLÓGICO AUTOINMUNE",
+      "test_name_raw": "aCL-IgG",
+      "value_raw": "6",
+      "unit_raw": "GPL-U/mL",
+      "reference_range_raw": "[Normal <15]",
+      "specimen_raw": "Sangre",
+      "confidence": 1.0
+    },
+    {
+      "stage": "interpretation",
+      "reason": "reference_range_unparsed",
+      "message": "A reference range was present, but it could not be parsed into structured low/high bounds.",
+      "page": 1,
+      "panel_raw": "",
+      "test_name_raw": "CCP",
+      "value_raw": "9",
+      "unit_raw": "U/mL",
+      "reference_range_raw": "[Normal <20]",
+      "specimen_raw": "Sangre",
+      "confidence": 1.0
+    },
+    {
+      "stage": "interpretation",
+      "reason": "reference_range_unparsed",
+      "message": "A reference range was present, but it could not be parsed into structured low/high bounds.",
+      "page": 1,
+      "panel_raw": "",
+      "test_name_raw": "Anti-dsDNA",
+      "value_raw": "18",
+      "unit_raw": "UI/mL",
+      "reference_range_raw": "[Normal <30]",
+      "specimen_raw": "Sangre",
+      "confidence": 1.0
+    }
+  ],
+  "processing_issues": {
+    "extraction": [
+      {
+        "stage": "extraction",
+        "reason": "warning",
+        "message": "* = fuera de rango. Abreviaturas según nomenclatura interna del laboratorio."
+      }
+    ],
+    "normalization": [
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "PERFIL DE LÍPIDOS",
+        "test_name_raw": "* COL-T",
+        "value_raw": "235",
+        "unit_raw": "mg/dL",
+        "reference_range_raw": "[N: 125-200]",
+        "specimen_raw": "Sangre",
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "",
+        "test_name_raw": "TG",
+        "value_raw": "45",
+        "unit_raw": "mg/dL",
+        "reference_range_raw": "[N: 35-150]",
+        "specimen_raw": "Sangre",
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "",
+        "test_name_raw": "HDL",
+        "value_raw": "44",
+        "unit_raw": "mg/dL",
+        "reference_range_raw": "[N: 40-60]",
+        "specimen_raw": "Sangre",
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "",
+        "test_name_raw": "ALP",
+        "value_raw": "116",
+        "unit_raw": "U/L",
+        "reference_range_raw": "[N: 44-147]",
+        "specimen_raw": "Sangre",
+        "confidence": 1.0
+      }
+    ],
+    "interpretation": [
+      {
+        "stage": "interpretation",
+        "reason": "reference_range_unparsed",
+        "message": "A reference range was present, but it could not be parsed into structured low/high bounds.",
+        "page": 1,
+        "panel_raw": "PANEL SEROLÓGICO AUTOINMUNE",
+        "test_name_raw": "aCL-IgG",
+        "value_raw": "6",
+        "unit_raw": "GPL-U/mL",
+        "reference_range_raw": "[Normal <15]",
+        "specimen_raw": "Sangre",
+        "confidence": 1.0
+      },
+      {
+        "stage": "interpretation",
+        "reason": "reference_range_unparsed",
+        "message": "A reference range was present, but it could not be parsed into structured low/high bounds.",
+        "page": 1,
+        "panel_raw": "",
+        "test_name_raw": "CCP",
+        "value_raw": "9",
+        "unit_raw": "U/mL",
+        "reference_range_raw": "[Normal <20]",
+        "specimen_raw": "Sangre",
+        "confidence": 1.0
+      },
+      {
+        "stage": "interpretation",
+        "reason": "reference_range_unparsed",
+        "message": "A reference range was present, but it could not be parsed into structured low/high bounds.",
+        "page": 1,
+        "panel_raw": "",
+        "test_name_raw": "Anti-dsDNA",
+        "value_raw": "18",
+        "unit_raw": "UI/mL",
+        "reference_range_raw": "[Normal <30]",
+        "specimen_raw": "Sangre",
+        "confidence": 1.0
+      }
+    ]
+  },
+  "unmapped_items": [
+    "* COL-T",
+    "ALP",
+    "HDL",
+    "TG"
+  ],
+  "warnings": [
+    "* = fuera de rango. Abreviaturas según nomenclatura interna del laboratorio."
+  ],
+  "confidence": 0.85,
+  "requires_manual_review": true,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

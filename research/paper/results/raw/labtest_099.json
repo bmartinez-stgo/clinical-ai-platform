@@ -1,0 +1,313 @@
+{
+  "document_id": "4d6f2a39-a0f6-4162-9183-aedbe495f1b4",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_099.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 663.0
+  },
+  "patient": {
+    "external_id": "NHI-2026-99848",
+    "name": "Carlos Alberto Garcia Mendoza",
+    "sex": null,
+    "date_of_birth": "53"
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clinico Nahui",
+    "report_date": "2026-07-27",
+    "accession_number": "NHI-2026-99848"
+  },
+  "observation_count": 8,
+  "observations": [
+    {
+      "observation_id": "3fdca9bb-b56c-450a-9a52-509f04180e37",
+      "panel_raw": "Perfil de Lipidos",
+      "test_name_raw": "Triglicéridos",
+      "test_name_normalized": "Triglicéridos",
+      "loinc_code": "2571-8",
+      "value": 214,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "35-150",
+      "reference_range": {
+        "low": 35.0,
+        "high": 150.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 64.0,
+        "relative_to_upper": 0.4267,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "449a0459-376b-4237-b074-b2899b0262fb",
+      "panel_raw": "Perfil de Lipidos",
+      "test_name_raw": "Colesterol Total",
+      "test_name_normalized": "Colesterol total",
+      "loinc_code": "2093-3",
+      "value": 161,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "50-130",
+      "reference_range": {
+        "low": 50.0,
+        "high": 130.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 31.0,
+        "relative_to_upper": 0.2385,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "e9316d54-a087-4585-93d7-17b051c8f6af",
+      "panel_raw": "Perfil de Lipidos",
+      "test_name_raw": "LDL",
+      "test_name_normalized": "LDL",
+      "loinc_code": null,
+      "value": 61,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "30-130",
+      "reference_range": {
+        "low": 30.0,
+        "high": 130.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "906c349b-48b7-457d-9bec-2f27f43d387a",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "Bilirrubina Total",
+      "test_name_normalized": "Bilirrubina total",
+      "loinc_code": "1975-2",
+      "value": 0,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "0.2-1.2",
+      "reference_range": {
+        "low": 0.2,
+        "high": 1.2,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 0.2,
+        "relative_to_lower": 1.0,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": "Sangre",
+      "page": 2,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "a12dca99-3ac7-4c73-832d-a605a6e91f53",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "Fosfatasa Alcalina",
+      "test_name_normalized": "Fosfatasa alcalina",
+      "loinc_code": "6768-6",
+      "value": 205,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "44-147",
+      "reference_range": {
+        "low": 44.0,
+        "high": 147.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 58.0,
+        "relative_to_upper": 0.3946,
+        "unit_ucum": "U/L"
+      },
+      "specimen": "Sangre",
+      "page": 2,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "a306a07d-bdce-430a-acf4-c7aa3e3b0b13",
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Factor Reumatoide",
+      "test_name_normalized": "Factor Reumatoide",
+      "loinc_code": "11572-5",
+      "value": 8,
+      "value_type": "numeric",
+      "unit_raw": "UI/mL",
+      "unit_ucum": "UI/mL",
+      "reference_range_raw": "<14",
+      "reference_range": {
+        "low": null,
+        "high": 14.0,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 3,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "1c8d2624-4fa5-4b1e-b056-2fc3d3e0fc18",
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anticoagulante Lúpico",
+      "test_name_normalized": "Anticoagulante Lúpico",
+      "loinc_code": "22599-7",
+      "value": 0,
+      "value_type": "numeric",
+      "unit_raw": "",
+      "unit_ucum": null,
+      "reference_range_raw": "Negativo",
+      "reference_range": null,
+      "interpretation": null,
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 3,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "3b10ab8c-8509-4fee-bb74-f9c8e9548794",
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anti-CCP",
+      "test_name_normalized": "Anti-CCP",
+      "loinc_code": "34505-9",
+      "value": 9,
+      "value_type": "numeric",
+      "unit_raw": "U/mL",
+      "unit_ucum": "U/mL",
+      "reference_range_raw": "<20",
+      "reference_range": {
+        "low": null,
+        "high": 20.0,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 3,
+      "confidence": 0.9
+    }
+  ],
+  "review_items": [
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "Perfil de Lipidos",
+      "test_name_raw": "LDL",
+      "value_raw": "61",
+      "unit_raw": "mg/dL",
+      "reference_range_raw": "30-130",
+      "specimen_raw": "Sangre",
+      "confidence": 0.9
+    },
+    {
+      "stage": "normalization",
+      "reason": "unit_unmapped",
+      "message": "Numeric value extracted, but the measurement unit could not be normalized.",
+      "page": 3,
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anticoagulante Lúpico",
+      "value_raw": "Negativo",
+      "unit_raw": "",
+      "reference_range_raw": "Negativo",
+      "specimen_raw": "Sangre",
+      "confidence": 0.9
+    },
+    {
+      "stage": "interpretation",
+      "reason": "reference_range_unparsed",
+      "message": "A reference range was present, but it could not be parsed into structured low/high bounds.",
+      "page": 3,
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anticoagulante Lúpico",
+      "value_raw": "Negativo",
+      "unit_raw": "",
+      "reference_range_raw": "Negativo",
+      "specimen_raw": "Sangre",
+      "confidence": 0.9
+    }
+  ],
+  "processing_issues": {
+    "extraction": [],
+    "normalization": [
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "Perfil de Lipidos",
+        "test_name_raw": "LDL",
+        "value_raw": "61",
+        "unit_raw": "mg/dL",
+        "reference_range_raw": "30-130",
+        "specimen_raw": "Sangre",
+        "confidence": 0.9
+      },
+      {
+        "stage": "normalization",
+        "reason": "unit_unmapped",
+        "message": "Numeric value extracted, but the measurement unit could not be normalized.",
+        "page": 3,
+        "panel_raw": "Panel Serológico Autoinmune",
+        "test_name_raw": "Anticoagulante Lúpico",
+        "value_raw": "Negativo",
+        "unit_raw": "",
+        "reference_range_raw": "Negativo",
+        "specimen_raw": "Sangre",
+        "confidence": 0.9
+      }
+    ],
+    "interpretation": [
+      {
+        "stage": "interpretation",
+        "reason": "reference_range_unparsed",
+        "message": "A reference range was present, but it could not be parsed into structured low/high bounds.",
+        "page": 3,
+        "panel_raw": "Panel Serológico Autoinmune",
+        "test_name_raw": "Anticoagulante Lúpico",
+        "value_raw": "Negativo",
+        "unit_raw": "",
+        "reference_range_raw": "Negativo",
+        "specimen_raw": "Sangre",
+        "confidence": 0.9
+      }
+    ]
+  },
+  "unmapped_items": [
+    "LDL"
+  ],
+  "warnings": [],
+  "confidence": 0.97,
+  "requires_manual_review": true,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

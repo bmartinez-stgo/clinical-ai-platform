@@ -1,0 +1,450 @@
+{
+  "document_id": "1ee64b6c-ee3f-4e22-a752-f68a60a29dc4",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_007.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 899.0
+  },
+  "patient": {
+    "external_id": "EEA-777470-X1",
+    "name": "Eduardo Flores Aguilar",
+    "sex": null,
+    "date_of_birth": "1949"
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clínico Nahui",
+    "report_date": "2026-08-10",
+    "accession_number": "NHI-2026-85454"
+  },
+  "observation_count": 15,
+  "observations": [
+    {
+      "observation_id": "0eba106e-658e-42db-b0ea-d6cf17d5c9c5",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Sodio",
+      "test_name_normalized": "Sodio",
+      "loinc_code": "2951-2",
+      "value": 142,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "136-145",
+      "reference_range": {
+        "low": 136.0,
+        "high": 145.0,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "9d7d3137-8479-44b7-998b-ced09a07e1be",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Urea",
+      "test_name_normalized": "Urea",
+      "loinc_code": "3094-0",
+      "value": 16,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "7-20",
+      "reference_range": {
+        "low": 7.0,
+        "high": 20.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "5b156027-9d70-4f64-893b-a08922dc554a",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Glucosa",
+      "test_name_normalized": "Glucosa",
+      "loinc_code": "2345-7",
+      "value": 76,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "70-100",
+      "reference_range": {
+        "low": 70.0,
+        "high": 100.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "9d612f8b-5e9f-4ecb-9b78-dcb433564fa9",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Potasio",
+      "test_name_normalized": "Potasio",
+      "loinc_code": "2823-3",
+      "value": 5.5,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "3.5-5.1",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.1,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 0.4,
+        "relative_to_upper": 0.0784,
+        "unit_ucum": "meq/L"
+      },
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "076bc471-61d2-4e32-9315-50511d794fb1",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Creatinina",
+      "test_name_normalized": "Creatinina",
+      "loinc_code": "2160-0",
+      "value": 1.2,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "0.6-1.1",
+      "reference_range": {
+        "low": 0.6,
+        "high": 1.1,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 0.1,
+        "relative_to_upper": 0.0909,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "2109f172-da2b-485c-84eb-11fb0d8e1361",
+      "panel_raw": "Perfil de Lípidos",
+      "test_name_raw": "HDL",
+      "test_name_normalized": "HDL",
+      "loinc_code": null,
+      "value": 49,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "40-60",
+      "reference_range": {
+        "low": 40.0,
+        "high": 60.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "eedae566-ddbe-44a7-aa0d-8f353231113d",
+      "panel_raw": "Perfil de Lípidos",
+      "test_name_raw": "Triglicéridos",
+      "test_name_normalized": "Triglicéridos",
+      "loinc_code": "2571-8",
+      "value": 110,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "35-150",
+      "reference_range": {
+        "low": 35.0,
+        "high": 150.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "c7e3c057-6885-4e3f-a13d-7c411539ad0c",
+      "panel_raw": "Perfil de Lípidos",
+      "test_name_raw": "Colesterol Total",
+      "test_name_normalized": "Colesterol total",
+      "loinc_code": "2093-3",
+      "value": 158,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "125-200",
+      "reference_range": {
+        "low": 125.0,
+        "high": 200.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "b4ba6ae9-2ae3-451f-b0ce-9f745039162f",
+      "panel_raw": "Perfil de Lípidos",
+      "test_name_raw": "LDL",
+      "test_name_normalized": "LDL",
+      "loinc_code": null,
+      "value": 88,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "50-130",
+      "reference_range": {
+        "low": 50.0,
+        "high": 130.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "56fdb609-75ce-499c-8d17-fceb58235a8a",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "AST (TGO)",
+      "test_name_normalized": "Aspartato aminotransferasa (AST)",
+      "loinc_code": "1920-8",
+      "value": 28,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "8-40",
+      "reference_range": {
+        "low": 8.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "d098e7cb-272b-4323-8f96-b6b536e83b6e",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "Fosfatasa Alcalina",
+      "test_name_normalized": "Fosfatasa alcalina",
+      "loinc_code": "6768-6",
+      "value": 128,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "44-147",
+      "reference_range": {
+        "low": 44.0,
+        "high": 147.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "1bc28e9c-f553-4e47-a5f2-3b94b0870a47",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "ALT (TGP)",
+      "test_name_normalized": "Alanina aminotransferasa (ALT)",
+      "loinc_code": "1742-6",
+      "value": 54,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "7-40",
+      "reference_range": {
+        "low": 7.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 14.0,
+        "relative_to_upper": 0.35,
+        "unit_ucum": "U/L"
+      },
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "aeb09afe-5a19-4c16-a867-299a0af86502",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "Bilirrubina Total",
+      "test_name_normalized": "Bilirrubina total",
+      "loinc_code": "1975-2",
+      "value": 0.4,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "0.2-1.2",
+      "reference_range": {
+        "low": 0.2,
+        "high": 1.2,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "e42a1a40-95f7-40e1-8ae9-67ad74602ed0",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Hemoglobina",
+      "test_name_normalized": "Hemoglobina",
+      "loinc_code": "718-7",
+      "value": 10.5,
+      "value_type": "numeric",
+      "unit_raw": "g/dL",
+      "unit_ucum": "g/dL",
+      "reference_range_raw": "12.0-16.0",
+      "reference_range": {
+        "low": 12.0,
+        "high": 16.0,
+        "unit_ucum": "g/dL"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 1.5,
+        "relative_to_lower": 0.125,
+        "unit_ucum": "g/dL"
+      },
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "239108e5-86b3-424d-9a44-c3fcc69a3491",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Hematocrito",
+      "test_name_normalized": "Hematocrito",
+      "loinc_code": "4544-3",
+      "value": 49,
+      "value_type": "numeric",
+      "unit_raw": "%",
+      "unit_ucum": "%",
+      "reference_range_raw": "36.0-46.0",
+      "reference_range": {
+        "low": 36.0,
+        "high": 46.0,
+        "unit_ucum": "%"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 3.0,
+        "relative_to_upper": 0.0652,
+        "unit_ucum": "%"
+      },
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 1.0
+    }
+  ],
+  "review_items": [
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "Perfil de Lípidos",
+      "test_name_raw": "HDL",
+      "value_raw": "49",
+      "unit_raw": "mg/dL",
+      "reference_range_raw": "40-60",
+      "specimen_raw": "Suero",
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "Perfil de Lípidos",
+      "test_name_raw": "LDL",
+      "value_raw": "88",
+      "unit_raw": "mg/dL",
+      "reference_range_raw": "50-130",
+      "specimen_raw": "Suero",
+      "confidence": 1.0
+    }
+  ],
+  "processing_issues": {
+    "extraction": [],
+    "normalization": [
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "Perfil de Lípidos",
+        "test_name_raw": "HDL",
+        "value_raw": "49",
+        "unit_raw": "mg/dL",
+        "reference_range_raw": "40-60",
+        "specimen_raw": "Suero",
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "Perfil de Lípidos",
+        "test_name_raw": "LDL",
+        "value_raw": "88",
+        "unit_raw": "mg/dL",
+        "reference_range_raw": "50-130",
+        "specimen_raw": "Suero",
+        "confidence": 1.0
+      }
+    ],
+    "interpretation": []
+  },
+  "unmapped_items": [
+    "HDL",
+    "LDL"
+  ],
+  "warnings": [],
+  "confidence": 0.97,
+  "requires_manual_review": true,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

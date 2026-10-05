@@ -1,0 +1,122 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 7,
+    "abnormal_markers": [
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": "Positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Albúmina",
+        "loinc_code": null,
+        "value": 1.8,
+        "unit": "g/dL",
+        "ref_low": 3.5,
+        "ref_high": 5.7,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-dsDNA",
+        "loinc_code": "14169-3",
+        "value": ">1:2560",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Complemento C3",
+        "loinc_code": null,
+        "value": 47.0,
+        "unit": "mg/dL",
+        "ref_low": 88.0,
+        "ref_high": 165.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Complemento C4",
+        "loinc_code": null,
+        "value": 8.0,
+        "unit": "mg/dL",
+        "ref_low": 14.0,
+        "ref_high": 44.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Hemoglobina",
+        "loinc_code": null,
+        "value": 11.8,
+        "unit": "g/dL",
+        "ref_low": 12.0,
+        "ref_high": 16.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Leucocitos",
+        "loinc_code": null,
+        "value": 3.7,
+        "unit": "x10^3/uL",
+        "ref_low": 3.8,
+        "ref_high": 11.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": [
+      {
+        "pattern": "Consumo de complemento",
+        "markers_involved": [
+          "Complemento C3",
+          "Complemento C4"
+        ],
+        "interpretation": "Complemento sérico reducido (C3 y/o C4). Indica consumo por complejos inmunes: patrón característico de LES activo. También presente en crioglobulinemia y endocarditis bacteriana subaguda."
+      }
+    ]
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "SLE (Lupus Eritematoso Sistémico)",
+      "likelihood": "high",
+      "supporting_findings": [
+        "ANA positivo",
+        "anti-dsDNA >1:2560",
+        "complemento C3 bajo",
+        "complemento C4 bajo",
+        "leucopenia",
+        "anemia"
+      ],
+      "missing_workup": [
+        "Proteinuria",
+        "Evaluación ecocardiográfica",
+        "Radiografía de tórax"
+      ]
+    }
+  ],
+  "differential": [
+    "Reactividad del SLE con afectación renal",
+    "Insuficiencia cardíaca",
+    "Neumonía",
+    "Pleuritis"
+  ],
+  "recommended_followup": [
+    "Estudio de orina para proteinuria",
+    "Ecocardiograma",
+    "Radiografía de tórax",
+    "Seguimiento de la albúmina"
+  ],
+  "reasoning": "La paciente presenta hallazgos que sugieren reactividad del SLE, incluyendo ANA positivo, anti-dsDNA altamente positivo, niveles bajos de complemento C3 y C4, leucopenia y anemia. La disnea y el dolor pleurítico, junto con el edema, podrían indicar complicaciones como insuficiencia cardíaca o neumonía, pero los datos laboratoriales apuntan fuertemente hacia una reactividad del SLE con posible afectación renal.",
+  "confidence": "high",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

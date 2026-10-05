@@ -1,0 +1,342 @@
+{
+  "document_id": "d421c193-69aa-4cec-8cdb-271fb24fc02e",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_040.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 558.0
+  },
+  "patient": {
+    "external_id": "AMS-958639-E2",
+    "name": "Alejandra Martinez Soto",
+    "sex": null,
+    "date_of_birth": "52a"
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clínico Nahui",
+    "report_date": "2026-08-24",
+    "accession_number": "NHI-2026-59903"
+  },
+  "observation_count": 11,
+  "observations": [
+    {
+      "observation_id": "8952c97b-961a-463a-8a9f-86766310adc1",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Creatinina",
+      "test_name_normalized": "Creatinina",
+      "loinc_code": "2160-0",
+      "value": 1,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "(0.6-3.1)",
+      "reference_range": {
+        "low": 0.6,
+        "high": 3.1,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "2c896c77-e624-4871-8288-2a6988e8f126",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Glucosa",
+      "test_name_normalized": "Glucosa",
+      "loinc_code": "2345-7",
+      "value": 82,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "(70-100)",
+      "reference_range": {
+        "low": 70.0,
+        "high": 100.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "96673d60-75be-46b9-bd66-f8c97b891fcd",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Sodio",
+      "test_name_normalized": "Sodio",
+      "loinc_code": "2951-2",
+      "value": 137,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "(136-145)",
+      "reference_range": {
+        "low": 136.0,
+        "high": 145.0,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "6252a0df-0844-4c52-96aa-7c9e67c04174",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Potasio",
+      "test_name_normalized": "Potasio",
+      "loinc_code": "2823-3",
+      "value": 3.8,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "(3.5-5.5)",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.5,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "14b6099d-f7c1-4010-b932-bd60c917afe5",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Ácido Úrico",
+      "test_name_normalized": "Ácido úrico",
+      "loinc_code": "3084-1",
+      "value": 7.6,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "(3.5-7.2)",
+      "reference_range": {
+        "low": 3.5,
+        "high": 7.2,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 0.4,
+        "relative_to_upper": 0.0556,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "26847157-24cd-4e69-9b96-3ec6a8ea651f",
+      "panel_raw": "Perfil Tiroidéo",
+      "test_name_raw": "TSH",
+      "test_name_normalized": "TSH",
+      "loinc_code": null,
+      "value": 2.7,
+      "value_type": "numeric",
+      "unit_raw": "uIU/mL",
+      "unit_ucum": "uIU/mL",
+      "reference_range_raw": "(0.4-4.5)",
+      "reference_range": {
+        "low": 0.4,
+        "high": 4.5,
+        "unit_ucum": "uIU/mL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "1dded925-7d9b-4766-ac15-6c03dd9d0ba8",
+      "panel_raw": "Perfil Tiroidéo",
+      "test_name_raw": "T4 Libre",
+      "test_name_normalized": "T4 Libre",
+      "loinc_code": null,
+      "value": 0.8,
+      "value_type": "numeric",
+      "unit_raw": "ng/dL",
+      "unit_ucum": "ng/dL",
+      "reference_range_raw": "(0.8-1.8)",
+      "reference_range": {
+        "low": 0.8,
+        "high": 1.8,
+        "unit_ucum": "ng/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Suero",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "5d2d1847-a0e9-47a2-8855-f5aedc649ff2",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Eritrocitos",
+      "test_name_normalized": "Eritrocitos",
+      "loinc_code": "789-8",
+      "value": 4.7,
+      "value_type": "numeric",
+      "unit_raw": "x10^6/uL",
+      "unit_ucum": "x10^6/uL",
+      "reference_range_raw": "(4.2-5.4)",
+      "reference_range": {
+        "low": 4.2,
+        "high": 5.4,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "80d03185-911e-4683-926e-e4b84a7dc094",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Hemoglobina",
+      "test_name_normalized": "Hemoglobina",
+      "loinc_code": "718-7",
+      "value": 12.8,
+      "value_type": "numeric",
+      "unit_raw": "g/dL",
+      "unit_ucum": "g/dL",
+      "reference_range_raw": "(12.0-16.0)",
+      "reference_range": {
+        "low": 12.0,
+        "high": 16.0,
+        "unit_ucum": "g/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "4de7df32-528d-4240-862b-80e9e0dd67f5",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Leucocitos",
+      "test_name_normalized": "Leucocitos",
+      "loinc_code": "6690-2",
+      "value": 11,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/uL",
+      "unit_ucum": "x10^3/uL",
+      "reference_range_raw": "(4.0-11.0)",
+      "reference_range": {
+        "low": 4.0,
+        "high": 11.0,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "6b2c620c-19ec-4e11-92d0-c9857439aacf",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Hematocrito",
+      "test_name_normalized": "Hematocrito",
+      "loinc_code": "4544-3",
+      "value": 41.2,
+      "value_type": "numeric",
+      "unit_raw": "%",
+      "unit_ucum": "%",
+      "reference_range_raw": "(36.0-46.0)",
+      "reference_range": {
+        "low": 36.0,
+        "high": 46.0,
+        "unit_ucum": "%"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    }
+  ],
+  "review_items": [
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "Perfil Tiroidéo",
+      "test_name_raw": "TSH",
+      "value_raw": "2.7",
+      "unit_raw": "uIU/mL",
+      "reference_range_raw": "(0.4-4.5)",
+      "specimen_raw": "Suero",
+      "confidence": 0.9
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "Perfil Tiroidéo",
+      "test_name_raw": "T4 Libre",
+      "value_raw": "0.8",
+      "unit_raw": "ng/dL",
+      "reference_range_raw": "(0.8-1.8)",
+      "specimen_raw": "Suero",
+      "confidence": 0.9
+    }
+  ],
+  "processing_issues": {
+    "extraction": [],
+    "normalization": [
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "Perfil Tiroidéo",
+        "test_name_raw": "TSH",
+        "value_raw": "2.7",
+        "unit_raw": "uIU/mL",
+        "reference_range_raw": "(0.4-4.5)",
+        "specimen_raw": "Suero",
+        "confidence": 0.9
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "Perfil Tiroidéo",
+        "test_name_raw": "T4 Libre",
+        "value_raw": "0.8",
+        "unit_raw": "ng/dL",
+        "reference_range_raw": "(0.8-1.8)",
+        "specimen_raw": "Suero",
+        "confidence": 0.9
+      }
+    ],
+    "interpretation": []
+  },
+  "unmapped_items": [
+    "T4 Libre",
+    "TSH"
+  ],
+  "warnings": [],
+  "confidence": 0.86,
+  "requires_manual_review": true,
+  "extraction_profile": "digital_generic_lab",
+  "requires_ocr": false
+}

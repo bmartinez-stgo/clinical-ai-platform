@@ -1,0 +1,102 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 5,
+    "abnormal_markers": [
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": "Positivo 1:320",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Complemento C3",
+        "loinc_code": null,
+        "value": 77.0,
+        "unit": "ng/dL",
+        "ref_low": 90.0,
+        "ref_high": 190.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Creatinina",
+        "loinc_code": null,
+        "value": 4.3,
+        "unit": "mg/dL",
+        "ref_low": 0.6,
+        "ref_high": 1.1,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Plaquetas",
+        "loinc_code": null,
+        "value": 50.0,
+        "unit": "x10^3/uL",
+        "ref_low": 150.0,
+        "ref_high": 450.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Proteinuria",
+        "loinc_code": null,
+        "value": "4+",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": [
+      {
+        "pattern": "Consumo de complemento",
+        "markers_involved": [
+          "Complemento C3"
+        ],
+        "interpretation": "Complemento sérico reducido (C3 y/o C4). Indica consumo por complejos inmunes: patrón característico de LES activo. También presente en crioglobulinemia y endocarditis bacteriana subaguda."
+      }
+    ]
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "SLE",
+      "likelihood": "high",
+      "supporting_findings": [
+        "ANA positivo 1:320",
+        "C3 bajo",
+        "Plaquetas bajas",
+        "Proteinuria 4+"
+      ],
+      "missing_workup": [
+        "anti-dsDNA",
+        "anti-Sm",
+        "anti-Ro/SSA",
+        "anti-La/SSB"
+      ]
+    }
+  ],
+  "differential": [
+    "SLE",
+    "TTP/HUS",
+    "Renal agudo por hemólisis"
+  ],
+  "recommended_followup": [
+    "anti-dsDNA",
+    "anti-Sm",
+    "anti-Ro/SSA",
+    "anti-La/SSB",
+    "LDH",
+    "hemoglobina fragmentada",
+    "ultrasonido renal"
+  ],
+  "reasoning": "La paciente presenta un perfil compatible con SLE, con ANA altamente positivo, niveles bajos de C3, plaquetopenia y proteinuria significativa. La anemia hemolítica y la lesión renal aguda también son consistentes con SLE, pero se deben considerar otras causas como TTP/HUS o complicaciones de la talasemia menor.",
+  "confidence": "moderate",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

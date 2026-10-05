@@ -1,0 +1,301 @@
+{
+  "document_id": "0d972279-04c9-4912-a4b3-5f0c55f85cbd",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_130.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 549.0
+  },
+  "patient": {
+    "external_id": "Nhl-2026-98760",
+    "name": "Roberto Flores Aguilar",
+    "sex": null,
+    "date_of_birth": "36"
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clínico Nahui",
+    "report_date": "2026-05-13",
+    "accession_number": "NHI-2026-98760"
+  },
+  "observation_count": 7,
+  "observations": [
+    {
+      "observation_id": "ff2409e4-7125-4053-9453-96bf83d49a82",
+      "panel_raw": "Perfil Tiroideo",
+      "test_name_raw": "TSH",
+      "test_name_normalized": "TSH",
+      "loinc_code": null,
+      "value": 0,
+      "value_type": "numeric",
+      "unit_raw": "uIU/mL",
+      "unit_ucum": "uIU/mL",
+      "reference_range_raw": "0.4-4.5",
+      "reference_range": {
+        "low": 0.4,
+        "high": 4.5,
+        "unit_ucum": "uIU/mL"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 0.4,
+        "relative_to_lower": 1.0,
+        "unit_ucum": "uIU/mL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "aa218fa5-a834-4146-a7b7-19235e69b0ee",
+      "panel_raw": "Perfil Tiroideo",
+      "test_name_raw": "T4 Libre",
+      "test_name_normalized": "T4 Libre",
+      "loinc_code": null,
+      "value": 2.1,
+      "value_type": "numeric",
+      "unit_raw": "ng/dL",
+      "unit_ucum": "ng/dL",
+      "reference_range_raw": "0.8-1.8",
+      "reference_range": {
+        "low": 0.8,
+        "high": 1.8,
+        "unit_ucum": "ng/dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 0.3,
+        "relative_to_upper": 0.1667,
+        "unit_ucum": "ng/dL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "83dfe867-ff28-41ec-9a7a-fa22e9633612",
+      "panel_raw": "Perfil Tiroideo",
+      "test_name_raw": "T3 Total",
+      "test_name_normalized": "T3 Total",
+      "loinc_code": null,
+      "value": 44,
+      "value_type": "numeric",
+      "unit_raw": "ng/dL",
+      "unit_ucum": "ng/dL",
+      "reference_range_raw": "80-200",
+      "reference_range": {
+        "low": 80.0,
+        "high": 200.0,
+        "unit_ucum": "ng/dL"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 36.0,
+        "relative_to_lower": 0.45,
+        "unit_ucum": "ng/dL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "af19deb1-37ba-48f8-ba59-bc474cd1f817",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "Bilirrubina Total",
+      "test_name_normalized": "Bilirrubina total",
+      "loinc_code": "1975-2",
+      "value": 1.1,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "0.2-1.2",
+      "reference_range": {
+        "low": 0.2,
+        "high": 1.2,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "cc4a76aa-d693-4245-a3de-1b374fe86e60",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "ALT (TGP)",
+      "test_name_normalized": "Alanina aminotransferasa (ALT)",
+      "loinc_code": "1742-6",
+      "value": 47,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "7-40",
+      "reference_range": {
+        "low": 7.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 7.0,
+        "relative_to_upper": 0.175,
+        "unit_ucum": "U/L"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "b2557500-5e85-468f-bf0c-8eb0d4491345",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "Fosfatasa Alcalina",
+      "test_name_normalized": "Fosfatasa alcalina",
+      "loinc_code": "6768-6",
+      "value": 57,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "44-147",
+      "reference_range": {
+        "low": 44.0,
+        "high": 147.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "e708bdd4-2387-4f75-bcf9-dd09ad00e8d4",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "AST (TGO)",
+      "test_name_normalized": "Aspartato aminotransferasa (AST)",
+      "loinc_code": "1920-8",
+      "value": 0,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "8-40",
+      "reference_range": {
+        "low": 8.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 8.0,
+        "relative_to_lower": 1.0,
+        "unit_ucum": "U/L"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    }
+  ],
+  "review_items": [
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "Perfil Tiroideo",
+      "test_name_raw": "TSH",
+      "value_raw": "0.0",
+      "unit_raw": "uIU/mL",
+      "reference_range_raw": "0.4-4.5",
+      "specimen_raw": null,
+      "confidence": 0.9
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "Perfil Tiroideo",
+      "test_name_raw": "T4 Libre",
+      "value_raw": "2.1",
+      "unit_raw": "ng/dL",
+      "reference_range_raw": "0.8-1.8",
+      "specimen_raw": null,
+      "confidence": 0.9
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "Perfil Tiroideo",
+      "test_name_raw": "T3 Total",
+      "value_raw": "44",
+      "unit_raw": "ng/dL",
+      "reference_range_raw": "80-200",
+      "specimen_raw": null,
+      "confidence": 0.9
+    }
+  ],
+  "processing_issues": {
+    "extraction": [],
+    "normalization": [
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "Perfil Tiroideo",
+        "test_name_raw": "TSH",
+        "value_raw": "0.0",
+        "unit_raw": "uIU/mL",
+        "reference_range_raw": "0.4-4.5",
+        "specimen_raw": null,
+        "confidence": 0.9
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "Perfil Tiroideo",
+        "test_name_raw": "T4 Libre",
+        "value_raw": "2.1",
+        "unit_raw": "ng/dL",
+        "reference_range_raw": "0.8-1.8",
+        "specimen_raw": null,
+        "confidence": 0.9
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "Perfil Tiroideo",
+        "test_name_raw": "T3 Total",
+        "value_raw": "44",
+        "unit_raw": "ng/dL",
+        "reference_range_raw": "80-200",
+        "specimen_raw": null,
+        "confidence": 0.9
+      }
+    ],
+    "interpretation": []
+  },
+  "unmapped_items": [
+    "T3 Total",
+    "T4 Libre",
+    "TSH"
+  ],
+  "warnings": [],
+  "confidence": 0.91,
+  "requires_manual_review": true,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

@@ -1,0 +1,133 @@
+{
+  "report_id": "labtest_055",
+  "template": "template_4_abbreviated",
+  "folio": "NHI-2026-39260",
+  "patient": {
+    "nombre": "Daniela Martínez Soto",
+    "edad": 55,
+    "sexo": "F",
+    "id": "DMS-766868-F1"
+  },
+  "fecha_toma": "2026-05-31",
+  "fecha_reporte": "2026-06-01",
+  "medico_solicitante": "Dra. Paulina Zamudio Elías",
+  "expected": [
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Triglicéridos",
+      "abrev": "TG",
+      "loinc": "2571-8",
+      "valor": "116",
+      "unidad": "mg/dL",
+      "rango_ref": "35-150",
+      "bandera": "",
+      "valor_unidad_messy": "116mg/dL",
+      "rango_messy": "N: 35-150",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "LDL",
+      "abrev": "LDL",
+      "loinc": "13457-7",
+      "valor": "59",
+      "unidad": "mg/dL",
+      "rango_ref": "50-130",
+      "bandera": "",
+      "valor_unidad_messy": "59mg/dL",
+      "rango_messy": "N: 50-130",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Colesterol Total",
+      "abrev": "COL-T",
+      "loinc": "2093-3",
+      "valor": "152",
+      "unidad": "mg/dL",
+      "rango_ref": "125-200",
+      "bandera": "",
+      "valor_unidad_messy": "152mg/dL",
+      "rango_messy": "N: 125-200",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "HDL",
+      "abrev": "HDL",
+      "loinc": "2085-9",
+      "valor": "54",
+      "unidad": "mg/dL",
+      "rango_ref": "40-60",
+      "bandera": "",
+      "valor_unidad_messy": "54mg/dL",
+      "rango_messy": "N: 40-60",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Sodio",
+      "abrev": "NA",
+      "loinc": "2951-2",
+      "valor": "137",
+      "unidad": "mmol/L",
+      "rango_ref": "136-145",
+      "bandera": "",
+      "valor_unidad_messy": "137mmol/L",
+      "rango_messy": "N: 136-145",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Glucosa",
+      "abrev": "GLU",
+      "loinc": "2345-7",
+      "valor": "55",
+      "unidad": "mg/dL",
+      "rango_ref": "70-100",
+      "bandera": "L",
+      "valor_unidad_messy": "55mg/dL",
+      "rango_messy": "N: 70-100",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Urea",
+      "abrev": "BUN",
+      "loinc": "3094-0",
+      "valor": "2",
+      "unidad": "mg/dL",
+      "rango_ref": "7-20",
+      "bandera": "L",
+      "valor_unidad_messy": "2mg/dL",
+      "rango_messy": "N: 7-20",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Creatinina",
+      "abrev": "CREA",
+      "loinc": "2160-0",
+      "valor": "1.1",
+      "unidad": "mg/dL",
+      "rango_ref": "0.6-1.1",
+      "bandera": "",
+      "valor_unidad_messy": "1.1mg/dL",
+      "rango_messy": "N: 0.6-1.1",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Ácido Úrico",
+      "abrev": "URIC",
+      "loinc": "3084-1",
+      "valor": "9.3",
+      "unidad": "mg/dL",
+      "rango_ref": "3.5-7.2",
+      "bandera": "H",
+      "valor_unidad_messy": "9.3mg/dL",
+      "rango_messy": "N: 3.5-7.2",
+      "occluded": false
+    }
+  ]
+}

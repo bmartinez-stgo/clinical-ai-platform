@@ -1,0 +1,52 @@
+<!-- Plantilla 10: multi-página — ejercita el merge de páginas de document-reader
+     (metadata de paciente solo en pág. 1, continuación en pág. 2 sin repetirla) -->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: Arial, sans-serif; font-size: 11.5px; color: #111; margin: 30px 40px; }
+  h1 { font-size: 15px; margin: 0 0 10px; }
+  .patient-block { border: 1px solid #ccc; padding: 10px 14px; margin-bottom: 14px; font-size: 11px; }
+  table { width:100%; border-collapse: collapse; margin-bottom: 12px; }
+  th, td { border-bottom: 1px solid #ddd; padding: 5px 8px; font-size: 11.5px; text-align:left; }
+  th { border-bottom: 2px solid #333; }
+  .panel-row td { font-weight: bold; background:#f4f4f4; }
+  .flag { color:#a4262c; font-weight:bold; }
+  .page-break { page-break-before: always; }
+  .cont-header { font-size: 10px; color:#666; border-bottom: 1px solid #ccc; padding-bottom: 6px; margin-bottom: 12px; }
+  .footer { font-size: 9.5px; color:#888; margin-top: 10px; }
+</style>
+</head>
+<body>
+  <h1>{{ lab_name }} — Reporte de Laboratorio</h1>
+  <div class="patient-block">
+    <strong>{{ patient.nombre }}</strong> — {{ patient.edad }} años, {{ patient.sexo }} — ID {{ patient.id }}<br>
+    Folio {{ folio }} · Toma {{ fecha_toma }} · Reporte {{ fecha_reporte }} · Médico: {{ medico_solicitante }}
+  </div>
+
+  {% for panel in panels[:2] %}
+  <table>
+    <tr class="panel-row"><td colspan="4">{{ panel.name }}</td></tr>
+    <tr><th>Estudio</th><th>Resultado</th><th>Unidad</th><th>Referencia</th></tr>
+    {% for a in panel.analytes %}
+    <tr><td>{{ a.nombre }}</td><td class="{{ 'flag' if a.bandera else '' }}">{{ a.valor }}</td><td>{{ a.unidad }}</td><td>{{ a.rango_ref }}</td></tr>
+    {% endfor %}
+  </table>
+  {% endfor %}
+  <div class="footer">Página 1 de 2 — continúa en la siguiente página — Folio {{ folio }}</div>
+
+  <div class="page-break"></div>
+  <div class="cont-header">{{ lab_name }} — Folio {{ folio }} — continuación (página 2 de 2)</div>
+  {% for panel in panels[2:] %}
+  <table>
+    <tr class="panel-row"><td colspan="4">{{ panel.name }}</td></tr>
+    <tr><th>Estudio</th><th>Resultado</th><th>Unidad</th><th>Referencia</th></tr>
+    {% for a in panel.analytes %}
+    <tr><td>{{ a.nombre }}</td><td class="{{ 'flag' if a.bandera else '' }}">{{ a.valor }}</td><td>{{ a.unidad }}</td><td>{{ a.rango_ref }}</td></tr>
+    {% endfor %}
+  </table>
+  {% endfor %}
+  <div class="footer">Fin del reporte — Página 2 de 2 — Folio {{ folio }}</div>
+</body>
+</html>

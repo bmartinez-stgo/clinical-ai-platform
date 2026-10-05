@@ -1,0 +1,273 @@
+{
+  "document_id": "2f534c56-00ea-4311-bcbc-ec64764ccbdf",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_062.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 630.0
+  },
+  "patient": {
+    "external_id": "PSP-709494-Y1",
+    "name": "Patricia Sánchez Peña",
+    "sex": null,
+    "date_of_birth": "42 años"
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clínico Nahui",
+    "report_date": "2026-07-16",
+    "accession_number": "NHI-2026-36137"
+  },
+  "observation_count": 10,
+  "observations": [
+    {
+      "observation_id": "8f5890a5-1a1a-4dca-971c-402966c13339",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "VCM",
+      "test_name_normalized": "Volumen corpuscular medio (VCM)",
+      "loinc_code": "787-2",
+      "value": 97.4,
+      "value_type": "numeric",
+      "unit_raw": "fl",
+      "unit_ucum": "fL",
+      "reference_range_raw": "80-100",
+      "reference_range": {
+        "low": 80.0,
+        "high": 100.0,
+        "unit_ucum": "fL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "b55bb97a-5265-4b10-885a-4e6f6a0a4fb0",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Plaquetas",
+      "test_name_normalized": "Plaquetas",
+      "loinc_code": "777-3",
+      "value": 448,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/µL",
+      "unit_ucum": "x10^3/µL",
+      "reference_range_raw": "150-450",
+      "reference_range": {
+        "low": 150.0,
+        "high": 450.0,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "076e141f-b9b4-4ed2-aaeb-faa9fea8a309",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Leucocitos",
+      "test_name_normalized": "Leucocitos",
+      "loinc_code": "6690-2",
+      "value": 19.9,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/µL",
+      "unit_ucum": "x10^3/µL",
+      "reference_range_raw": "4.5-11.0",
+      "reference_range": {
+        "low": 4.5,
+        "high": 11.0,
+        "unit_ucum": null
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 8.9,
+        "relative_to_upper": 0.8091,
+        "unit_ucum": null
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "1758114a-1b6d-461f-86c1-27cfae3d813a",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "AST (TGO)",
+      "test_name_normalized": "Aspartato aminotransferasa (AST)",
+      "loinc_code": "1920-8",
+      "value": 50,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "8-40",
+      "reference_range": {
+        "low": 8.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 10.0,
+        "relative_to_upper": 0.25,
+        "unit_ucum": "U/L"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "a12dd0e5-190a-47fb-9fa0-9b48f4cc3efb",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "Bilirrubina Total",
+      "test_name_normalized": "Bilirrubina total",
+      "loinc_code": "1975-2",
+      "value": 0.4,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "0.2-1.2",
+      "reference_range": {
+        "low": 0.2,
+        "high": 1.2,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "80ada991-7863-45cd-9935-339a2ad0b2cc",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "ALT (TGP)",
+      "test_name_normalized": "Alanina aminotransferasa (ALT)",
+      "loinc_code": "1742-6",
+      "value": 7,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "7-40",
+      "reference_range": {
+        "low": 7.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "3bbc51aa-4926-4dbb-aab4-cb953e96f5ff",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Creatinina",
+      "test_name_normalized": "Creatinina",
+      "loinc_code": "2160-0",
+      "value": 1.3,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "0.6-1.1",
+      "reference_range": {
+        "low": 0.6,
+        "high": 1.1,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 0.2,
+        "relative_to_upper": 0.1818,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "06b83ad8-0493-466f-9936-97e5bcf6b183",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Potasio",
+      "test_name_normalized": "Potasio",
+      "loinc_code": "2823-3",
+      "value": 4.2,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "3.5-5.1",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.1,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "80d9a16c-7412-4fc7-841c-88ed49e7aa17",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Sodio",
+      "test_name_normalized": "Sodio",
+      "loinc_code": "2951-2",
+      "value": 140,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "136-145",
+      "reference_range": {
+        "low": 136.0,
+        "high": 145.0,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "3ac7771c-cdd9-4573-99c3-b2b1e713d246",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Ácido Úrico",
+      "test_name_normalized": "Ácido úrico",
+      "loinc_code": "3084-1",
+      "value": 3.5,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "3.5-7.2",
+      "reference_range": {
+        "low": 3.5,
+        "high": 7.2,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    }
+  ],
+  "review_items": [],
+  "processing_issues": {
+    "extraction": [],
+    "normalization": [],
+    "interpretation": []
+  },
+  "unmapped_items": [],
+  "warnings": [],
+  "confidence": 0.99,
+  "requires_manual_review": false,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

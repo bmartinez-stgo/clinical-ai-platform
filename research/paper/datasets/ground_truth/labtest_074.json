@@ -1,0 +1,94 @@
+{
+  "report_id": "labtest_074",
+  "template": "template_5_scanned",
+  "folio": "NHI-2026-82298",
+  "patient": {
+    "nombre": "Roberto Ramírez Ortiz",
+    "edad": 68,
+    "sexo": "M",
+    "id": "RRO-817177-V5"
+  },
+  "fecha_toma": "2026-03-10",
+  "fecha_reporte": "2026-03-11",
+  "medico_solicitante": "Dra. Silvia Rangel Ochoa",
+  "expected": [
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "HDL",
+      "abrev": "HDL",
+      "loinc": "2085-9",
+      "valor": "42",
+      "unidad": "mg/dL",
+      "rango_ref": "40-60",
+      "bandera": "",
+      "valor_unidad_messy": "42mg/dL",
+      "rango_messy": "N: 40-60",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Triglicéridos",
+      "abrev": "TG",
+      "loinc": "2571-8",
+      "valor": "130",
+      "unidad": "mg/dL",
+      "rango_ref": "35-150",
+      "bandera": "",
+      "valor_unidad_messy": "130mg/dL",
+      "rango_messy": "N: 35-150",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Colesterol Total",
+      "abrev": "COL-T",
+      "loinc": "2093-3",
+      "valor": "113",
+      "unidad": "mg/dL",
+      "rango_ref": "125-200",
+      "bandera": "L",
+      "valor_unidad_messy": "113mg/dL",
+      "rango_messy": "N: 125-200",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "LDL",
+      "abrev": "LDL",
+      "loinc": "13457-7",
+      "valor": "162",
+      "unidad": "mg/dL",
+      "rango_ref": "50-130",
+      "bandera": "H",
+      "valor_unidad_messy": "162mg/dL",
+      "rango_messy": "N: 50-130",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "TSH",
+      "abrev": "TSH",
+      "loinc": "3016-3",
+      "valor": "6.0",
+      "unidad": "uIU/mL",
+      "rango_ref": "0.4-4.5",
+      "bandera": "H",
+      "valor_unidad_messy": "6.0uIU/mL",
+      "rango_messy": "N: 0.4-4.5",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "T3 Total",
+      "abrev": "T3",
+      "loinc": "3053-6",
+      "valor": "220",
+      "unidad": "ng/dL",
+      "rango_ref": "80-200",
+      "bandera": "H",
+      "valor_unidad_messy": "220ng/dL",
+      "rango_messy": "N: 80-200",
+      "occluded": false
+    }
+  ]
+}

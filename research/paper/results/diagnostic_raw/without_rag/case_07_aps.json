@@ -1,0 +1,136 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 9,
+    "abnormal_markers": [
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": "3+ patrón moteado",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-SSA/Ro-52",
+        "loinc_code": null,
+        "value": "Positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-dsDNA",
+        "loinc_code": "14169-3",
+        "value": "Positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-β2GP1 IgG",
+        "loinc_code": null,
+        "value": 90.0,
+        "unit": "SGU",
+        "ref_low": null,
+        "ref_high": 20.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anticardiolipina IgG",
+        "loinc_code": "16097-9",
+        "value": 75.0,
+        "unit": "GPL",
+        "ref_low": null,
+        "ref_high": 20.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anticoagulante lúpico (dRVVT)",
+        "loinc_code": "22599-7",
+        "value": "Positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Complemento C3",
+        "loinc_code": null,
+        "value": 84.3,
+        "unit": null,
+        "ref_low": 90.0,
+        "ref_high": 180.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Complemento C4",
+        "loinc_code": null,
+        "value": 11.2,
+        "unit": null,
+        "ref_low": 15.0,
+        "ref_high": 45.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Proteinuria 24h",
+        "loinc_code": null,
+        "value": 3053.0,
+        "unit": "mg/día",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": [
+      {
+        "pattern": "Consumo de complemento",
+        "markers_involved": [
+          "Complemento C3",
+          "Complemento C4"
+        ],
+        "interpretation": "Complemento sérico reducido (C3 y/o C4). Indica consumo por complejos inmunes: patrón característico de LES activo. También presente en crioglobulinemia y endocarditis bacteriana subaguda."
+      }
+    ]
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Enfermedad Lupus Eritematoso Sistémico (SLE)",
+      "likelihood": "high",
+      "supporting_findings": [
+        "ANA 3+ patrón moteado",
+        "Anti-dsDNA positivo",
+        "Complemento C3 bajo",
+        "Complemento C4 bajo",
+        "Proteinuria alta",
+        "Pancitopenia"
+      ],
+      "missing_workup": []
+    }
+  ],
+  "differential": [
+    "Síndrome Antifosfolipídico (APS)",
+    "Enfermedad Lupus Eritematoso Sistémico (SLE)",
+    "Otros trastornos del tejido conectivo"
+  ],
+  "recommended_followup": [
+    "Seguimiento clínico para monitorizar la pancitopenia y la proteinuria",
+    "Reevaluación de los niveles de complemento y anticuerpos específicos",
+    "Estudios adicionales según el curso clínico"
+  ],
+  "reasoning": "El paciente presenta pancitopenia y proteinuria significativa, junto con marcadores serológicos altamente sugestivos de Síndrome Antifosfolipídico (APS) y Enfermedad Lupus Eritematoso Sistémico (SLE). Los hallazgos incluyen anticuerpos antifosfolipídicos elevados, anticoagulante lúpico positivo, anticuerpos anti-dsDNA positivo, y niveles bajos de complemento C3 y C4. Estos datos apoyan fuertemente la sospecha de APS y SLE.",
+  "confidence": "high",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

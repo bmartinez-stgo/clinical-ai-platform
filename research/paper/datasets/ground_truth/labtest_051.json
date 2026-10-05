@@ -1,0 +1,133 @@
+{
+  "report_id": "labtest_051",
+  "template": "template_4_abbreviated",
+  "folio": "NHI-2026-50306",
+  "patient": {
+    "nombre": "Claudia López Torres",
+    "edad": 71,
+    "sexo": "F",
+    "id": "CLT-958065-B3"
+  },
+  "fecha_toma": "2026-06-05",
+  "fecha_reporte": "2026-06-06",
+  "medico_solicitante": "Dra. Fernanda Ríos Landa",
+  "expected": [
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Ácido Úrico",
+      "abrev": "URIC",
+      "loinc": "3084-1",
+      "valor": "5.5",
+      "unidad": "mg/dL",
+      "rango_ref": "3.5-7.2",
+      "bandera": "",
+      "valor_unidad_messy": "5.5mg/dL",
+      "rango_messy": "N: 3.5-7.2",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Urea",
+      "abrev": "BUN",
+      "loinc": "3094-0",
+      "valor": "10",
+      "unidad": "mg/dL",
+      "rango_ref": "7-20",
+      "bandera": "",
+      "valor_unidad_messy": "10mg/dL",
+      "rango_messy": "N: 7-20",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Sodio",
+      "abrev": "NA",
+      "loinc": "2951-2",
+      "valor": "139",
+      "unidad": "mmol/L",
+      "rango_ref": "136-145",
+      "bandera": "",
+      "valor_unidad_messy": "139mmol/L",
+      "rango_messy": "N: 136-145",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Hematocrito",
+      "abrev": "HCT",
+      "loinc": "4544-3",
+      "valor": "49.5",
+      "unidad": "%",
+      "rango_ref": "36.0-46.0",
+      "bandera": "H",
+      "valor_unidad_messy": "49.5%",
+      "rango_messy": "N: 36.0-46.0",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Plaquetas",
+      "abrev": "PLT",
+      "loinc": "777-3",
+      "valor": "490",
+      "unidad": "x10^3/uL",
+      "rango_ref": "150-450",
+      "bandera": "H",
+      "valor_unidad_messy": "490x10^3/uL",
+      "rango_messy": "N: 150-450",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Leucocitos",
+      "abrev": "WBC",
+      "loinc": "6690-2",
+      "valor": "4.1",
+      "unidad": "x10^3/uL",
+      "rango_ref": "4.5-11.0",
+      "bandera": "L",
+      "valor_unidad_messy": "4.1x10^3/uL",
+      "rango_messy": "N: 4.5-11.0",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Eritrocitos",
+      "abrev": "RBC",
+      "loinc": "789-8",
+      "valor": "4.96",
+      "unidad": "x10^6/uL",
+      "rango_ref": "4.2-5.4",
+      "bandera": "",
+      "valor_unidad_messy": "4.96x10^6/uL",
+      "rango_messy": "N: 4.2-5.4",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "VCM",
+      "abrev": "MCV",
+      "loinc": "787-2",
+      "valor": "101.1",
+      "unidad": "fL",
+      "rango_ref": "80-100",
+      "bandera": "H",
+      "valor_unidad_messy": "101.1fL",
+      "rango_messy": "N: 80-100",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Hemoglobina",
+      "abrev": "HGB",
+      "loinc": "718-7",
+      "valor": "15.0",
+      "unidad": "g/dL",
+      "rango_ref": "12.0-16.0",
+      "bandera": "",
+      "valor_unidad_messy": "15.0g/dL",
+      "rango_messy": "N: 12.0-16.0",
+      "occluded": false
+    }
+  ]
+}

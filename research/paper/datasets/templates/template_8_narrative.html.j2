@@ -1,0 +1,33 @@
+<!-- Plantilla 8: resultados en prosa, sin tabla — estructura no tabular -->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: 'Times New Roman', serif; font-size: 12.5px; color: #111; margin: 32px 44px; line-height: 1.55; }
+  h1 { font-size: 15px; margin-bottom: 2px; }
+  .meta { font-size: 11px; color:#333; margin-bottom: 16px; }
+  .panel-title { font-weight: bold; margin: 14px 0 4px; text-transform: uppercase; font-size: 11.5px; letter-spacing: .03em; }
+  p { margin: 0 0 8px; text-align: justify; }
+  .flag { font-weight: bold; text-decoration: underline; }
+</style>
+</head>
+<body>
+  <h1>{{ lab_name }}</h1>
+  <div class="meta">
+    Reporte {{ folio }} correspondiente a {{ patient.nombre }}, {{ patient.edad }} años, sexo {{ patient.sexo }}
+    (ID {{ patient.id }}). Muestra tomada el {{ fecha_toma }}, reportada el {{ fecha_reporte }}.
+    Médico solicitante: {{ medico_solicitante }}.
+  </div>
+  {% for panel in panels %}
+  <div class="panel-title">{{ panel.name }}</div>
+  <p>
+  {% for a in panel.analytes %}
+    {{ a.nombre }} se reporta en
+    <span class="{{ 'flag' if a.bandera else '' }}">{{ a.valor }}{% if a.unidad %} {{ a.unidad }}{% endif %}</span>
+    (valor de referencia: {{ a.rango_ref }}){% if a.bandera == 'H' %}, resultado por arriba del rango normal{% elif a.bandera == 'L' %}, resultado por debajo del rango normal{% endif %}.
+  {% endfor %}
+  </p>
+  {% endfor %}
+</body>
+</html>

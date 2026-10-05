@@ -1,0 +1,87 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 5,
+    "abnormal_markers": [
+      {
+        "test_name": "Anti-SSA (Ro)",
+        "loinc_code": "24081-4",
+        "value": 100.0,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": 12.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-SSB (La)",
+        "loinc_code": "24082-2",
+        "value": 64.0,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": 12.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Bicarbonato",
+        "loinc_code": null,
+        "value": 14.2,
+        "unit": "mmol/L",
+        "ref_low": 22.0,
+        "ref_high": 28.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Potasio sérico",
+        "loinc_code": null,
+        "value": 1.68,
+        "unit": "mmol/L",
+        "ref_low": 3.5,
+        "ref_high": 5.1,
+        "direction": "critical",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "pH arterial",
+        "loinc_code": null,
+        "value": 7.14,
+        "unit": null,
+        "ref_low": 7.35,
+        "ref_high": 7.45,
+        "direction": "critical",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Síndrome de Stevens-Johnson o Síndrome de Sjögren",
+      "likelihood": "moderate",
+      "supporting_findings": [
+        "Anti-SSA (Ro) elevado",
+        "Anti-SSB (La) elevado"
+      ],
+      "missing_workup": [
+        "Anticuerpos anti-nucleares (ANA)",
+        "Signos clínicos de sicca (xerostomia, xerofthalmia)"
+      ]
+    }
+  ],
+  "differential": [
+    "Miastenia gravis",
+    "Síndrome de Stevens-Johnson o Síndrome de Sjögren",
+    "Envenenamiento por metanol"
+  ],
+  "recommended_followup": [
+    "Estudios neurológicos (electromiografía, lumbar)",
+    "Exploración clínica para signos de sicca",
+    "Seguimiento de electrolitos y pH arterial",
+    "Investigación de posibles toxinas o medicamentos causantes"
+  ],
+  "reasoning": "La paciente presenta parálisis flácida aguda, acidosis metabólica y hipopotasemia severa. Los niveles elevados de anticuerpos anti-SSA y anti-SSB sugieren la posibilidad de un síndrome autoinmune como el de Sjögren, pero se requiere confirmación clínica de síntomas de sicca. La acidosis metabólica y la hipopotasemia severa son preocupantes y pueden estar relacionadas con una intoxicación o un desorden neurológico.",
+  "confidence": "moderate",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

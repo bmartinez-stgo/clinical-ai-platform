@@ -1,0 +1,47 @@
+<!-- Plantilla 3: laboratorio de referencia grande, grid denso de paneles -->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: 'Courier New', monospace; font-size: 9.5px; color: #000; margin: 18px 24px; line-height: 1.25; }
+  .headline { display: flex; justify-content: space-between; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 4px; font-size: 10px; }
+  .headline strong { font-size: 13px; }
+  .subline { display: flex; justify-content: space-between; font-size: 9px; color: #333; margin-bottom: 10px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .card { border: 1px solid #999; padding: 4px 6px; }
+  .card-title { font-weight: bold; font-size: 9.5px; background: #eee; margin: -4px -6px 4px; padding: 3px 6px; }
+  .row { display: flex; justify-content: space-between; border-bottom: 1px dotted #ccc; padding: 1px 0; }
+  .name { flex: 1.6; }
+  .val { flex: 1; text-align: right; }
+  .rng { flex: 1.2; text-align: right; color: #555; }
+  .H { font-weight: bold; }
+  .H::after { content: " H"; }
+  .L::after { content: " L"; }
+</style>
+</head>
+<body>
+  <div class="headline">
+    <strong>{{ lab_name }}</strong>
+    <span>Folio {{ folio }}</span>
+  </div>
+  <div class="subline">
+    <span>{{ patient.nombre }} | {{ patient.edad }}a {{ patient.sexo }} | ID {{ patient.id }}</span>
+    <span>Toma {{ fecha_toma }} / Rep {{ fecha_reporte }} / Dr. {{ medico_solicitante }}</span>
+  </div>
+  <div class="grid">
+    {% for panel in panels %}
+    <div class="card">
+      <div class="card-title">{{ panel.name }}</div>
+      {% for a in panel.analytes %}
+      <div class="row">
+        <span class="name">{{ a.nombre }}</span>
+        <span class="val {{ a.bandera }}">{{ a.valor }} {{ a.unidad }}</span>
+        <span class="rng">({{ a.rango_ref }})</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

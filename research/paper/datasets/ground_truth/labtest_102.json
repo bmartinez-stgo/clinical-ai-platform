@@ -1,0 +1,120 @@
+{
+  "report_id": "labtest_102",
+  "template": "template_7_stamped",
+  "folio": "NHI-2026-76577",
+  "patient": {
+    "nombre": "Carlos Alberto Ramírez Ortiz",
+    "edad": 27,
+    "sexo": "M",
+    "id": "CAR-858497-T8"
+  },
+  "fecha_toma": "2026-04-02",
+  "fecha_reporte": "2026-04-03",
+  "medico_solicitante": "Dra. Fernanda Ríos Landa",
+  "expected": [
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "AST (TGO)",
+      "abrev": "AST",
+      "loinc": "1920-8",
+      "valor": "30",
+      "unidad": "U/L",
+      "rango_ref": "8-40",
+      "bandera": "",
+      "valor_unidad_messy": "30U/L",
+      "rango_messy": "N: 8-40",
+      "occluded": true
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "ALT (TGP)",
+      "abrev": "ALT",
+      "loinc": "1742-6",
+      "valor": "50",
+      "unidad": "U/L",
+      "rango_ref": "7-40",
+      "bandera": "H",
+      "valor_unidad_messy": "50U/L",
+      "rango_messy": "N: 7-40",
+      "occluded": true
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Bilirrubina Total",
+      "abrev": "TBIL",
+      "loinc": "1975-2",
+      "valor": "0.4",
+      "unidad": "mg/dL",
+      "rango_ref": "0.2-1.2",
+      "bandera": "",
+      "valor_unidad_messy": "0.4mg/dL",
+      "rango_messy": "N: 0.2-1.2",
+      "occluded": true
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Fosfatasa Alcalina",
+      "abrev": "ALP",
+      "loinc": "6768-6",
+      "valor": "4",
+      "unidad": "U/L",
+      "rango_ref": "44-147",
+      "bandera": "L",
+      "valor_unidad_messy": "4U/L",
+      "rango_messy": "N: 44-147",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Plaquetas",
+      "abrev": "PLT",
+      "loinc": "777-3",
+      "valor": "159",
+      "unidad": "x10^3/uL",
+      "rango_ref": "150-450",
+      "bandera": "",
+      "valor_unidad_messy": "159x10^3/uL",
+      "rango_messy": "N: 150-450",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Hematocrito",
+      "abrev": "HCT",
+      "loinc": "4544-3",
+      "valor": "39.5",
+      "unidad": "%",
+      "rango_ref": "36.0-46.0",
+      "bandera": "",
+      "valor_unidad_messy": "39.5%",
+      "rango_messy": "N: 36.0-46.0",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Leucocitos",
+      "abrev": "WBC",
+      "loinc": "6690-2",
+      "valor": "5.6",
+      "unidad": "x10^3/uL",
+      "rango_ref": "4.5-11.0",
+      "bandera": "",
+      "valor_unidad_messy": "5.6x10^3/uL",
+      "rango_messy": "N: 4.5-11.0",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Eritrocitos",
+      "abrev": "RBC",
+      "loinc": "789-8",
+      "valor": "5.86",
+      "unidad": "x10^6/uL",
+      "rango_ref": "4.2-5.4",
+      "bandera": "H",
+      "valor_unidad_messy": "5.86x10^6/uL",
+      "rango_messy": "N: 4.2-5.4",
+      "occluded": false
+    }
+  ]
+}

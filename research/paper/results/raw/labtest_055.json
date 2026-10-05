@@ -1,0 +1,483 @@
+{
+  "document_id": "876da1f8-7280-4616-87c9-bf04fed8572f",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_055.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 507.0
+  },
+  "patient": {
+    "external_id": "766868-F1",
+    "name": "Daniela Martinez Soto",
+    "sex": null,
+    "date_of_birth": null
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clinico Nahui",
+    "report_date": "2026-06-01",
+    "accession_number": "NHI-2026-39260"
+  },
+  "observation_count": 9,
+  "observations": [
+    {
+      "observation_id": "e7ef052b-14c0-432e-b208-f245380b2039",
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "TG",
+      "test_name_normalized": "TG",
+      "loinc_code": null,
+      "value": 116,
+      "value_type": "numeric",
+      "unit_raw": "dL",
+      "unit_ucum": "dL",
+      "reference_range_raw": "[N: 35-150]",
+      "reference_range": {
+        "low": 35.0,
+        "high": 150.0,
+        "unit_ucum": "dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "52d6a416-549b-4f65-9bca-097a921ab806",
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "LDL",
+      "test_name_normalized": "LDL",
+      "loinc_code": null,
+      "value": 59,
+      "value_type": "numeric",
+      "unit_raw": "dL",
+      "unit_ucum": "dL",
+      "reference_range_raw": "[N: 50-130]",
+      "reference_range": {
+        "low": 50.0,
+        "high": 130.0,
+        "unit_ucum": "dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "35ae9252-ecfe-474e-ba5d-f2997e1d8503",
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "COL-T",
+      "test_name_normalized": "COL-T",
+      "loinc_code": null,
+      "value": 152,
+      "value_type": "numeric",
+      "unit_raw": "dL",
+      "unit_ucum": "dL",
+      "reference_range_raw": "[N: 125-200]",
+      "reference_range": {
+        "low": 125.0,
+        "high": 200.0,
+        "unit_ucum": "dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "0fd8babb-26e4-41e5-9b41-bc6d82d605e5",
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "HDL",
+      "test_name_normalized": "HDL",
+      "loinc_code": null,
+      "value": 54,
+      "value_type": "numeric",
+      "unit_raw": "dL",
+      "unit_ucum": "dL",
+      "reference_range_raw": "[N: 40-60]",
+      "reference_range": {
+        "low": 40.0,
+        "high": 60.0,
+        "unit_ucum": "dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "7127d629-1407-4af3-946f-8c3dfbd8fb00",
+      "panel_raw": "QUÍMICA SANGUÍNEA",
+      "test_name_raw": "NA",
+      "test_name_normalized": "NA",
+      "loinc_code": null,
+      "value": 1370,
+      "value_type": "numeric",
+      "unit_raw": "L",
+      "unit_ucum": "L",
+      "reference_range_raw": "[N: 136-145]",
+      "reference_range": {
+        "low": 136.0,
+        "high": 145.0,
+        "unit_ucum": "L"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 1225.0,
+        "relative_to_upper": 8.4483,
+        "unit_ucum": "L"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "035fe6b6-4732-4e5a-b916-53a2f9ac3114",
+      "panel_raw": "QUÍMICA SANGUÍNEA",
+      "test_name_raw": "GLU",
+      "test_name_normalized": "GLU",
+      "loinc_code": null,
+      "value": 55,
+      "value_type": "numeric",
+      "unit_raw": "dL",
+      "unit_ucum": "dL",
+      "reference_range_raw": "[N: 70-100]",
+      "reference_range": {
+        "low": 70.0,
+        "high": 100.0,
+        "unit_ucum": "dL"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 15.0,
+        "relative_to_lower": 0.2143,
+        "unit_ucum": "dL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "68831474-c4d8-4b3d-ab01-f8cd368f87a6",
+      "panel_raw": "QUÍMICA SANGUÍNEA",
+      "test_name_raw": "BUN",
+      "test_name_normalized": "Nitrógeno ureico (BUN)",
+      "loinc_code": "3094-0",
+      "value": 2,
+      "value_type": "numeric",
+      "unit_raw": "dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "[N: 7-20]",
+      "reference_range": {
+        "low": 7.0,
+        "high": 20.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 5.0,
+        "relative_to_lower": 0.7143,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "e0f1342f-ff13-49cb-bf89-8b76e2136482",
+      "panel_raw": "QUÍMICA SANGUÍNEA",
+      "test_name_raw": "CREA",
+      "test_name_normalized": "CREA",
+      "loinc_code": null,
+      "value": 1.1,
+      "value_type": "numeric",
+      "unit_raw": "dL",
+      "unit_ucum": "dL",
+      "reference_range_raw": "[N: 0.6-1.1]",
+      "reference_range": {
+        "low": 0.6,
+        "high": 1.1,
+        "unit_ucum": "dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "3168fed7-9747-4c16-b8c4-46e9c5b4018c",
+      "panel_raw": "QUÍMICA SANGUÍNEA",
+      "test_name_raw": "* URIC",
+      "test_name_normalized": "* URIC",
+      "loinc_code": null,
+      "value": 9.3,
+      "value_type": "numeric",
+      "unit_raw": "dL",
+      "unit_ucum": "dL",
+      "reference_range_raw": "[N: 3.5-7.2]",
+      "reference_range": {
+        "low": 3.5,
+        "high": 7.2,
+        "unit_ucum": "dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 2.1,
+        "relative_to_upper": 0.2917,
+        "unit_ucum": "dL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    }
+  ],
+  "review_items": [
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "TG",
+      "value_raw": "116mg/dL",
+      "unit_raw": "dL",
+      "reference_range_raw": "[N: 35-150]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "LDL",
+      "value_raw": "59mg/dL",
+      "unit_raw": "dL",
+      "reference_range_raw": "[N: 50-130]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "COL-T",
+      "value_raw": "152mg/dL",
+      "unit_raw": "dL",
+      "reference_range_raw": "[N: 125-200]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "HDL",
+      "value_raw": "54mg/dL",
+      "unit_raw": "dL",
+      "reference_range_raw": "[N: 40-60]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "QUÍMICA SANGUÍNEA",
+      "test_name_raw": "NA",
+      "value_raw": "137mmol/L",
+      "unit_raw": "L",
+      "reference_range_raw": "[N: 136-145]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "QUÍMICA SANGUÍNEA",
+      "test_name_raw": "GLU",
+      "value_raw": "55mg/dL",
+      "unit_raw": "dL",
+      "reference_range_raw": "[N: 70-100]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "QUÍMICA SANGUÍNEA",
+      "test_name_raw": "CREA",
+      "value_raw": "1.1mg/dL",
+      "unit_raw": "dL",
+      "reference_range_raw": "[N: 0.6-1.1]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "QUÍMICA SANGUÍNEA",
+      "test_name_raw": "* URIC",
+      "value_raw": "9.3mg/dL",
+      "unit_raw": "dL",
+      "reference_range_raw": "[N: 3.5-7.2]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    }
+  ],
+  "processing_issues": {
+    "extraction": [
+      {
+        "stage": "extraction",
+        "reason": "warning",
+        "message": "* = fuera de rango. Abreviaturas segun nomenclatura interna del laboratorio."
+      }
+    ],
+    "normalization": [
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "PERFIL DE LÍPIDOS",
+        "test_name_raw": "TG",
+        "value_raw": "116mg/dL",
+        "unit_raw": "dL",
+        "reference_range_raw": "[N: 35-150]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "PERFIL DE LÍPIDOS",
+        "test_name_raw": "LDL",
+        "value_raw": "59mg/dL",
+        "unit_raw": "dL",
+        "reference_range_raw": "[N: 50-130]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "PERFIL DE LÍPIDOS",
+        "test_name_raw": "COL-T",
+        "value_raw": "152mg/dL",
+        "unit_raw": "dL",
+        "reference_range_raw": "[N: 125-200]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "PERFIL DE LÍPIDOS",
+        "test_name_raw": "HDL",
+        "value_raw": "54mg/dL",
+        "unit_raw": "dL",
+        "reference_range_raw": "[N: 40-60]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "QUÍMICA SANGUÍNEA",
+        "test_name_raw": "NA",
+        "value_raw": "137mmol/L",
+        "unit_raw": "L",
+        "reference_range_raw": "[N: 136-145]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "QUÍMICA SANGUÍNEA",
+        "test_name_raw": "GLU",
+        "value_raw": "55mg/dL",
+        "unit_raw": "dL",
+        "reference_range_raw": "[N: 70-100]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "QUÍMICA SANGUÍNEA",
+        "test_name_raw": "CREA",
+        "value_raw": "1.1mg/dL",
+        "unit_raw": "dL",
+        "reference_range_raw": "[N: 0.6-1.1]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "QUÍMICA SANGUÍNEA",
+        "test_name_raw": "* URIC",
+        "value_raw": "9.3mg/dL",
+        "unit_raw": "dL",
+        "reference_range_raw": "[N: 3.5-7.2]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      }
+    ],
+    "interpretation": []
+  },
+  "unmapped_items": [
+    "* URIC",
+    "COL-T",
+    "CREA",
+    "GLU",
+    "HDL",
+    "LDL",
+    "NA",
+    "TG"
+  ],
+  "warnings": [
+    "* = fuera de rango. Abreviaturas segun nomenclatura interna del laboratorio."
+  ],
+  "confidence": 0.67,
+  "requires_manual_review": true,
+  "extraction_profile": "digital_generic_lab",
+  "requires_ocr": false
+}

@@ -1,0 +1,133 @@
+{
+  "report_id": "labtest_077",
+  "template": "template_6_bilingual",
+  "folio": "NHI-2026-96427",
+  "patient": {
+    "nombre": "Daniela Sánchez Peña",
+    "edad": 71,
+    "sexo": "F",
+    "id": "DSP-894285-B9"
+  },
+  "fecha_toma": "2026-07-02",
+  "fecha_reporte": "2026-07-03",
+  "medico_solicitante": "Dr. Alberto Núñez Casillas",
+  "expected": [
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Ácido Úrico",
+      "abrev": "URIC",
+      "loinc": "3084-1",
+      "valor": "5.4",
+      "unidad": "mg/dL",
+      "rango_ref": "3.5-7.2",
+      "bandera": "",
+      "valor_unidad_messy": "5.4mg/dL",
+      "rango_messy": "N: 3.5-7.2",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Creatinina",
+      "abrev": "CREA",
+      "loinc": "2160-0",
+      "valor": "0.9",
+      "unidad": "mg/dL",
+      "rango_ref": "0.6-1.1",
+      "bandera": "",
+      "valor_unidad_messy": "0.9mg/dL",
+      "rango_messy": "N: 0.6-1.1",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Sodio",
+      "abrev": "NA",
+      "loinc": "2951-2",
+      "valor": "133",
+      "unidad": "mmol/L",
+      "rango_ref": "136-145",
+      "bandera": "L",
+      "valor_unidad_messy": "133mmol/L",
+      "rango_messy": "N: 136-145",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Potasio",
+      "abrev": "K",
+      "loinc": "2823-3",
+      "valor": "4.1",
+      "unidad": "mmol/L",
+      "rango_ref": "3.5-5.1",
+      "bandera": "",
+      "valor_unidad_messy": "4.1mmol/L",
+      "rango_messy": "N: 3.5-5.1",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Glucosa",
+      "abrev": "GLU",
+      "loinc": "2345-7",
+      "valor": "70",
+      "unidad": "mg/dL",
+      "rango_ref": "70-100",
+      "bandera": "",
+      "valor_unidad_messy": "70mg/dL",
+      "rango_messy": "N: 70-100",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Urea",
+      "abrev": "BUN",
+      "loinc": "3094-0",
+      "valor": "19",
+      "unidad": "mg/dL",
+      "rango_ref": "7-20",
+      "bandera": "",
+      "valor_unidad_messy": "19mg/dL",
+      "rango_messy": "N: 7-20",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "TSH",
+      "abrev": "TSH",
+      "loinc": "3016-3",
+      "valor": "2.9",
+      "unidad": "uIU/mL",
+      "rango_ref": "0.4-4.5",
+      "bandera": "",
+      "valor_unidad_messy": "2.9uIU/mL",
+      "rango_messy": "N: 0.4-4.5",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "T3 Total",
+      "abrev": "T3",
+      "loinc": "3053-6",
+      "valor": "174",
+      "unidad": "ng/dL",
+      "rango_ref": "80-200",
+      "bandera": "",
+      "valor_unidad_messy": "174ng/dL",
+      "rango_messy": "N: 80-200",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "T4 Libre",
+      "abrev": "FT4",
+      "loinc": "3024-7",
+      "valor": "0.9",
+      "unidad": "ng/dL",
+      "rango_ref": "0.8-1.8",
+      "bandera": "",
+      "valor_unidad_messy": "0.9ng/dL",
+      "rango_messy": "N: 0.8-1.8",
+      "occluded": false
+    }
+  ]
+}

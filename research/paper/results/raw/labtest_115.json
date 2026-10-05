@@ -1,0 +1,281 @@
+{
+  "document_id": "5d639920-70a4-4a99-8b7e-ca0c5f75529c",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_115.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 987.0
+  },
+  "patient": {
+    "external_id": "NH-2026-70014",
+    "name": "Daniela García Mendoza",
+    "sex": null,
+    "date_of_birth": "54 años"
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clínico Nahui",
+    "report_date": "2026-04-19",
+    "accession_number": "NHI-2026-70014"
+  },
+  "observation_count": 9,
+  "observations": [
+    {
+      "observation_id": "a4241dcf-4359-42c6-8e1d-b77eae6c2a3e",
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "Triglicéridos",
+      "test_name_normalized": "Triglicéridos",
+      "loinc_code": "2571-8",
+      "value": 48,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "35-150",
+      "reference_range": {
+        "low": 35.0,
+        "high": 150.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "f069b290-8493-48c0-91e0-a07e09bc0ea8",
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "Colesterol Total",
+      "test_name_normalized": "Colesterol total",
+      "loinc_code": "2093-3",
+      "value": 195,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "125-200",
+      "reference_range": {
+        "low": 125.0,
+        "high": 200.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "d8f86457-d318-442b-86fe-eb13ce144f26",
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "LDL",
+      "test_name_normalized": "LDL",
+      "loinc_code": null,
+      "value": 127,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "50-130",
+      "reference_range": {
+        "low": 50.0,
+        "high": 130.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "92c30edc-11f1-4337-9a0b-a7ac95b61d67",
+      "panel_raw": "QUÍMICA SANGÜINEA",
+      "test_name_raw": "Potasio",
+      "test_name_normalized": "Potasio",
+      "loinc_code": "2823-3",
+      "value": 3.9,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "3.5-5.1",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.1,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "c25d5272-29af-4671-a4b0-243a728e28e2",
+      "panel_raw": "QUÍMICA SANGÜINEA",
+      "test_name_raw": "Creatinina",
+      "test_name_normalized": "Creatinina",
+      "loinc_code": "2160-0",
+      "value": 1.2,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "0.6-1.1",
+      "reference_range": {
+        "low": 0.6,
+        "high": 1.1,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 0.1,
+        "relative_to_upper": 0.0909,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "48068fcf-d2e6-4344-95d4-b7790cd95616",
+      "panel_raw": "QUÍMICA SANGÜINEA",
+      "test_name_raw": "Urea",
+      "test_name_normalized": "Urea",
+      "loinc_code": "3094-0",
+      "value": 11,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "7-20",
+      "reference_range": {
+        "low": 7.0,
+        "high": 20.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "6ee24be4-f9c2-406d-806f-9d7034d81362",
+      "panel_raw": "PRUEBAS DE FUNCIÓN HEPÁTICA",
+      "test_name_raw": "ALT (TGP)",
+      "test_name_normalized": "Alanina aminotransferasa (ALT)",
+      "loinc_code": "1742-6",
+      "value": 19,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "7-40",
+      "reference_range": {
+        "low": 7.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "0e7b9e9e-9a31-4653-be2d-c36c20749580",
+      "panel_raw": "PRUEBAS DE FUNCIÓN HEPÁTICA",
+      "test_name_raw": "AST (TGO)",
+      "test_name_normalized": "Aspartato aminotransferasa (AST)",
+      "loinc_code": "1920-8",
+      "value": 54,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "8-40",
+      "reference_range": {
+        "low": 8.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 14.0,
+        "relative_to_upper": 0.35,
+        "unit_ucum": "U/L"
+      },
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "bcd1f49b-5537-4936-b56a-bb724080fb68",
+      "panel_raw": "PRUEBAS DE FUNCIÓN HEPÁTICA",
+      "test_name_raw": "Fosfatasa Alcalina",
+      "test_name_normalized": "Fosfatasa alcalina",
+      "loinc_code": "6768-6",
+      "value": 9,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "44-147",
+      "reference_range": {
+        "low": 44.0,
+        "high": 147.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 35.0,
+        "relative_to_lower": 0.7955,
+        "unit_ucum": "U/L"
+      },
+      "specimen": "Sangre",
+      "page": 1,
+      "confidence": 0.9
+    }
+  ],
+  "review_items": [
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "PERFIL DE LÍPIDOS",
+      "test_name_raw": "LDL",
+      "value_raw": "127",
+      "unit_raw": "mg/dL",
+      "reference_range_raw": "50-130",
+      "specimen_raw": "Sangre",
+      "confidence": 0.9
+    }
+  ],
+  "processing_issues": {
+    "extraction": [],
+    "normalization": [
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "PERFIL DE LÍPIDOS",
+        "test_name_raw": "LDL",
+        "value_raw": "127",
+        "unit_raw": "mg/dL",
+        "reference_range_raw": "50-130",
+        "specimen_raw": "Sangre",
+        "confidence": 0.9
+      }
+    ],
+    "interpretation": []
+  },
+  "unmapped_items": [
+    "LDL"
+  ],
+  "warnings": [],
+  "confidence": 0.98,
+  "requires_manual_review": true,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

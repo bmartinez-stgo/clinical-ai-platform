@@ -1,0 +1,212 @@
+{
+  "document_id": "b6aa5bb3-6c6b-4a5b-b9bc-f390ff733230",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_120.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 891.0
+  },
+  "patient": {
+    "external_id": "NH-2026-50838",
+    "name": "Veronica Diaz Cabrera",
+    "sex": null,
+    "date_of_birth": "61 años"
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clínico Nahui",
+    "report_date": "2026-05-30",
+    "accession_number": "NHI-2026-50838"
+  },
+  "observation_count": 7,
+  "observations": [
+    {
+      "observation_id": "a4e5b804-190c-4b45-a389-a5edf398f9fd",
+      "panel_raw": "BIOMETRÍA HEMÁTICA",
+      "test_name_raw": "Plaquetas",
+      "test_name_normalized": "Plaquetas",
+      "loinc_code": "777-3",
+      "value": 301,
+      "value_type": "numeric",
+      "unit_raw": "x10³/µL",
+      "unit_ucum": "x10³/µL",
+      "reference_range_raw": "150-450",
+      "reference_range": {
+        "low": 150.0,
+        "high": 450.0,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "VCM",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "6c0cbca3-4315-422b-bee2-7d5cfd48ef7f",
+      "panel_raw": "BIOMETRÍA HEMÁTICA",
+      "test_name_raw": "VCM",
+      "test_name_normalized": "Volumen corpuscular medio (VCM)",
+      "loinc_code": "787-2",
+      "value": 109.7,
+      "value_type": "numeric",
+      "unit_raw": "fl",
+      "unit_ucum": "fL",
+      "reference_range_raw": "80-100",
+      "reference_range": {
+        "low": 80.0,
+        "high": 100.0,
+        "unit_ucum": "fL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 9.7,
+        "relative_to_upper": 0.097,
+        "unit_ucum": "fL"
+      },
+      "specimen": "VCM",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "d7fe88fe-4cff-4168-9bc9-c38290e1ec48",
+      "panel_raw": "BIOMETRÍA HEMÁTICA",
+      "test_name_raw": "Leucocitos",
+      "test_name_normalized": "Leucocitos",
+      "loinc_code": "6690-2",
+      "value": 9,
+      "value_type": "numeric",
+      "unit_raw": "x10³/µL",
+      "unit_ucum": "x10³/µL",
+      "reference_range_raw": "4.5-11.0",
+      "reference_range": {
+        "low": 4.5,
+        "high": 11.0,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "VCM",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "36062535-feea-4b48-a2ca-ca8c1d22d34f",
+      "panel_raw": "BIOMETRÍA HEMÁTICA",
+      "test_name_raw": "Hemoglobina",
+      "test_name_normalized": "Hemoglobina",
+      "loinc_code": "718-7",
+      "value": 9.9,
+      "value_type": "numeric",
+      "unit_raw": "g/dL",
+      "unit_ucum": "g/dL",
+      "reference_range_raw": "12.0-16.0",
+      "reference_range": {
+        "low": 12.0,
+        "high": 16.0,
+        "unit_ucum": "g/dL"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 2.1,
+        "relative_to_lower": 0.175,
+        "unit_ucum": "g/dL"
+      },
+      "specimen": "VCM",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "776e3037-de1d-42ca-94da-2a9573c468ea",
+      "panel_raw": "BIOMETRÍA HEMÁTICA",
+      "test_name_raw": "Eritrocitos",
+      "test_name_normalized": "Eritrocitos",
+      "loinc_code": "789-8",
+      "value": 5.92,
+      "value_type": "numeric",
+      "unit_raw": "x10⁶/µL",
+      "unit_ucum": "x10⁶/µL",
+      "reference_range_raw": "4.2-5.4",
+      "reference_range": {
+        "low": 4.2,
+        "high": 5.4,
+        "unit_ucum": null
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 0.52,
+        "relative_to_upper": 0.0963,
+        "unit_ucum": null
+      },
+      "specimen": "VCM",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "39e85958-7c9c-4074-a800-3385e71a28ac",
+      "panel_raw": "QUÍMICA SANGÜíNEA",
+      "test_name_raw": "Ácido Úrico",
+      "test_name_normalized": "Ácido úrico",
+      "loinc_code": "3084-1",
+      "value": 3.1,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "3.5-7.2",
+      "reference_range": {
+        "low": 3.5,
+        "high": 7.2,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 0.4,
+        "relative_to_lower": 0.1143,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": "Sangre",
+      "page": 2,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "d24baa27-fca8-4475-bbb3-e74683827bb0",
+      "panel_raw": "QUÍMICA SANGÜíNEA",
+      "test_name_raw": "Potasio",
+      "test_name_normalized": "Potasio",
+      "loinc_code": "2823-3",
+      "value": 3.5,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "3.5-5.1",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.1,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "Sangre",
+      "page": 2,
+      "confidence": 0.9
+    }
+  ],
+  "review_items": [],
+  "processing_issues": {
+    "extraction": [],
+    "normalization": [],
+    "interpretation": []
+  },
+  "unmapped_items": [],
+  "warnings": [],
+  "confidence": 0.99,
+  "requires_manual_review": false,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

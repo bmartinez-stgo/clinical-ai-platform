@@ -1,0 +1,225 @@
+{
+  "document_id": "fbaf220d-a4d8-413f-a706-ff9021aa6029",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_092.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 641.0
+  },
+  "patient": {
+    "external_id": "Folio NIH-2026-12500",
+    "name": "Miguel Ángel Flores Aguilar",
+    "sex": null,
+    "date_of_birth": null
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clínico Nahui",
+    "report_date": "2026-03-29",
+    "accession_number": "NHI-2026-12500"
+  },
+  "observation_count": 8,
+  "observations": [
+    {
+      "observation_id": "a380b2bd-6729-479d-a66b-cd9708e142f4",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Hematocrito",
+      "test_name_normalized": "Hematocrito",
+      "loinc_code": "4544-3",
+      "value": 43.3,
+      "value_type": "numeric",
+      "unit_raw": "%",
+      "unit_ucum": "%",
+      "reference_range_raw": "36.0-45.0",
+      "reference_range": {
+        "low": 36.0,
+        "high": 45.0,
+        "unit_ucum": "%"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "4e18a06e-9c91-474c-a017-e26213a7f002",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Eritrocitos",
+      "test_name_normalized": "Eritrocitos",
+      "loinc_code": "789-8",
+      "value": 5.04,
+      "value_type": "numeric",
+      "unit_raw": "x10^6/uL",
+      "unit_ucum": "x10^6/uL",
+      "reference_range_raw": "4.5-7.0",
+      "reference_range": {
+        "low": 4.5,
+        "high": 7.0,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "09de0a2f-e2e9-4d89-813a-29dc0371025b",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Leucocitos",
+      "test_name_normalized": "Leucocitos",
+      "loinc_code": "6690-2",
+      "value": 8.3,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/uL",
+      "unit_ucum": "x10^3/uL",
+      "reference_range_raw": null,
+      "reference_range": null,
+      "interpretation": null,
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "6b12ceb4-02fe-43d1-b731-755d5a2bd25b",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Plaquetas",
+      "test_name_normalized": "Plaquetas",
+      "loinc_code": "777-3",
+      "value": 472,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/uL",
+      "unit_ucum": "x10^3/uL",
+      "reference_range_raw": "150-450",
+      "reference_range": {
+        "low": 150.0,
+        "high": 450.0,
+        "unit_ucum": null
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 22.0,
+        "relative_to_upper": 0.0489,
+        "unit_ucum": null
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "9e5dd85d-1981-4029-bb4c-75a4e8fda05d",
+      "panel_raw": "Perfil de Lípidos",
+      "test_name_raw": "Colesterol Total",
+      "test_name_normalized": "Colesterol total",
+      "loinc_code": "2093-3",
+      "value": 177,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "125-200",
+      "reference_range": {
+        "low": 125.0,
+        "high": 200.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 2,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "e3fda935-790d-44ab-8829-856c6f1aed33",
+      "panel_raw": "Perfil de Lípidos",
+      "test_name_raw": "Triglicéridos",
+      "test_name_normalized": "Triglicéridos",
+      "loinc_code": "2571-8",
+      "value": 88,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "35-150",
+      "reference_range": {
+        "low": 35.0,
+        "high": 150.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 2,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "94eca21f-6a84-4e0d-802f-653e8e04ddce",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "ALT (TGP)",
+      "test_name_normalized": "Alanina aminotransferasa (ALT)",
+      "loinc_code": "1742-6",
+      "value": 54,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "7-40",
+      "reference_range": {
+        "low": 7.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 14.0,
+        "relative_to_upper": 0.35,
+        "unit_ucum": "U/L"
+      },
+      "specimen": null,
+      "page": 3,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "5bf2b7ec-2534-4618-807e-3f135a50f1eb",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "AST (TGO)",
+      "test_name_normalized": "Aspartato aminotransferasa (AST)",
+      "loinc_code": "1920-8",
+      "value": 0,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "8-40",
+      "reference_range": {
+        "low": 8.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 8.0,
+        "relative_to_lower": 1.0,
+        "unit_ucum": "U/L"
+      },
+      "specimen": null,
+      "page": 3,
+      "confidence": 1.0
+    }
+  ],
+  "review_items": [],
+  "processing_issues": {
+    "extraction": [],
+    "normalization": [],
+    "interpretation": []
+  },
+  "unmapped_items": [],
+  "warnings": [],
+  "confidence": 0.99,
+  "requires_manual_review": false,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

@@ -1,0 +1,120 @@
+{
+  "report_id": "labtest_099",
+  "template": "template_7_stamped",
+  "folio": "NHI-2026-99848",
+  "patient": {
+    "nombre": "Carlos Alberto García Mendoza",
+    "edad": 53,
+    "sexo": "M",
+    "id": "CAG-716444-L7"
+  },
+  "fecha_toma": "2026-07-26",
+  "fecha_reporte": "2026-07-27",
+  "medico_solicitante": "Dra. Silvia Rangel Ochoa",
+  "expected": [
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Triglicéridos",
+      "abrev": "TG",
+      "loinc": "2571-8",
+      "valor": "214",
+      "unidad": "mg/dL",
+      "rango_ref": "35-150",
+      "bandera": "H",
+      "valor_unidad_messy": "214mg/dL",
+      "rango_messy": "N: 35-150",
+      "occluded": true
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Colesterol Total",
+      "abrev": "COL-T",
+      "loinc": "2093-3",
+      "valor": "161",
+      "unidad": "mg/dL",
+      "rango_ref": "125-200",
+      "bandera": "",
+      "valor_unidad_messy": "161mg/dL",
+      "rango_messy": "N: 125-200",
+      "occluded": true
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "LDL",
+      "abrev": "LDL",
+      "loinc": "13457-7",
+      "valor": "61",
+      "unidad": "mg/dL",
+      "rango_ref": "50-130",
+      "bandera": "",
+      "valor_unidad_messy": "61mg/dL",
+      "rango_messy": "N: 50-130",
+      "occluded": true
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Bilirrubina Total",
+      "abrev": "TBIL",
+      "loinc": "1975-2",
+      "valor": "0.0",
+      "unidad": "mg/dL",
+      "rango_ref": "0.2-1.2",
+      "bandera": "L",
+      "valor_unidad_messy": "0.0mg/dL",
+      "rango_messy": "N: 0.2-1.2",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Fosfatasa Alcalina",
+      "abrev": "ALP",
+      "loinc": "6768-6",
+      "valor": "205",
+      "unidad": "U/L",
+      "rango_ref": "44-147",
+      "bandera": "H",
+      "valor_unidad_messy": "205U/L",
+      "rango_messy": "N: 44-147",
+      "occluded": false
+    },
+    {
+      "panel": "Panel Serológico Autoinmune",
+      "nombre": "Factor Reumatoide",
+      "abrev": "FR",
+      "loinc": "11572-5",
+      "valor": "8",
+      "unidad": "UI/mL",
+      "rango_ref": "<14",
+      "bandera": "",
+      "valor_unidad_messy": "8UI/mL",
+      "rango_messy": "Normal <14",
+      "occluded": false
+    },
+    {
+      "panel": "Panel Serológico Autoinmune",
+      "nombre": "Anticoagulante Lúpico",
+      "abrev": "LA",
+      "loinc": "22599-7",
+      "valor": "Negativo",
+      "unidad": "",
+      "rango_ref": "Negativo",
+      "bandera": "",
+      "valor_unidad_messy": "Negativo",
+      "rango_messy": "Neg",
+      "occluded": false
+    },
+    {
+      "panel": "Panel Serológico Autoinmune",
+      "nombre": "Anti-CCP",
+      "abrev": "CCP",
+      "loinc": "34505-9",
+      "valor": "9",
+      "unidad": "U/mL",
+      "rango_ref": "<20",
+      "bandera": "",
+      "valor_unidad_messy": "9U/mL",
+      "rango_messy": "Normal <20",
+      "occluded": false
+    }
+  ]
+}

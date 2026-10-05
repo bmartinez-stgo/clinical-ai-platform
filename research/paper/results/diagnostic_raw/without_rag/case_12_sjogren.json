@@ -1,0 +1,64 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 2,
+    "abnormal_markers": [
+      {
+        "test_name": "Anti-La/SSB",
+        "loinc_code": "24082-2",
+        "value": 78.25,
+        "unit": "U",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-Ro/SSA (Ro60)",
+        "loinc_code": "24081-4",
+        "value": 118.87,
+        "unit": "U",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Síndrome de Antifosfolípidos",
+      "likelihood": "low",
+      "supporting_findings": [],
+      "missing_workup": [
+        "Prueba de anticuerpos antifosfolípicos (lupus anticoagulante)",
+        "Historial de trombosis o pérdidas gestacionales"
+      ]
+    },
+    {
+      "condition": "Síndrome de Sjögren",
+      "likelihood": "moderate",
+      "supporting_findings": [
+        "Anti-Ro/SSA (Ro60) elevado",
+        "Anti-La/SSB elevado"
+      ],
+      "missing_workup": [
+        "Síntomas de sicca (xerostomia, xerofthalmia)"
+      ]
+    }
+  ],
+  "differential": [
+    "Síndrome de Sjögren",
+    "Síndrome de Antifosfolípidos",
+    "Efectos maternos sobre el feto"
+  ],
+  "recommended_followup": [
+    "Consulta con reumatología para evaluación de síntomas de sicca",
+    "Seguimiento del embarazo con especial atención a la bradicardia fetal",
+    "Repetición de pruebas de antifosfolípidos si hay historia de eventos trombóticos o pérdidas gestacionales"
+  ],
+  "reasoning": "La paciente presenta anticuerpos Anti-Ro/SSA y Anti-La/SSB elevados, lo cual sugiere un posible diagnóstico de Síndrome de Sjögren. Sin embargo, falta confirmar los síntomas de sicca. La bradicardia fetal puede estar relacionada con estos anticuerpos maternos, pero también se debe considerar la posibilidad de otros factores que puedan afectar al feto.",
+  "confidence": "moderate",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

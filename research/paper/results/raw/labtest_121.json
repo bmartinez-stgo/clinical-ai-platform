@@ -1,0 +1,309 @@
+{
+  "document_id": "fcb5620d-f64f-4e19-9f77-579aaf062708",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_121.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 720.0
+  },
+  "patient": {
+    "external_id": "NHI-2026-85089",
+    "name": "Roberto Sánchez Peña",
+    "sex": null,
+    "date_of_birth": "48"
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clínico Nahui",
+    "report_date": "2026-05-12",
+    "accession_number": "NHI-2026-85989"
+  },
+  "observation_count": 10,
+  "observations": [
+    {
+      "observation_id": "aa70a305-37b4-427f-a692-5c46057a534d",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "VCM",
+      "test_name_normalized": "Volumen corpuscular medio (VCM)",
+      "loinc_code": "787-2",
+      "value": 99.6,
+      "value_type": "numeric",
+      "unit_raw": "fl",
+      "unit_ucum": "fL",
+      "reference_range_raw": "80-100",
+      "reference_range": {
+        "low": 80.0,
+        "high": 100.0,
+        "unit_ucum": "fL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "74260810-d924-4bac-abf0-263559f236c6",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Hematocrito",
+      "test_name_normalized": "Hematocrito",
+      "loinc_code": "4544-3",
+      "value": 43.6,
+      "value_type": "numeric",
+      "unit_raw": "%",
+      "unit_ucum": "%",
+      "reference_range_raw": "36.0-46.0",
+      "reference_range": {
+        "low": 36.0,
+        "high": 46.0,
+        "unit_ucum": "%"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "3b3ccfc9-6d08-4a3c-aa0d-e8cc6952c443",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Leucocitos",
+      "test_name_normalized": "Leucocitos",
+      "loinc_code": "6690-2",
+      "value": 4.6,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/uL",
+      "unit_ucum": "x10^3/uL",
+      "reference_range_raw": "4.5-11.0",
+      "reference_range": {
+        "low": 4.5,
+        "high": 11.0,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "45a40808-6b7e-4ef1-8498-ad851b5532fc",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Hemoglobina",
+      "test_name_normalized": "Hemoglobina",
+      "loinc_code": "718-7",
+      "value": 13.7,
+      "value_type": "numeric",
+      "unit_raw": "g/dL",
+      "unit_ucum": "g/dL",
+      "reference_range_raw": "12.0-16.0",
+      "reference_range": {
+        "low": 12.0,
+        "high": 16.0,
+        "unit_ucum": "g/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "b02282ba-841c-4f7b-bd56-4f3a29be33c4",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Glucosa",
+      "test_name_normalized": "Glucosa",
+      "loinc_code": "2345-7",
+      "value": 97,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "70-100",
+      "reference_range": {
+        "low": 70.0,
+        "high": 100.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "1efabcf4-9410-4598-8b0f-e7372c6ca220",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Potasio",
+      "test_name_normalized": "Potasio",
+      "loinc_code": "2823-3",
+      "value": 4,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "3.5-5.1",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.1,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "240e2466-e5e1-411d-aa8e-95a1ac98f4ec",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Sodio",
+      "test_name_normalized": "Sodio",
+      "loinc_code": "2951-2",
+      "value": 137,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "136-145",
+      "reference_range": {
+        "low": 136.0,
+        "high": 145.0,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "912ba006-6733-408c-a04e-d2cb5243cee7",
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anti-SSB (La)",
+      "test_name_normalized": "Anti-SSB (La)",
+      "loinc_code": "24082-2",
+      "value": 0,
+      "value_type": "numeric",
+      "unit_raw": null,
+      "unit_ucum": null,
+      "reference_range_raw": "Negativo",
+      "reference_range": null,
+      "interpretation": null,
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "4d87cecf-0002-4598-bd46-f4973d5089b5",
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Factor Reumatoide",
+      "test_name_normalized": "Factor Reumatoide",
+      "loinc_code": "11572-5",
+      "value": 8,
+      "value_type": "numeric",
+      "unit_raw": "UI/mL",
+      "unit_ucum": "UI/mL",
+      "reference_range_raw": "<14",
+      "reference_range": {
+        "low": null,
+        "high": 14.0,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "e83c69aa-84b4-4897-a695-2f9f171bf85e",
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anti-DNA de doble cadena",
+      "test_name_normalized": "Anti-DNA de doble cadena",
+      "loinc_code": "14169-3",
+      "value": 18,
+      "value_type": "numeric",
+      "unit_raw": "UI/mL",
+      "unit_ucum": "UI/mL",
+      "reference_range_raw": "<30",
+      "reference_range": {
+        "low": null,
+        "high": 30.0,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    }
+  ],
+  "review_items": [
+    {
+      "stage": "normalization",
+      "reason": "unit_unmapped",
+      "message": "Numeric value extracted, but the measurement unit could not be normalized.",
+      "page": 1,
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anti-SSB (La)",
+      "value_raw": "Negativo",
+      "unit_raw": null,
+      "reference_range_raw": "Negativo",
+      "specimen_raw": null,
+      "confidence": 0.9
+    },
+    {
+      "stage": "interpretation",
+      "reason": "reference_range_unparsed",
+      "message": "A reference range was present, but it could not be parsed into structured low/high bounds.",
+      "page": 1,
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anti-SSB (La)",
+      "value_raw": "Negativo",
+      "unit_raw": null,
+      "reference_range_raw": "Negativo",
+      "specimen_raw": null,
+      "confidence": 0.9
+    }
+  ],
+  "processing_issues": {
+    "extraction": [],
+    "normalization": [
+      {
+        "stage": "normalization",
+        "reason": "unit_unmapped",
+        "message": "Numeric value extracted, but the measurement unit could not be normalized.",
+        "page": 1,
+        "panel_raw": "Panel Serológico Autoinmune",
+        "test_name_raw": "Anti-SSB (La)",
+        "value_raw": "Negativo",
+        "unit_raw": null,
+        "reference_range_raw": "Negativo",
+        "specimen_raw": null,
+        "confidence": 0.9
+      }
+    ],
+    "interpretation": [
+      {
+        "stage": "interpretation",
+        "reason": "reference_range_unparsed",
+        "message": "A reference range was present, but it could not be parsed into structured low/high bounds.",
+        "page": 1,
+        "panel_raw": "Panel Serológico Autoinmune",
+        "test_name_raw": "Anti-SSB (La)",
+        "value_raw": "Negativo",
+        "unit_raw": null,
+        "reference_range_raw": "Negativo",
+        "specimen_raw": null,
+        "confidence": 0.9
+      }
+    ]
+  },
+  "unmapped_items": [],
+  "warnings": [],
+  "confidence": 0.99,
+  "requires_manual_review": true,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

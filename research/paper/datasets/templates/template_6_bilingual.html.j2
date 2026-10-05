@@ -1,0 +1,57 @@
+<!-- Plantilla 6: encabezados bilingües ES/EN, común en labs privados grandes -->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 11px; color: #1b1b1b; margin: 28px 36px; }
+  .top { display:flex; justify-content: space-between; border-bottom: 3px solid #14532d; padding-bottom: 8px; margin-bottom: 12px; }
+  .top h1 { font-size: 16px; margin:0; color:#14532d; }
+  .top .en { font-size: 10px; color:#666; font-style: italic; }
+  .meta-grid { display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 4px 16px; font-size: 10.5px; margin-bottom: 14px; }
+  .meta-grid .k { color:#666; font-size:9px; text-transform:uppercase; }
+  table { width:100%; border-collapse: collapse; margin-bottom: 14px; }
+  th { background:#eef6ef; font-size: 9.5px; text-align:left; padding:6px 8px; }
+  th .en { display:block; font-weight:normal; font-style:italic; color:#557; font-size: 8.5px; }
+  td { padding:5px 8px; border-bottom:1px solid #e6e6e6; font-size:11px; }
+  .panel-title { font-weight:bold; color:#14532d; margin: 10px 0 4px; }
+  .flag { font-weight:bold; color:#a4262c; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div>
+      <h1>{{ lab_name }}</h1>
+      <div class="en">Clinical Laboratory Report</div>
+    </div>
+    <div style="text-align:right; font-size:10.5px;">{{ lab_address }}<br>Tel. {{ lab_phone }}</div>
+  </div>
+  <div class="meta-grid">
+    <div><span class="k">Paciente / Patient</span><br>{{ patient.nombre }}</div>
+    <div><span class="k">Edad-Sexo / Age-Sex</span><br>{{ patient.edad }} / {{ patient.sexo }}</div>
+    <div><span class="k">Folio / Report No.</span><br>{{ folio }}</div>
+    <div><span class="k">Toma / Collected</span><br>{{ fecha_toma }}</div>
+    <div><span class="k">Reporte / Reported</span><br>{{ fecha_reporte }}</div>
+    <div><span class="k">Médico / Physician</span><br>{{ medico_solicitante }}</div>
+  </div>
+  {% for panel in panels %}
+  <div class="panel-title">{{ panel.name }}</div>
+  <table>
+    <tr>
+      <th>Analito<span class="en">Test</span></th>
+      <th>Resultado<span class="en">Result</span></th>
+      <th>Unidad<span class="en">Unit</span></th>
+      <th>Valor Ref.<span class="en">Reference Range</span></th>
+    </tr>
+    {% for a in panel.analytes %}
+    <tr>
+      <td>{{ a.nombre }}</td>
+      <td class="{{ 'flag' if a.bandera else '' }}">{{ a.valor }}</td>
+      <td>{{ a.unidad }}</td>
+      <td>{{ a.rango_ref }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endfor %}
+</body>
+</html>

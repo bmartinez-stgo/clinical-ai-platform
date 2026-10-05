@@ -1,0 +1,62 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 2,
+    "abnormal_markers": [
+      {
+        "test_name": "Anti-CCP IgG",
+        "loinc_code": "34505-9",
+        "value": 17.0,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": 16.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "PCR",
+        "loinc_code": null,
+        "value": 0.9,
+        "unit": "mg/dL",
+        "ref_low": null,
+        "ref_high": 0.5,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Artritis Reumatoide",
+      "likelihood": "moderate",
+      "supporting_findings": [
+        "Anti-CCP IgG elevado (17.0 U/mL)"
+      ],
+      "missing_workup": [
+        "Anti-SSA/SSB",
+        "anti-Scl-70",
+        "anti-centromere",
+        "anti-Jo-1",
+        "anti-U1-RNP"
+      ]
+    }
+  ],
+  "differential": [
+    "Artritis Reumatoide",
+    "Poliartralgia por causa metabólica o endocrina",
+    "Infección viral"
+  ],
+  "recommended_followup": [
+    "Anti-SSA/SSB",
+    "anti-Scl-70",
+    "anti-centromere",
+    "anti-Jo-1",
+    "anti-U1-RNP",
+    "PCR repetición",
+    "Anticuerpos virales si sospecha"
+  ],
+  "reasoning": "La paciente presenta dolor articular y muscular migratorio de inicio agudo, con un Anti-CCP IgG elevado (17.0 U/mL) y PCR alta (0.9 mg/dL). Estos hallazgos sugieren una posible artritis reumatoide, aunque el factor reumatoide está dentro de los límites normales. Se recomienda realizar estudios adicionales para descartar otras condiciones autoinmunes y metabólicas.",
+  "confidence": "moderate",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

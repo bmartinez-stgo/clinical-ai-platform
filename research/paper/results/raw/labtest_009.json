@@ -1,0 +1,516 @@
+{
+  "document_id": "60360b96-c4a0-43fc-95a2-fc514be73d18",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_009.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 943.0
+  },
+  "patient": {
+    "external_id": "PLT-731207-A4",
+    "name": "Patricia López Torres",
+    "sex": null,
+    "date_of_birth": "Edad: 26"
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clínico Nahui",
+    "report_date": "2026-06-30",
+    "accession_number": "NHI-2026-12540"
+  },
+  "observation_count": 15,
+  "observations": [
+    {
+      "observation_id": "b432941e-af82-45f1-a1fe-b44c03d99b52",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Eritrocitos",
+      "test_name_normalized": "Eritrocitos",
+      "loinc_code": "789-8",
+      "value": 4.62,
+      "value_type": "numeric",
+      "unit_raw": "x10^6/uL",
+      "unit_ucum": "x10^6/uL",
+      "reference_range_raw": "4.2-5.4",
+      "reference_range": {
+        "low": 4.2,
+        "high": 5.4,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "14c94858-ba2d-4d8d-8126-077ba31c278c",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Plaquetas",
+      "test_name_normalized": "Plaquetas",
+      "loinc_code": "777-3",
+      "value": 606,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/uL",
+      "unit_ucum": "x10^3/uL",
+      "reference_range_raw": "150-450",
+      "reference_range": {
+        "low": 150.0,
+        "high": 450.0,
+        "unit_ucum": null
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 156.0,
+        "relative_to_upper": 0.3467,
+        "unit_ucum": null
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "7c60113f-2685-4973-8d4d-449354af2dd0",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "VCM",
+      "test_name_normalized": "Volumen corpuscular medio (VCM)",
+      "loinc_code": "787-2",
+      "value": 74.4,
+      "value_type": "numeric",
+      "unit_raw": "fL",
+      "unit_ucum": "fL",
+      "reference_range_raw": "80-100",
+      "reference_range": {
+        "low": 80.0,
+        "high": 100.0,
+        "unit_ucum": "fL"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 5.6,
+        "relative_to_lower": 0.07,
+        "unit_ucum": "fL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "2deafdf1-c4da-4551-a9c8-a60438b70453",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Sodio",
+      "test_name_normalized": "Sodio",
+      "loinc_code": "2951-2",
+      "value": 139,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "136-145",
+      "reference_range": {
+        "low": 136.0,
+        "high": 145.0,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "e9182e62-5595-4485-a4dd-c0cb4431f383",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Creatinina",
+      "test_name_normalized": "Creatinina",
+      "loinc_code": "2160-0",
+      "value": 1.3,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "0.6-1.1",
+      "reference_range": {
+        "low": 0.6,
+        "high": 1.1,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 0.2,
+        "relative_to_upper": 0.1818,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "f7f4e222-59dc-45f6-868b-27aa74097ba5",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Ácido Úrico",
+      "test_name_normalized": "Ácido úrico",
+      "loinc_code": "3084-1",
+      "value": 9.1,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "3.5-7.2",
+      "reference_range": {
+        "low": 3.5,
+        "high": 7.2,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 1.9,
+        "relative_to_upper": 0.2639,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "e96a49ca-c91a-45b6-bcb3-19c6782efbbf",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Glucosa",
+      "test_name_normalized": "Glucosa",
+      "loinc_code": "2345-7",
+      "value": 52,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "70-100",
+      "reference_range": {
+        "low": 70.0,
+        "high": 100.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 18.0,
+        "relative_to_lower": 0.2571,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "f526dff7-c885-46d7-bc76-87b6b689ef40",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Potasio",
+      "test_name_normalized": "Potasio",
+      "loinc_code": "2823-3",
+      "value": 5,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "3.5-5.1",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.1,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "881c0b9e-7e6f-44c4-9cd5-1d7721bffea1",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Urea",
+      "test_name_normalized": "Urea",
+      "loinc_code": "3094-0",
+      "value": 16,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "7-20",
+      "reference_range": {
+        "low": 7.0,
+        "high": 20.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "e02e0260-0faa-4022-aa6f-7feeecb5d162",
+      "panel_raw": "Perfil Tiroideo",
+      "test_name_raw": "T3 Total",
+      "test_name_normalized": "T3 Total",
+      "loinc_code": null,
+      "value": 135,
+      "value_type": "numeric",
+      "unit_raw": "ng/dL",
+      "unit_ucum": "ng/dL",
+      "reference_range_raw": "80-200",
+      "reference_range": {
+        "low": 80.0,
+        "high": 200.0,
+        "unit_ucum": "ng/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "29092b5c-86bd-47be-8076-fd1c7c4b14f7",
+      "panel_raw": "Perfil Tiroideo",
+      "test_name_raw": "T4 Libre",
+      "test_name_normalized": "T4 Libre",
+      "loinc_code": null,
+      "value": 1.2,
+      "value_type": "numeric",
+      "unit_raw": "ng/dL",
+      "unit_ucum": "ng/dL",
+      "reference_range_raw": "0.8-1.8",
+      "reference_range": {
+        "low": 0.8,
+        "high": 1.8,
+        "unit_ucum": "ng/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "034a7573-9f49-4a8f-9487-e8e6240978cd",
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anticoagulante Lúpico",
+      "test_name_normalized": "Anticoagulante Lúpico",
+      "loinc_code": "22599-7",
+      "value": 0,
+      "value_type": "numeric",
+      "unit_raw": null,
+      "unit_ucum": null,
+      "reference_range_raw": null,
+      "reference_range": null,
+      "interpretation": null,
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "400e8555-d177-4531-85de-13b9efbae0a1",
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anti-SSA (Ro)",
+      "test_name_normalized": "Anti-SSA (Ro)",
+      "loinc_code": "24081-4",
+      "value": 0,
+      "value_type": "numeric",
+      "unit_raw": null,
+      "unit_ucum": null,
+      "reference_range_raw": null,
+      "reference_range": null,
+      "interpretation": null,
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "b9c30dac-5dab-4650-bac1-bf2a8ad98a51",
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anticuerpos Anticardiolipina IgG",
+      "test_name_normalized": "Anticuerpos Anticardiolipina IgG",
+      "loinc_code": "16097-9",
+      "value": 6,
+      "value_type": "numeric",
+      "unit_raw": "GPL-U/mL",
+      "unit_ucum": "GPL-U/mL",
+      "reference_range_raw": "<15",
+      "reference_range": {
+        "low": null,
+        "high": 15.0,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "c598e8c8-3ec5-4bf7-9c9b-63243765e296",
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anti-SSB (La)",
+      "test_name_normalized": "Anti-SSB (La)",
+      "loinc_code": "24082-2",
+      "value": 0,
+      "value_type": "numeric",
+      "unit_raw": null,
+      "unit_ucum": null,
+      "reference_range_raw": null,
+      "reference_range": null,
+      "interpretation": null,
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 0.9
+    }
+  ],
+  "review_items": [
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "Perfil Tiroideo",
+      "test_name_raw": "T3 Total",
+      "value_raw": "135",
+      "unit_raw": "ng/dL",
+      "reference_range_raw": "80-200",
+      "specimen_raw": null,
+      "confidence": 0.9
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "Perfil Tiroideo",
+      "test_name_raw": "T4 Libre",
+      "value_raw": "1.2",
+      "unit_raw": "ng/dL",
+      "reference_range_raw": "0.8-1.8",
+      "specimen_raw": null,
+      "confidence": 0.9
+    },
+    {
+      "stage": "normalization",
+      "reason": "unit_unmapped",
+      "message": "Numeric value extracted, but the measurement unit could not be normalized.",
+      "page": 1,
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anticoagulante Lúpico",
+      "value_raw": "Negativo",
+      "unit_raw": null,
+      "reference_range_raw": null,
+      "specimen_raw": null,
+      "confidence": 0.9
+    },
+    {
+      "stage": "normalization",
+      "reason": "unit_unmapped",
+      "message": "Numeric value extracted, but the measurement unit could not be normalized.",
+      "page": 1,
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anti-SSA (Ro)",
+      "value_raw": "Positivo (H)",
+      "unit_raw": null,
+      "reference_range_raw": null,
+      "specimen_raw": null,
+      "confidence": 0.9
+    },
+    {
+      "stage": "normalization",
+      "reason": "unit_unmapped",
+      "message": "Numeric value extracted, but the measurement unit could not be normalized.",
+      "page": 1,
+      "panel_raw": "Panel Serológico Autoinmune",
+      "test_name_raw": "Anti-SSB (La)",
+      "value_raw": "Positivo (H)",
+      "unit_raw": null,
+      "reference_range_raw": null,
+      "specimen_raw": null,
+      "confidence": 0.9
+    }
+  ],
+  "processing_issues": {
+    "extraction": [],
+    "normalization": [
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "Perfil Tiroideo",
+        "test_name_raw": "T3 Total",
+        "value_raw": "135",
+        "unit_raw": "ng/dL",
+        "reference_range_raw": "80-200",
+        "specimen_raw": null,
+        "confidence": 0.9
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "Perfil Tiroideo",
+        "test_name_raw": "T4 Libre",
+        "value_raw": "1.2",
+        "unit_raw": "ng/dL",
+        "reference_range_raw": "0.8-1.8",
+        "specimen_raw": null,
+        "confidence": 0.9
+      },
+      {
+        "stage": "normalization",
+        "reason": "unit_unmapped",
+        "message": "Numeric value extracted, but the measurement unit could not be normalized.",
+        "page": 1,
+        "panel_raw": "Panel Serológico Autoinmune",
+        "test_name_raw": "Anticoagulante Lúpico",
+        "value_raw": "Negativo",
+        "unit_raw": null,
+        "reference_range_raw": null,
+        "specimen_raw": null,
+        "confidence": 0.9
+      },
+      {
+        "stage": "normalization",
+        "reason": "unit_unmapped",
+        "message": "Numeric value extracted, but the measurement unit could not be normalized.",
+        "page": 1,
+        "panel_raw": "Panel Serológico Autoinmune",
+        "test_name_raw": "Anti-SSA (Ro)",
+        "value_raw": "Positivo (H)",
+        "unit_raw": null,
+        "reference_range_raw": null,
+        "specimen_raw": null,
+        "confidence": 0.9
+      },
+      {
+        "stage": "normalization",
+        "reason": "unit_unmapped",
+        "message": "Numeric value extracted, but the measurement unit could not be normalized.",
+        "page": 1,
+        "panel_raw": "Panel Serológico Autoinmune",
+        "test_name_raw": "Anti-SSB (La)",
+        "value_raw": "Positivo (H)",
+        "unit_raw": null,
+        "reference_range_raw": null,
+        "specimen_raw": null,
+        "confidence": 0.9
+      }
+    ],
+    "interpretation": []
+  },
+  "unmapped_items": [
+    "T3 Total",
+    "T4 Libre"
+  ],
+  "warnings": [],
+  "confidence": 0.97,
+  "requires_manual_review": true,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

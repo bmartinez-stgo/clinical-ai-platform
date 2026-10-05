@@ -1,0 +1,123 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 6,
+    "abnormal_markers": [
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": "1/100 positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-CCP",
+        "loinc_code": "34505-9",
+        "value": 500.0,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": 20.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-dsDNA",
+        "loinc_code": "14169-3",
+        "value": 43.2,
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Complemento C4",
+        "loinc_code": null,
+        "value": 13.2,
+        "unit": "mg/dL",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Factor Reumatoide",
+        "loinc_code": "11572-5",
+        "value": 393.0,
+        "unit": "IU/mL",
+        "ref_low": null,
+        "ref_high": 14.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "VSG",
+        "loinc_code": null,
+        "value": 45.0,
+        "unit": "mm/h",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": [
+      {
+        "pattern": "Consumo de complemento",
+        "markers_involved": [
+          "Complemento C4"
+        ],
+        "interpretation": "Complemento sérico reducido (C3 y/o C4). Indica consumo por complejos inmunes: patrón característico de LES activo. También presente en crioglobulinemia y endocarditis bacteriana subaguda."
+      }
+    ]
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Artritis Reumatoide",
+      "likelihood": "high",
+      "supporting_findings": [
+        "Factor Reumatoide alto (393.0 IU/mL)",
+        "Anti-CCP alto (500.0 U/mL)",
+        "Poliartritis simétrica crónica"
+      ],
+      "missing_workup": [
+        "Radiografías de manos y muñecas",
+        "Estudios de función pulmonar"
+      ]
+    },
+    {
+      "condition": "Enfermedad Lúpica Eritematoso Sistémico (SLE)",
+      "likelihood": "moderate",
+      "supporting_findings": [
+        "Anti-dsDNA alto (43.2)",
+        "Complemento C4 bajo (13.2 mg/dL)",
+        "Hematuria microscópica"
+      ],
+      "missing_workup": [
+        "Anti-Sm",
+        "Anti-Ro/SSA",
+        "Anti-La/SSB",
+        "Estudios renales más detallados"
+      ]
+    }
+  ],
+  "differential": [
+    "Artritis Reumatoide",
+    "Enfermedad Lúpica Eritematoso Sistémico (SLE)",
+    "Infección urinaria"
+  ],
+  "recommended_followup": [
+    "Radiografías de manos y muñecas",
+    "Estudios renales más detallados",
+    "Anti-Sm",
+    "Anti-Ro/SSA",
+    "Anti-La/SSB",
+    "Estudios de función pulmonar"
+  ],
+  "reasoning": "La paciente presenta factores reumatoide y anti-CCP altos, lo que apoya fuertemente el diagnóstico de artritis reumatoide. Además, la presencia de anti-dsDNA alto y complemento C4 bajo, junto con la hematuria microscópica, sugieren posibles implicaciones de SLE. Se recomienda realizar estudios adicionales para confirmar o descartar estas condiciones.",
+  "confidence": "moderate",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

@@ -1,0 +1,48 @@
+<!-- Plantilla 5: apariencia de escaneo/foto ligeramente rotado, con ruido -->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { background: #ddd; margin: 0; padding: 20px; }
+  .page {
+    background: #f7f5ee;
+    width: 700px; margin: 0 auto; padding: 30px 34px;
+    font-family: 'Courier New', monospace; font-size: 11.5px; color: #2a2a26;
+    transform: rotate(-1deg);
+    box-shadow: 0 0 0 1px #ccc;
+    position: relative;
+    background-image: repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, transparent 1px, transparent 2px);
+  }
+  .noise { position: absolute; inset: 0; opacity: .05;
+    background-image: repeating-radial-gradient(circle at 20% 30%, #000 0, transparent 1px),
+                       repeating-radial-gradient(circle at 70% 60%, #000 0, transparent 1px);
+    background-size: 6px 6px, 9px 9px; pointer-events: none; }
+  h1 { font-size: 14px; letter-spacing: .02em; margin: 0 0 4px; }
+  .meta { font-size: 10.5px; margin-bottom: 14px; color: #444; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border: 1px solid #999; padding: 4px 6px; font-size: 10.5px; }
+  th { background: #e8e4d6; }
+  .panel-title { font-weight: bold; margin: 10px 0 3px; font-size: 11px; }
+</style>
+</head>
+<body>
+  <div class="page">
+    <div class="noise"></div>
+    <h1>{{ lab_name }} - REPORTE DE RESULTADOS</h1>
+    <div class="meta">
+      Folio {{ folio }} | Paciente: {{ patient.nombre }} | {{ patient.edad }} anios {{ patient.sexo }} | ID {{ patient.id }}<br>
+      Toma: {{ fecha_toma }}  Reporte: {{ fecha_reporte }}  Medico: {{ medico_solicitante }}
+    </div>
+    {% for panel in panels %}
+    <div class="panel-title">{{ panel.name }}</div>
+    <table>
+      <tr><th>Estudio</th><th>Result.</th><th>Unid.</th><th>Ref.</th></tr>
+      {% for a in panel.analytes %}
+      <tr><td>{{ a.nombre }}</td><td>{{ a.valor }}{% if a.bandera %} {{ a.bandera }}{% endif %}</td><td>{{ a.unidad }}</td><td>{{ a.rango_ref }}</td></tr>
+      {% endfor %}
+    </table>
+    {% endfor %}
+  </div>
+</body>
+</html>

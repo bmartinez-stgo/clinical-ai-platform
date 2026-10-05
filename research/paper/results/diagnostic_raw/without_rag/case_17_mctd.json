@@ -1,0 +1,113 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 6,
+    "abnormal_markers": [
+      {
+        "test_name": "ADAMTS13 actividad",
+        "loinc_code": null,
+        "value": "<0.5",
+        "unit": "%",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "critical",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": "1:640 patrón moteado",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-SSA/Ro",
+        "loinc_code": "24081-4",
+        "value": 137.0,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-U1-RNP",
+        "loinc_code": null,
+        "value": 141.0,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Hemoglobina",
+        "loinc_code": null,
+        "value": 6.3,
+        "unit": "g/dL",
+        "ref_low": 12.0,
+        "ref_high": 16.0,
+        "direction": "critical",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Plaquetas",
+        "loinc_code": null,
+        "value": 6.0,
+        "unit": "x10^3/uL",
+        "ref_low": 150.0,
+        "ref_high": 450.0,
+        "direction": "critical",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Síndrome de overlap mixto",
+      "likelihood": "high",
+      "supporting_findings": [
+        "ANA 1:640 patrón moteado",
+        "Anti-U1-RNP 141.0 U/mL",
+        "Anti-SSA/Ro 137.0 U/mL"
+      ],
+      "missing_workup": [
+        "Anti-SSB/La",
+        "Anti-dsDNA",
+        "Anti-Sm"
+      ]
+    },
+    {
+      "condition": "Síndrome de Guillain-Barré",
+      "likelihood": "moderate",
+      "supporting_findings": [
+        "Alteración neurológica",
+        "Trombocitopenia aguda"
+      ],
+      "missing_workup": [
+        "Estudios neurológicos (EMG, lumbar)",
+        "Anticuerpos anti-GQ1b"
+      ]
+    }
+  ],
+  "differential": [
+    "Síndrome de overlap mixto",
+    "Síndrome de Guillain-Barré",
+    "Trombocitopenia trombótica trombocitopénica (TTP)"
+  ],
+  "recommended_followup": [
+    "Realizar estudios neurológicos (EMG, lumbar)",
+    "Anticuerpos anti-GQ1b",
+    "Anti-SSB/La",
+    "Anti-dsDNA",
+    "Anti-Sm",
+    "Monitorización hemodinámica y soporte transfusiones"
+  ],
+  "reasoning": "La paciente presenta un cuadro de anemia severa y trombocitopenia aguda, con marcadores autoinmunes positivos (ANA, Anti-U1-RNP, Anti-SSA/Ro). La actividad ADAMTS13 muy baja (<0.5%) sugiere TTP, pero la presencia de alteraciones neurológicas también apoya la posibilidad de síndrome de Guillain-Barré. Se recomienda realizar estudios adicionales para confirmar el diagnóstico y iniciar el tratamiento correspondiente.",
+  "confidence": "moderate",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

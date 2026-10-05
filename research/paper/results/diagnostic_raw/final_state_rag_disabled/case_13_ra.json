@@ -1,0 +1,59 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 2,
+    "abnormal_markers": [
+      {
+        "test_name": "Anti-CCP IgG",
+        "loinc_code": "34505-9",
+        "value": 17.0,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": 16.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "PCR",
+        "loinc_code": null,
+        "value": 0.9,
+        "unit": "mg/dL",
+        "ref_low": null,
+        "ref_high": 0.5,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Reumatismo Artrítido (RA)",
+      "likelihood": "moderate",
+      "supporting_findings": [
+        "Anti-CCP IgG elevado (17.0 U/mL)",
+        "PCR alta (0.9 mg/dL)"
+      ],
+      "missing_workup": [
+        "Anti-SSA/SSB",
+        "Anti-Scl-70",
+        "Anti-centromere",
+        "Anti-Jo-1",
+        "Anti-U1-RNP"
+      ]
+    }
+  ],
+  "differential": [
+    "Reumatismo Artrítido (RA)",
+    "Poliartralgia reactiva",
+    "Infección viral"
+  ],
+  "recommended_followup": [
+    "Estudios serológicos adicionales para otras enfermedades autoinmunes",
+    "Seguimiento clínico para evolución de los síntomas",
+    "Descarte de infecciones virales"
+  ],
+  "reasoning": "La paciente presenta dolor articular y muscular migratorio de inicio agudo, con Anti-CCP IgG elevado y PCR alta, lo que sugiere una posible artritis inflamatoria, en particular Reumatismo Artrítido (RA). Sin embargo, la ausencia de factores reumatoide y la necesidad de estudios adicionales para descartar otras condiciones autoinmunes o infecciosas es importante.",
+  "confidence": "moderate",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

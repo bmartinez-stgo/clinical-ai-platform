@@ -1,0 +1,133 @@
+{
+  "report_id": "labtest_134",
+  "template": "template_9_portal",
+  "folio": "NHI-2026-64135",
+  "patient": {
+    "nombre": "Arturo Martínez Soto",
+    "edad": 63,
+    "sexo": "M",
+    "id": "AMS-833721-V2"
+  },
+  "fecha_toma": "2026-06-17",
+  "fecha_reporte": "2026-06-18",
+  "medico_solicitante": "Dra. Fernanda Ríos Landa",
+  "expected": [
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Triglicéridos",
+      "abrev": "TG",
+      "loinc": "2571-8",
+      "valor": "74",
+      "unidad": "mg/dL",
+      "rango_ref": "35-150",
+      "bandera": "",
+      "valor_unidad_messy": "74mg/dL",
+      "rango_messy": "N: 35-150",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "LDL",
+      "abrev": "LDL",
+      "loinc": "13457-7",
+      "valor": "68",
+      "unidad": "mg/dL",
+      "rango_ref": "50-130",
+      "bandera": "",
+      "valor_unidad_messy": "68mg/dL",
+      "rango_messy": "N: 50-130",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "HDL",
+      "abrev": "HDL",
+      "loinc": "2085-9",
+      "valor": "63",
+      "unidad": "mg/dL",
+      "rango_ref": "40-60",
+      "bandera": "H",
+      "valor_unidad_messy": "63mg/dL",
+      "rango_messy": "N: 40-60",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Colesterol Total",
+      "abrev": "COL-T",
+      "loinc": "2093-3",
+      "valor": "172",
+      "unidad": "mg/dL",
+      "rango_ref": "125-200",
+      "bandera": "",
+      "valor_unidad_messy": "172mg/dL",
+      "rango_messy": "N: 125-200",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "T4 Libre",
+      "abrev": "FT4",
+      "loinc": "3024-7",
+      "valor": "1.7",
+      "unidad": "ng/dL",
+      "rango_ref": "0.8-1.8",
+      "bandera": "",
+      "valor_unidad_messy": "1.7ng/dL",
+      "rango_messy": "N: 0.8-1.8",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "T3 Total",
+      "abrev": "T3",
+      "loinc": "3053-6",
+      "valor": "98",
+      "unidad": "ng/dL",
+      "rango_ref": "80-200",
+      "bandera": "",
+      "valor_unidad_messy": "98ng/dL",
+      "rango_messy": "N: 80-200",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "VCM",
+      "abrev": "MCV",
+      "loinc": "787-2",
+      "valor": "85.9",
+      "unidad": "fL",
+      "rango_ref": "80-100",
+      "bandera": "",
+      "valor_unidad_messy": "85.9fL",
+      "rango_messy": "N: 80-100",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Leucocitos",
+      "abrev": "WBC",
+      "loinc": "6690-2",
+      "valor": "5.0",
+      "unidad": "x10^3/uL",
+      "rango_ref": "4.5-11.0",
+      "bandera": "",
+      "valor_unidad_messy": "5.0x10^3/uL",
+      "rango_messy": "N: 4.5-11.0",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Hematocrito",
+      "abrev": "HCT",
+      "loinc": "4544-3",
+      "valor": "37.1",
+      "unidad": "%",
+      "rango_ref": "36.0-46.0",
+      "bandera": "",
+      "valor_unidad_messy": "37.1%",
+      "rango_messy": "N: 36.0-46.0",
+      "occluded": false
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "report_id": "labtest_094",
+  "template": "template_7_stamped",
+  "folio": "NHI-2026-45887",
+  "patient": {
+    "nombre": "Ana Sofía García Mendoza",
+    "edad": 41,
+    "sexo": "F",
+    "id": "ASG-713836-W5"
+  },
+  "fecha_toma": "2026-08-11",
+  "fecha_reporte": "2026-08-12",
+  "medico_solicitante": "Dr. Alberto Núñez Casillas",
+  "expected": [
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "AST (TGO)",
+      "abrev": "AST",
+      "loinc": "1920-8",
+      "valor": "37",
+      "unidad": "U/L",
+      "rango_ref": "8-40",
+      "bandera": "",
+      "valor_unidad_messy": "37U/L",
+      "rango_messy": "N: 8-40",
+      "occluded": true
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Bilirrubina Total",
+      "abrev": "TBIL",
+      "loinc": "1975-2",
+      "valor": "1.6",
+      "unidad": "mg/dL",
+      "rango_ref": "0.2-1.2",
+      "bandera": "H",
+      "valor_unidad_messy": "1.6mg/dL",
+      "rango_messy": "N: 0.2-1.2",
+      "occluded": true
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "ALT (TGP)",
+      "abrev": "ALT",
+      "loinc": "1742-6",
+      "valor": "12",
+      "unidad": "U/L",
+      "rango_ref": "7-40",
+      "bandera": "",
+      "valor_unidad_messy": "12U/L",
+      "rango_messy": "N: 7-40",
+      "occluded": true
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Sodio",
+      "abrev": "NA",
+      "loinc": "2951-2",
+      "valor": "135",
+      "unidad": "mmol/L",
+      "rango_ref": "136-145",
+      "bandera": "L",
+      "valor_unidad_messy": "135mmol/L",
+      "rango_messy": "N: 136-145",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Potasio",
+      "abrev": "K",
+      "loinc": "2823-3",
+      "valor": "4.9",
+      "unidad": "mmol/L",
+      "rango_ref": "3.5-5.1",
+      "bandera": "",
+      "valor_unidad_messy": "4.9mmol/L",
+      "rango_messy": "N: 3.5-5.1",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Leucocitos",
+      "abrev": "WBC",
+      "loinc": "6690-2",
+      "valor": "3.1",
+      "unidad": "x10^3/uL",
+      "rango_ref": "4.5-11.0",
+      "bandera": "L",
+      "valor_unidad_messy": "3.1x10^3/uL",
+      "rango_messy": "N: 4.5-11.0",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Plaquetas",
+      "abrev": "PLT",
+      "loinc": "777-3",
+      "valor": "601",
+      "unidad": "x10^3/uL",
+      "rango_ref": "150-450",
+      "bandera": "H",
+      "valor_unidad_messy": "601x10^3/uL",
+      "rango_messy": "N: 150-450",
+      "occluded": false
+    }
+  ]
+}

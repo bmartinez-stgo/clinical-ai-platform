@@ -1,0 +1,81 @@
+{
+  "report_id": "labtest_119",
+  "template": "template_8_narrative",
+  "folio": "NHI-2026-52284",
+  "patient": {
+    "nombre": "Ricardo Rojas Medina",
+    "edad": 64,
+    "sexo": "M",
+    "id": "RRM-750345-T6"
+  },
+  "fecha_toma": "2026-07-18",
+  "fecha_reporte": "2026-07-19",
+  "medico_solicitante": "Dra. Silvia Rangel Ochoa",
+  "expected": [
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "HDL",
+      "abrev": "HDL",
+      "loinc": "2085-9",
+      "valor": "48",
+      "unidad": "mg/dL",
+      "rango_ref": "40-60",
+      "bandera": "",
+      "valor_unidad_messy": "48mg/dL",
+      "rango_messy": "N: 40-60",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Colesterol Total",
+      "abrev": "COL-T",
+      "loinc": "2093-3",
+      "valor": "107",
+      "unidad": "mg/dL",
+      "rango_ref": "125-200",
+      "bandera": "L",
+      "valor_unidad_messy": "107mg/dL",
+      "rango_messy": "N: 125-200",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "LDL",
+      "abrev": "LDL",
+      "loinc": "13457-7",
+      "valor": "92",
+      "unidad": "mg/dL",
+      "rango_ref": "50-130",
+      "bandera": "",
+      "valor_unidad_messy": "92mg/dL",
+      "rango_messy": "N: 50-130",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "T3 Total",
+      "abrev": "T3",
+      "loinc": "3053-6",
+      "valor": "218",
+      "unidad": "ng/dL",
+      "rango_ref": "80-200",
+      "bandera": "H",
+      "valor_unidad_messy": "218ng/dL",
+      "rango_messy": "N: 80-200",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "TSH",
+      "abrev": "TSH",
+      "loinc": "3016-3",
+      "valor": "3.5",
+      "unidad": "uIU/mL",
+      "rango_ref": "0.4-4.5",
+      "bandera": "",
+      "valor_unidad_messy": "3.5uIU/mL",
+      "rango_messy": "N: 0.4-4.5",
+      "occluded": false
+    }
+  ]
+}

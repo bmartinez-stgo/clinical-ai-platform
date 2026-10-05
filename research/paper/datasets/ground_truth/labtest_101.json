@@ -1,0 +1,120 @@
+{
+  "report_id": "labtest_101",
+  "template": "template_7_stamped",
+  "folio": "NHI-2026-21287",
+  "patient": {
+    "nombre": "Roberto Castillo Nava",
+    "edad": 75,
+    "sexo": "M",
+    "id": "RCN-886550-K6"
+  },
+  "fecha_toma": "2026-03-14",
+  "fecha_reporte": "2026-03-15",
+  "medico_solicitante": "Dr. Iván Cortés Beltrán",
+  "expected": [
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Colesterol Total",
+      "abrev": "COL-T",
+      "loinc": "2093-3",
+      "valor": "126",
+      "unidad": "mg/dL",
+      "rango_ref": "125-200",
+      "bandera": "",
+      "valor_unidad_messy": "126mg/dL",
+      "rango_messy": "N: 125-200",
+      "occluded": true
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Triglicéridos",
+      "abrev": "TG",
+      "loinc": "2571-8",
+      "valor": "94",
+      "unidad": "mg/dL",
+      "rango_ref": "35-150",
+      "bandera": "",
+      "valor_unidad_messy": "94mg/dL",
+      "rango_messy": "N: 35-150",
+      "occluded": true
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "LDL",
+      "abrev": "LDL",
+      "loinc": "13457-7",
+      "valor": "78",
+      "unidad": "mg/dL",
+      "rango_ref": "50-130",
+      "bandera": "",
+      "valor_unidad_messy": "78mg/dL",
+      "rango_messy": "N: 50-130",
+      "occluded": true
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "HDL",
+      "abrev": "HDL",
+      "loinc": "2085-9",
+      "valor": "43",
+      "unidad": "mg/dL",
+      "rango_ref": "40-60",
+      "bandera": "",
+      "valor_unidad_messy": "43mg/dL",
+      "rango_messy": "N: 40-60",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Fosfatasa Alcalina",
+      "abrev": "ALP",
+      "loinc": "6768-6",
+      "valor": "107",
+      "unidad": "U/L",
+      "rango_ref": "44-147",
+      "bandera": "",
+      "valor_unidad_messy": "107U/L",
+      "rango_messy": "N: 44-147",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Bilirrubina Total",
+      "abrev": "TBIL",
+      "loinc": "1975-2",
+      "valor": "0.6",
+      "unidad": "mg/dL",
+      "rango_ref": "0.2-1.2",
+      "bandera": "",
+      "valor_unidad_messy": "0.6mg/dL",
+      "rango_messy": "N: 0.2-1.2",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "ALT (TGP)",
+      "abrev": "ALT",
+      "loinc": "1742-6",
+      "valor": "23",
+      "unidad": "U/L",
+      "rango_ref": "7-40",
+      "bandera": "",
+      "valor_unidad_messy": "23U/L",
+      "rango_messy": "N: 7-40",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "AST (TGO)",
+      "abrev": "AST",
+      "loinc": "1920-8",
+      "valor": "43",
+      "unidad": "U/L",
+      "rango_ref": "8-40",
+      "bandera": "H",
+      "valor_unidad_messy": "43U/L",
+      "rango_messy": "N: 8-40",
+      "occluded": false
+    }
+  ]
+}

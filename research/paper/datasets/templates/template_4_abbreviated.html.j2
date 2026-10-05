@@ -1,0 +1,35 @@
+<!-- Plantilla 4: abreviaturas y unidades no estandarizadas (estrés del parser) -->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: 'Courier New', monospace; font-size: 11px; color: #000; margin: 24px 30px; }
+  .hdr { font-size: 12px; font-weight: bold; margin-bottom: 2px; }
+  .hdr2 { font-size: 10px; margin-bottom: 12px; }
+  .sec { font-weight: bold; text-decoration: underline; margin: 12px 0 4px; font-size: 11px; }
+  table { width: 100%; border-collapse: collapse; }
+  td { padding: 2px 4px; font-size: 11px; }
+  .h-flag { font-weight: bold; }
+  .h-flag::before { content: "* "; }
+</style>
+</head>
+<body>
+  <div class="hdr">{{ lab_name }} -- REPORTE {{ folio }}</div>
+  <div class="hdr2">PAC: {{ patient.nombre }} ({{ patient.edad }}/{{ patient.sexo }}) ID:{{ patient.id }} | TOMA:{{ fecha_toma }} REP:{{ fecha_reporte }} | MED:{{ medico_solicitante }}</div>
+
+  {% for panel in panels %}
+  <div class="sec">{{ panel.name|upper }}</div>
+  <table>
+    {% for a in panel.analytes %}
+    <tr>
+      <td class="{{ 'h-flag' if a.bandera == 'H' else '' }}">{{ a.abrev }}</td>
+      <td>{{ a.valor_unidad_messy }}</td>
+      <td>[{{ a.rango_messy }}]</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% endfor %}
+  <p style="font-size:9px;color:#555;margin-top:16px;">* = fuera de rango. Abreviaturas segun nomenclatura interna del laboratorio.</p>
+</body>
+</html>

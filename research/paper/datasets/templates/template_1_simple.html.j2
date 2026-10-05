@@ -1,0 +1,52 @@
+<!-- Plantilla 1: laboratorio clínico pequeño, tabla única de una columna -->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: Georgia, 'Times New Roman', serif; font-size: 12px; color: #111; margin: 30px 40px; }
+  h1 { font-size: 16px; margin: 0 0 2px; }
+  .addr { font-size: 11px; color: #444; margin-bottom: 14px; }
+  hr { border: none; border-top: 1px solid #000; margin: 10px 0 16px; }
+  .patient-block { margin-bottom: 16px; }
+  .patient-block div { margin-bottom: 2px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border-bottom: 1px solid #ccc; padding: 5px 6px; text-align: left; font-size: 12px; }
+  th { border-bottom: 2px solid #000; }
+  .panel-row td { font-weight: bold; background: #f2f2f2; padding-top: 10px; }
+  .flag-H { color: #b00000; font-weight: bold; }
+  .flag-L { color: #0050b0; font-weight: bold; }
+  .footer { margin-top: 20px; font-size: 10px; color: #666; }
+</style>
+</head>
+<body>
+  <h1>{{ lab_name }}</h1>
+  <div class="addr">{{ lab_address }} · Tel. {{ lab_phone }}</div>
+  <hr>
+  <div class="patient-block">
+    <div><strong>Paciente:</strong> {{ patient.nombre }} &nbsp; <strong>Edad:</strong> {{ patient.edad }} &nbsp; <strong>Sexo:</strong> {{ patient.sexo }}</div>
+    <div><strong>ID:</strong> {{ patient.id }} &nbsp; <strong>Folio:</strong> {{ folio }}</div>
+    <div><strong>Fecha de toma:</strong> {{ fecha_toma }} &nbsp; <strong>Fecha de reporte:</strong> {{ fecha_reporte }}</div>
+    <div><strong>Médico solicitante:</strong> {{ medico_solicitante }}</div>
+  </div>
+  <table>
+    <thead>
+      <tr><th>Estudio</th><th>Resultado</th><th>Unidad</th><th>Valor de referencia</th></tr>
+    </thead>
+    <tbody>
+      {% for panel in panels %}
+      <tr class="panel-row"><td colspan="4">{{ panel.name }}</td></tr>
+      {% for a in panel.analytes %}
+      <tr>
+        <td>{{ a.nombre }}</td>
+        <td class="{{ 'flag-' + a.bandera if a.bandera else '' }}">{{ a.valor }}{% if a.bandera %} ({{ a.bandera }}){% endif %}</td>
+        <td>{{ a.unidad }}</td>
+        <td>{{ a.rango_ref }}</td>
+      </tr>
+      {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+  <div class="footer">Reporte generado electrónicamente. H = alto, L = bajo.</div>
+</body>
+</html>

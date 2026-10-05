@@ -1,0 +1,77 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 4,
+    "abnormal_markers": [
+      {
+        "test_name": "Anti-β2GPI IgG",
+        "loinc_code": null,
+        "value": 113.4,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anticardiolipina IgG",
+        "loinc_code": "16097-9",
+        "value": ">640",
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anticoagulante lúpico",
+        "loinc_code": "22599-7",
+        "value": "Positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Plaquetas",
+        "loinc_code": null,
+        "value": 25.0,
+        "unit": "x10^3/uL",
+        "ref_low": 150.0,
+        "ref_high": 450.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Síndrome de antifósfolipidos",
+      "likelihood": "high",
+      "supporting_findings": [
+        "Anti-β2GPI IgG elevado",
+        "Anticardiolipina IgG elevado",
+        "Anticoagulante lúpico positivo",
+        "Trombocitopenia"
+      ],
+      "missing_workup": [
+        "Historial de trombosis o pérdidas gestacionales"
+      ]
+    }
+  ],
+  "differential": [
+    "Síndrome de antifósfolipidos",
+    "Pancreatitis aguda",
+    "Endocarditis no bacteriana"
+  ],
+  "recommended_followup": [
+    "Investigar historia de trombosis o pérdidas gestacionales",
+    "Estudios de imagen para evaluar pancreatitis",
+    "Cultivos de sangre para endocarditis"
+  ],
+  "reasoning": "El paciente presenta trombocitopenia severa y marcadores específicos del síndrome de antifósfolipidos (SAP) altamente positivos, lo que sugiere una alta probabilidad de SAP. La trombocitopenia puede estar relacionada con este diagnóstico, pero también se debe considerar la pancreatitis aguda y la endocarditis no bacteriana como posibles causas adicionales.",
+  "confidence": "high",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

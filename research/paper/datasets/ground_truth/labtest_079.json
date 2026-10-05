@@ -1,0 +1,94 @@
+{
+  "report_id": "labtest_079",
+  "template": "template_6_bilingual",
+  "folio": "NHI-2026-93924",
+  "patient": {
+    "nombre": "José Luis López Torres",
+    "edad": 54,
+    "sexo": "M",
+    "id": "JLL-802204-B9"
+  },
+  "fecha_toma": "2026-04-14",
+  "fecha_reporte": "2026-04-15",
+  "medico_solicitante": "Dr. Iván Cortés Beltrán",
+  "expected": [
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Creatinina",
+      "abrev": "CREA",
+      "loinc": "2160-0",
+      "valor": "1.4",
+      "unidad": "mg/dL",
+      "rango_ref": "0.6-1.1",
+      "bandera": "H",
+      "valor_unidad_messy": "1.4mg/dL",
+      "rango_messy": "N: 0.6-1.1",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Ácido Úrico",
+      "abrev": "URIC",
+      "loinc": "3084-1",
+      "valor": "5.7",
+      "unidad": "mg/dL",
+      "rango_ref": "3.5-7.2",
+      "bandera": "",
+      "valor_unidad_messy": "5.7mg/dL",
+      "rango_messy": "N: 3.5-7.2",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Glucosa",
+      "abrev": "GLU",
+      "loinc": "2345-7",
+      "valor": "78",
+      "unidad": "mg/dL",
+      "rango_ref": "70-100",
+      "bandera": "",
+      "valor_unidad_messy": "78mg/dL",
+      "rango_messy": "N: 70-100",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "TSH",
+      "abrev": "TSH",
+      "loinc": "3016-3",
+      "valor": "0.0",
+      "unidad": "uIU/mL",
+      "rango_ref": "0.4-4.5",
+      "bandera": "L",
+      "valor_unidad_messy": "0.0uIU/mL",
+      "rango_messy": "N: 0.4-4.5",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "T3 Total",
+      "abrev": "T3",
+      "loinc": "3053-6",
+      "valor": "225",
+      "unidad": "ng/dL",
+      "rango_ref": "80-200",
+      "bandera": "H",
+      "valor_unidad_messy": "225ng/dL",
+      "rango_messy": "N: 80-200",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "T4 Libre",
+      "abrev": "FT4",
+      "loinc": "3024-7",
+      "valor": "0.7",
+      "unidad": "ng/dL",
+      "rango_ref": "0.8-1.8",
+      "bandera": "L",
+      "valor_unidad_messy": "0.7ng/dL",
+      "rango_messy": "N: 0.8-1.8",
+      "occluded": false
+    }
+  ]
+}

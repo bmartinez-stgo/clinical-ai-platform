@@ -1,0 +1,220 @@
+{
+  "document_id": "28817ced-be84-466d-ab2e-e30ae7d467ce",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_094.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 601.0
+  },
+  "patient": {
+    "external_id": "Folio NHI-2026-45887",
+    "name": "Ana Sofia García Mendoza",
+    "sex": null,
+    "date_of_birth": null
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clinico Nahui",
+    "report_date": "2026-08-12",
+    "accession_number": "NHI-2026-45887"
+  },
+  "observation_count": 7,
+  "observations": [
+    {
+      "observation_id": "62459317-ed19-4384-b8e1-d5005147d3ab",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "AST (TGO)",
+      "test_name_normalized": "Aspartato aminotransferasa (AST)",
+      "loinc_code": "1920-8",
+      "value": 37,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "8-40",
+      "reference_range": {
+        "low": 8.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "817d060a-34d9-4798-991c-8115fe2471be",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "Bilirrubina Total",
+      "test_name_normalized": "Bilirrubina total",
+      "loinc_code": "1975-2",
+      "value": 1.6,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "0.5-1.5",
+      "reference_range": {
+        "low": 0.5,
+        "high": 1.5,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 0.1,
+        "relative_to_upper": 0.0667,
+        "unit_ucum": "mg/dL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "b0a3f7c2-8c98-449e-8563-32d38953496b",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "ALT (TGP)",
+      "test_name_normalized": "Alanina aminotransferasa (ALT)",
+      "loinc_code": "1742-6",
+      "value": 12,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "7-40",
+      "reference_range": {
+        "low": 7.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "1cad194e-6dd7-48c8-a6e0-6e17c9ae4397",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Sodio",
+      "test_name_normalized": "Sodio",
+      "loinc_code": "2951-2",
+      "value": 135,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "136-145",
+      "reference_range": {
+        "low": 136.0,
+        "high": 145.0,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 1.0,
+        "relative_to_lower": 0.0074,
+        "unit_ucum": "meq/L"
+      },
+      "specimen": null,
+      "page": 2,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "8b44c523-c485-4838-a2eb-e524316f5cd6",
+      "panel_raw": "Química Sanguínea",
+      "test_name_raw": "Potasio",
+      "test_name_normalized": "Potasio",
+      "loinc_code": "2823-3",
+      "value": 4.9,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "meq/L",
+      "reference_range_raw": "3.5-5.1",
+      "reference_range": {
+        "low": 3.5,
+        "high": 5.1,
+        "unit_ucum": "meq/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 2,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "83e11c40-563b-4b9c-a087-218fc0c6ebde",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Leucocitos",
+      "test_name_normalized": "Leucocitos",
+      "loinc_code": "6690-2",
+      "value": 3.1,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/U.L.",
+      "unit_ucum": "x10^3/U.L.",
+      "reference_range_raw": "4.5-11.0",
+      "reference_range": {
+        "low": 4.5,
+        "high": 11.0,
+        "unit_ucum": null
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 1.4,
+        "relative_to_lower": 0.3111,
+        "unit_ucum": null
+      },
+      "specimen": null,
+      "page": 3,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "c0f2fa5e-2f23-43e0-a7ee-28847a369da4",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Plaquetas",
+      "test_name_normalized": "Plaquetas",
+      "loinc_code": "777-3",
+      "value": 601,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/U.L.",
+      "unit_ucum": "x10^3/U.L.",
+      "reference_range_raw": "150-450",
+      "reference_range": {
+        "low": 150.0,
+        "high": 450.0,
+        "unit_ucum": null
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 151.0,
+        "relative_to_upper": 0.3356,
+        "unit_ucum": null
+      },
+      "specimen": null,
+      "page": 3,
+      "confidence": 1.0
+    }
+  ],
+  "review_items": [],
+  "processing_issues": {
+    "extraction": [
+      {
+        "stage": "extraction",
+        "reason": "warning",
+        "message": "REVISADO OCUAR 08/2023"
+      }
+    ],
+    "normalization": [],
+    "interpretation": []
+  },
+  "unmapped_items": [],
+  "warnings": [
+    "REVISADO OCUAR 08/2023"
+  ],
+  "confidence": 0.95,
+  "requires_manual_review": true,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

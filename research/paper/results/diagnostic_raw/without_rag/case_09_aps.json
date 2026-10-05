@@ -1,0 +1,100 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 5,
+    "abnormal_markers": [
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": ">=1:2560 homogéneo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-dsDNA",
+        "loinc_code": "14169-3",
+        "value": 943.0,
+        "unit": "IU/mL",
+        "ref_low": null,
+        "ref_high": 4.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anticoagulante lúpico",
+        "loinc_code": "22599-7",
+        "value": "Positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Complemento C3",
+        "loinc_code": null,
+        "value": 29.0,
+        "unit": "mg/dL",
+        "ref_low": 83.0,
+        "ref_high": 193.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Complemento C4",
+        "loinc_code": null,
+        "value": 9.0,
+        "unit": "mg/dL",
+        "ref_low": 15.0,
+        "ref_high": 57.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": [
+      {
+        "pattern": "Consumo de complemento",
+        "markers_involved": [
+          "Complemento C3",
+          "Complemento C4"
+        ],
+        "interpretation": "Complemento sérico reducido (C3 y/o C4). Indica consumo por complejos inmunes: patrón característico de LES activo. También presente en crioglobulinemia y endocarditis bacteriana subaguda."
+      }
+    ]
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Enfermedad de Lupus Eritematoso Sistémico (SLE)",
+      "likelihood": "high",
+      "supporting_findings": [
+        "ANA >=1:2560 homogéneo",
+        "Anti-dsDNA 943.0 IU/mL",
+        "Anticoagulante lúpico positivo",
+        "Complemento C3 bajo (29.0 mg/dL)",
+        "Complemento C4 bajo (9.0 mg/dL)"
+      ],
+      "missing_workup": [
+        "Proteíuria",
+        "Citolopenias",
+        "Examen clínico para síntomas cutáneos o articulares"
+      ]
+    }
+  ],
+  "differential": [
+    "Enfermedad de Lupus Eritematoso Sistémico (SLE)",
+    "Síndrome de Overlap",
+    "Infección por COVID-19 con manifestaciones autoinmunes"
+  ],
+  "recommended_followup": [
+    "Proteíuria",
+    "Conteo de sangre completo para citolopenias",
+    "Examen clínico para síntomas cutáneos o articulares",
+    "Seguimiento de complementos y anticuerpos"
+  ],
+  "reasoning": "Los hallazgos laboratoriales sugieren una alta probabilidad de Enfermedad de Lupus Eritematoso Sistémico (SLE) debido a los niveles altos de ANA y Anti-dsDNA, la presencia de anticoagulante lúpico y los niveles bajos de complementos C3 y C4. Es importante realizar un seguimiento para confirmar la presencia de proteíuria y citolopenias, así como examinar síntomas clínicos adicionales.",
+  "confidence": "high",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

@@ -1,0 +1,119 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 6,
+    "abnormal_markers": [
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": "1/100 positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-CCP",
+        "loinc_code": "34505-9",
+        "value": 63.2,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": 20.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-SSA",
+        "loinc_code": "24081-4",
+        "value": "Positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-dsDNA",
+        "loinc_code": "14169-3",
+        "value": "Positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Factor Reumatoide",
+        "loinc_code": "11572-5",
+        "value": 84.1,
+        "unit": "IU/mL",
+        "ref_low": null,
+        "ref_high": 14.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "VSG",
+        "loinc_code": null,
+        "value": 56.0,
+        "unit": "mm/h",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "SLE",
+      "likelihood": "high",
+      "supporting_findings": [
+        "Factor Reumatoide alto",
+        "Anti-CCP alto",
+        "ANA positivo 1/100",
+        "Anti-dsDNA positivo",
+        "Anti-SSA positivo",
+        "VSG alto",
+        "Poliartritis simétrica",
+        "Hematuria microscópica"
+      ],
+      "missing_workup": [
+        "Anti-La/SSB",
+        "C3",
+        "C4",
+        "Proteinuria"
+      ]
+    },
+    {
+      "condition": "RA",
+      "likelihood": "moderate",
+      "supporting_findings": [
+        "Factor Reumatoide alto",
+        "Anti-CCP alto",
+        "Poliartritis simétrica"
+      ],
+      "missing_workup": [
+        "Normocitosis",
+        "Anemia"
+      ]
+    }
+  ],
+  "differential": [
+    "SLE",
+    "RA",
+    "Glomerulonefritis"
+  ],
+  "recommended_followup": [
+    "Determinación de Anti-La/SSB",
+    "Niveles de complemento C3 y C4",
+    "Proteinuria",
+    "Ultrasonido renal",
+    "Biopsia renal si es necesario"
+  ],
+  "reasoning": "La paciente presenta factores reumatoide y anti-CCP altos, ANA positivo 1/100, anti-dsDNA y anti-SSA positivos, VSG alto, poliartritis simétrica y hematuria microscópica. Estos hallazgos son consistentes con un diagnóstico de SLE, especialmente considerando la presencia de hematuria microscópica que sugiere involucramiento renal. Se recomienda completar el trabajo de laboratorio para confirmar el diagnóstico y evaluar el grado de involucramiento renal.",
+  "confidence": "high",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

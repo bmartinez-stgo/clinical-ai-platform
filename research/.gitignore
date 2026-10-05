@@ -1,0 +1,16 @@
+# Intermediate snapshots from the iterative benchmark runs -- kept locally
+# for the author's own audit trail, not part of the published reproducibility
+# artifact. The final state is in paper/results/ and paper/results/diagnostic_raw/.
+paper/results_baseline/
+paper/results_fixed_pipeline/
+paper/results_rolmocr_only/
+paper/results/diagnostic_raw/with_rag_before_threshold_fix/
+paper/results/diagnostic_raw/with_rag_after_threshold_fix_before_seed/
+paper/results/diagnostic_raw/with_rag_FAILED_false_positives_from_seed/
+paper/results/*.log
+paper/results/*_stdout.log
+
+# Early template-preview PDFs, superseded by the final 150-report corpus.
+paper/datasets/samples/
+
+paper/datasets/__pycache__/

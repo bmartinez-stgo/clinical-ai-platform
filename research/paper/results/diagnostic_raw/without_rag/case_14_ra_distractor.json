@@ -1,0 +1,118 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 7,
+    "abnormal_markers": [
+      {
+        "test_name": "Anti-CCP (ACPA)",
+        "loinc_code": "34505-9",
+        "value": 156.9,
+        "unit": "IU/mL",
+        "ref_low": null,
+        "ref_high": 20.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Factor Reumatoide",
+        "loinc_code": "11572-5",
+        "value": 215.0,
+        "unit": "IU/mL",
+        "ref_low": null,
+        "ref_high": 14.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Hemoglobina",
+        "loinc_code": null,
+        "value": 7.9,
+        "unit": "g/dL",
+        "ref_low": 13.0,
+        "ref_high": 17.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Hierro sérico",
+        "loinc_code": null,
+        "value": 9.6,
+        "unit": "ug/dL",
+        "ref_low": 60.0,
+        "ref_high": 170.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "PCR",
+        "loinc_code": null,
+        "value": 17.3,
+        "unit": "mg/dL",
+        "ref_low": null,
+        "ref_high": 0.5,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Plaquetas",
+        "loinc_code": null,
+        "value": 904.0,
+        "unit": "x10^3/uL",
+        "ref_low": 150.0,
+        "ref_high": 450.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "VSG",
+        "loinc_code": null,
+        "value": 94.0,
+        "unit": "mm/h",
+        "ref_low": null,
+        "ref_high": 20.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": [
+      {
+        "pattern": "Patrón inflamatorio sistémico",
+        "markers_involved": [
+          "PCR",
+          "VSG"
+        ],
+        "interpretation": "Reactantes de fase aguda elevados. Indica inflamación sistémica activa: puede corresponder a infección bacteriana, enfermedad autoinmune en actividad, neoplasia o vasculitis."
+      }
+    ]
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Artritis Reumatoide",
+      "likelihood": "high",
+      "supporting_findings": [
+        "Factor Reumatoide alto (215.0 IU/mL)",
+        "Anti-CCP alto (156.9 IU/mL)",
+        "Poliartritis simétrica",
+        "Anemia normocítica (Hemoglobina 7.9 g/dL)"
+      ],
+      "missing_workup": [
+        "Radiografías de articulaciones afectadas",
+        "Evaluación de erosiones articulares"
+      ]
+    }
+  ],
+  "differential": [
+    "Artritis Reumatoide",
+    "Anemia por déficit de hierro",
+    "Enfermedad inflamatoria crónica"
+  ],
+  "recommended_followup": [
+    "Radiografías de articulaciones afectadas",
+    "Evaluación de erosiones articulares",
+    "Suplementación de hierro si se confirma deficiencia",
+    "Control de PCR y VSG para seguimiento de la actividad inflamatoria"
+  ],
+  "reasoning": "El paciente presenta factores reumatoide y anti-CCP altos, poliartritis simétrica, pérdida de peso significativa y anemia normocítica, lo que apoya fuertemente el diagnóstico de artritis reumatoide. La anemia también puede estar relacionada con la deficiencia de hierro, como evidencia el bajo nivel de hierro sérico.",
+  "confidence": "high",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

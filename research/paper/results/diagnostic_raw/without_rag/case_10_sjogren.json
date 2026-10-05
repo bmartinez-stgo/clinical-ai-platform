@@ -1,0 +1,77 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 3,
+    "abnormal_markers": [
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": "1:1280",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-Ro52 (SSA)",
+        "loinc_code": null,
+        "value": 28.3,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-centrómero",
+        "loinc_code": null,
+        "value": 905.0,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": 10.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Síndrome de Sjögren",
+      "likelihood": "moderate",
+      "supporting_findings": [
+        "Xerostomía de un mes de evolución",
+        "Anti-Ro52 (SSA): 28.3 U/mL [HIGH]"
+      ],
+      "missing_workup": [
+        "Anti-SSB (La)",
+        "Xeroftalmia"
+      ]
+    },
+    {
+      "condition": "Esclerodermia sistémica",
+      "likelihood": "low",
+      "supporting_findings": [
+        "Anti-centrómero: 905.0 U/mL [HIGH]"
+      ],
+      "missing_workup": [
+        "Anti-Scl-70",
+        "Manifestaciones clínicas de esclerodermia"
+      ]
+    }
+  ],
+  "differential": [
+    "Síndrome de Sjögren",
+    "Esclerodermia sistémica",
+    "Secreción salival reducida por otros factores"
+  ],
+  "recommended_followup": [
+    "Evaluación oculista para descartar xeroftalmia",
+    "Seguimiento clínico para manifestaciones adicionales de autoinmunidad",
+    "Pruebas de función tiroidea"
+  ],
+  "reasoning": "La paciente presenta xerostomía y un anticuerpo anti-Ro52 (SSA) elevado, lo cual apoya la sospecha de síndrome de Sjögren. Sin embargo, la ausencia de xeroftalmia y el anticuerpo anti-SSB negativo disminuyen la probabilidad. El anticuerpo anti-centrómero elevado sugiere la posibilidad de esclerodermia sistémica, pero requiere más pruebas para confirmar.",
+  "confidence": "moderate",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

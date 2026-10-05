@@ -1,0 +1,60 @@
+<!-- Plantilla 9: portal digital moderno, QR simulado + flags como checkboxes -->
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11.5px; color: #1c1c1e; margin: 0; }
+  .top { display:flex; justify-content: space-between; align-items:center; padding: 20px 36px; border-bottom: 1px solid #eee; }
+  .brand { font-size: 17px; font-weight: 700; color:#6d28d9; }
+  .qr { width: 64px; height: 64px;
+    background-image: repeating-conic-gradient(#111 0% 25%, #fff 0% 50%);
+    background-size: 8px 8px; border: 3px solid #111; }
+  .content { padding: 20px 36px; }
+  .card { border: 1px solid #eee; border-radius: 10px; padding: 14px 18px; margin-bottom: 14px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+  .grid3 { display:grid; grid-template-columns: repeat(3,1fr); gap: 8px; font-size: 10.5px; }
+  .grid3 .k { color:#8a8a92; font-size: 9px; text-transform: uppercase; }
+  .panel-title { font-weight:700; color:#3f3f46; margin: 16px 0 8px; font-size: 12px; }
+  table { width:100%; border-collapse: collapse; }
+  th { text-align:left; font-size: 9.5px; color:#8a8a92; text-transform:uppercase; padding: 6px 10px; }
+  td { padding: 7px 10px; font-size: 11.5px; border-top: 1px solid #f2f2f4; }
+  .box { display:inline-block; width: 14px; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="brand">{{ lab_name }} · Portal de Resultados</div>
+    <div class="qr"></div>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="grid3">
+        <div><span class="k">Paciente</span><br>{{ patient.nombre }}</div>
+        <div><span class="k">Edad / Sexo</span><br>{{ patient.edad }} / {{ patient.sexo }}</div>
+        <div><span class="k">ID</span><br>{{ patient.id }}</div>
+        <div><span class="k">Folio</span><br>{{ folio }}</div>
+        <div><span class="k">Toma — Reporte</span><br>{{ fecha_toma }} — {{ fecha_reporte }}</div>
+        <div><span class="k">Médico</span><br>{{ medico_solicitante }}</div>
+      </div>
+    </div>
+    {% for panel in panels %}
+    <div class="panel-title">{{ panel.name }}</div>
+    <div class="card" style="padding:0;">
+      <table>
+        <tr><th>Analito</th><th>Resultado</th><th>Unidad</th><th>Ref.</th><th>Alto</th><th>Bajo</th></tr>
+        {% for a in panel.analytes %}
+        <tr>
+          <td>{{ a.nombre }}</td>
+          <td>{{ a.valor }}</td>
+          <td>{{ a.unidad }}</td>
+          <td>{{ a.rango_ref }}</td>
+          <td class="box">{{ '☑' if a.bandera == 'H' else '☐' }}</td>
+          <td class="box">{{ '☑' if a.bandera == 'L' else '☐' }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

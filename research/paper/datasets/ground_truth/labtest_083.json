@@ -1,0 +1,133 @@
+{
+  "report_id": "labtest_083",
+  "template": "template_6_bilingual",
+  "folio": "NHI-2026-68085",
+  "patient": {
+    "nombre": "Claudia García Mendoza",
+    "edad": 21,
+    "sexo": "F",
+    "id": "CGM-718532-Y6"
+  },
+  "fecha_toma": "2026-05-12",
+  "fecha_reporte": "2026-05-13",
+  "medico_solicitante": "Dr. Alberto Núñez Casillas",
+  "expected": [
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "LDL",
+      "abrev": "LDL",
+      "loinc": "13457-7",
+      "valor": "118",
+      "unidad": "mg/dL",
+      "rango_ref": "50-130",
+      "bandera": "",
+      "valor_unidad_messy": "118mg/dL",
+      "rango_messy": "N: 50-130",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Triglicéridos",
+      "abrev": "TG",
+      "loinc": "2571-8",
+      "valor": "62",
+      "unidad": "mg/dL",
+      "rango_ref": "35-150",
+      "bandera": "",
+      "valor_unidad_messy": "62mg/dL",
+      "rango_messy": "N: 35-150",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "HDL",
+      "abrev": "HDL",
+      "loinc": "2085-9",
+      "valor": "55",
+      "unidad": "mg/dL",
+      "rango_ref": "40-60",
+      "bandera": "",
+      "valor_unidad_messy": "55mg/dL",
+      "rango_messy": "N: 40-60",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Colesterol Total",
+      "abrev": "COL-T",
+      "loinc": "2093-3",
+      "valor": "212",
+      "unidad": "mg/dL",
+      "rango_ref": "125-200",
+      "bandera": "H",
+      "valor_unidad_messy": "212mg/dL",
+      "rango_messy": "N: 125-200",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "ALT (TGP)",
+      "abrev": "ALT",
+      "loinc": "1742-6",
+      "valor": "0",
+      "unidad": "U/L",
+      "rango_ref": "7-40",
+      "bandera": "L",
+      "valor_unidad_messy": "0U/L",
+      "rango_messy": "N: 7-40",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Bilirrubina Total",
+      "abrev": "TBIL",
+      "loinc": "1975-2",
+      "valor": "1.0",
+      "unidad": "mg/dL",
+      "rango_ref": "0.2-1.2",
+      "bandera": "",
+      "valor_unidad_messy": "1.0mg/dL",
+      "rango_messy": "N: 0.2-1.2",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Fosfatasa Alcalina",
+      "abrev": "ALP",
+      "loinc": "6768-6",
+      "valor": "147",
+      "unidad": "U/L",
+      "rango_ref": "44-147",
+      "bandera": "",
+      "valor_unidad_messy": "147U/L",
+      "rango_messy": "N: 44-147",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "T4 Libre",
+      "abrev": "FT4",
+      "loinc": "3024-7",
+      "valor": "1.7",
+      "unidad": "ng/dL",
+      "rango_ref": "0.8-1.8",
+      "bandera": "",
+      "valor_unidad_messy": "1.7ng/dL",
+      "rango_messy": "N: 0.8-1.8",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "TSH",
+      "abrev": "TSH",
+      "loinc": "3016-3",
+      "valor": "1.3",
+      "unidad": "uIU/mL",
+      "rango_ref": "0.4-4.5",
+      "bandera": "",
+      "valor_unidad_messy": "1.3uIU/mL",
+      "rango_messy": "N: 0.4-4.5",
+      "occluded": false
+    }
+  ]
+}

@@ -1,0 +1,120 @@
+{
+  "report_id": "labtest_092",
+  "template": "template_7_stamped",
+  "folio": "NHI-2026-12500",
+  "patient": {
+    "nombre": "Miguel Ángel Flores Aguilar",
+    "edad": 30,
+    "sexo": "M",
+    "id": "MÁF-865490-R9"
+  },
+  "fecha_toma": "2026-03-28",
+  "fecha_reporte": "2026-03-29",
+  "medico_solicitante": "Dra. Silvia Rangel Ochoa",
+  "expected": [
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Hematocrito",
+      "abrev": "HCT",
+      "loinc": "4544-3",
+      "valor": "43.3",
+      "unidad": "%",
+      "rango_ref": "36.0-46.0",
+      "bandera": "",
+      "valor_unidad_messy": "43.3%",
+      "rango_messy": "N: 36.0-46.0",
+      "occluded": true
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Eritrocitos",
+      "abrev": "RBC",
+      "loinc": "789-8",
+      "valor": "5.04",
+      "unidad": "x10^6/uL",
+      "rango_ref": "4.2-5.4",
+      "bandera": "",
+      "valor_unidad_messy": "5.04x10^6/uL",
+      "rango_messy": "N: 4.2-5.4",
+      "occluded": true
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Leucocitos",
+      "abrev": "WBC",
+      "loinc": "6690-2",
+      "valor": "8.3",
+      "unidad": "x10^3/uL",
+      "rango_ref": "4.5-11.0",
+      "bandera": "",
+      "valor_unidad_messy": "8.3x10^3/uL",
+      "rango_messy": "N: 4.5-11.0",
+      "occluded": true
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Plaquetas",
+      "abrev": "PLT",
+      "loinc": "777-3",
+      "valor": "472",
+      "unidad": "x10^3/uL",
+      "rango_ref": "150-450",
+      "bandera": "H",
+      "valor_unidad_messy": "472x10^3/uL",
+      "rango_messy": "N: 150-450",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Colesterol Total",
+      "abrev": "COL-T",
+      "loinc": "2093-3",
+      "valor": "177",
+      "unidad": "mg/dL",
+      "rango_ref": "125-200",
+      "bandera": "",
+      "valor_unidad_messy": "177mg/dL",
+      "rango_messy": "N: 125-200",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "Triglicéridos",
+      "abrev": "TG",
+      "loinc": "2571-8",
+      "valor": "88",
+      "unidad": "mg/dL",
+      "rango_ref": "35-150",
+      "bandera": "",
+      "valor_unidad_messy": "88mg/dL",
+      "rango_messy": "N: 35-150",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "ALT (TGP)",
+      "abrev": "ALT",
+      "loinc": "1742-6",
+      "valor": "54",
+      "unidad": "U/L",
+      "rango_ref": "7-40",
+      "bandera": "H",
+      "valor_unidad_messy": "54U/L",
+      "rango_messy": "N: 7-40",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "AST (TGO)",
+      "abrev": "AST",
+      "loinc": "1920-8",
+      "valor": "0",
+      "unidad": "U/L",
+      "rango_ref": "8-40",
+      "bandera": "L",
+      "valor_unidad_messy": "0U/L",
+      "rango_messy": "N: 8-40",
+      "occluded": false
+    }
+  ]
+}

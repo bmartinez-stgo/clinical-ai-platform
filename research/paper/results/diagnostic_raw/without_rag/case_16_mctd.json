@@ -1,0 +1,110 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 7,
+    "abnormal_markers": [
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": "1:2560 patrón moteado",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-Ku",
+        "loinc_code": null,
+        "value": "Positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-RNP",
+        "loinc_code": null,
+        "value": ">644",
+        "unit": "CU",
+        "ref_low": null,
+        "ref_high": 20.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-Ro/SSA",
+        "loinc_code": "24081-4",
+        "value": 170.0,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": 20.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-Sm",
+        "loinc_code": null,
+        "value": ">694",
+        "unit": "CU",
+        "ref_low": null,
+        "ref_high": 20.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "CK",
+        "loinc_code": null,
+        "value": 24349.0,
+        "unit": "U/L",
+        "ref_low": 54.0,
+        "ref_high": 320.0,
+        "direction": "critical",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Troponina T",
+        "loinc_code": null,
+        "value": 673.0,
+        "unit": "ng/L",
+        "ref_low": null,
+        "ref_high": 15.0,
+        "direction": "critical",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Síndrome de Overlap Mixto",
+      "likelihood": "high",
+      "supporting_findings": [
+        "ANA 1:2560 patrón moteado",
+        "Anti-RNP >644 CU",
+        "Anti-Ku positivo",
+        "Anti-Sm >694 CU",
+        "Anti-Ro/SSA 170.0 U/mL"
+      ],
+      "missing_workup": [
+        "Anti-La/SSB",
+        "Proteinuria",
+        "C3, C4 complemento"
+      ]
+    }
+  ],
+  "differential": [
+    "Síndrome de Overlap Mixto",
+    "Miocarditis",
+    "Inflamación muscular"
+  ],
+  "recommended_followup": [
+    "Estudios de función tiroidea (TSH, FT4)",
+    "Biopsia muscular si persiste la debilidad",
+    "Evaluación cardiológica completa incluyendo ecocardiograma"
+  ],
+  "reasoning": "El paciente presenta hallazgos que sugieren un síndrome de overlap mixto, con marcadores autoinmunes específicos como ANA, Anti-RNP, Anti-Ku, Anti-Sm y Anti-Ro/SSA. La elevación crítica de troponina T y CK apoya la sospecha de miocarditis o inflamación muscular. Se requiere una evaluación cardiológica completa y estudios adicionales para confirmar el diagnóstico.",
+  "confidence": "high",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

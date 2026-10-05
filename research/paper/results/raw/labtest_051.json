@@ -1,0 +1,493 @@
+{
+  "document_id": "6b0d1090-dee2-47a2-bc53-e366fa4c6bee",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_051.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 526.0
+  },
+  "patient": {
+    "external_id": "71/F",
+    "name": "Claudia López Torres",
+    "sex": null,
+    "date_of_birth": null
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clínico Nahui",
+    "report_date": "2026-06-06",
+    "accession_number": "NHI-2026-50306"
+  },
+  "observation_count": 9,
+  "observations": [
+    {
+      "observation_id": "12cd0af7-ebd0-4a8c-b703-15232c62094f",
+      "panel_raw": "QUIMICA SANGUINEA",
+      "test_name_raw": "URIC",
+      "test_name_normalized": "URIC",
+      "loinc_code": null,
+      "value": 5,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "[N: 3.0-7.2]",
+      "reference_range": {
+        "low": 3.0,
+        "high": 7.2,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "09315e8e-7d87-4b79-b4f7-ca4b9a9f8f80",
+      "panel_raw": "QUIMICA SANGUINEA",
+      "test_name_raw": "BUN",
+      "test_name_normalized": "Nitrógeno ureico (BUN)",
+      "loinc_code": "3094-0",
+      "value": 18,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "[N: 7-20]",
+      "reference_range": {
+        "low": 7.0,
+        "high": 20.0,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "055084ab-a0d7-4c0b-9d01-fb6f9f1a1ece",
+      "panel_raw": "QUIMICA SANGUINEA",
+      "test_name_raw": "NA",
+      "test_name_normalized": "NA",
+      "loinc_code": null,
+      "value": 1390,
+      "value_type": "numeric",
+      "unit_raw": "mmol/L",
+      "unit_ucum": "mmol/L",
+      "reference_range_raw": "[N: 136-145]",
+      "reference_range": {
+        "low": 136.0,
+        "high": 145.0,
+        "unit_ucum": "mmol/L"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 1245.0,
+        "relative_to_upper": 8.5862,
+        "unit_ucum": "mmol/L"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "1c827a7f-9c55-451f-93b1-58c74fd69a25",
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "* MCT",
+      "test_name_normalized": "* MCT",
+      "loinc_code": null,
+      "value": 49.5,
+      "value_type": "numeric",
+      "unit_raw": "%",
+      "unit_ucum": "%",
+      "reference_range_raw": "[N: 36.0-46.0]",
+      "reference_range": {
+        "low": 36.0,
+        "high": 46.0,
+        "unit_ucum": "%"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 3.5,
+        "relative_to_upper": 0.0761,
+        "unit_ucum": "%"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "0a480361-da7c-4256-a1ad-f8dc1ded90b2",
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "* PLT",
+      "test_name_normalized": "* PLT",
+      "loinc_code": null,
+      "value": 490103,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/ul",
+      "unit_ucum": "x10^3/ul",
+      "reference_range_raw": "[N: 150-450]",
+      "reference_range": {
+        "low": 150.0,
+        "high": 450.0,
+        "unit_ucum": "x10^3/ul"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 489653.0,
+        "relative_to_upper": 1088.1178,
+        "unit_ucum": "x10^3/ul"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "ea62699f-e8b4-463b-b9dd-7727000c074a",
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "WBC",
+      "test_name_normalized": "WBC",
+      "loinc_code": null,
+      "value": 41103,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/ul",
+      "unit_ucum": "x10^3/ul",
+      "reference_range_raw": "[N: 4.5-11.0]",
+      "reference_range": {
+        "low": 4.5,
+        "high": 11.0,
+        "unit_ucum": "x10^3/ul"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 41092.0,
+        "relative_to_upper": 3735.6364,
+        "unit_ucum": "x10^3/ul"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "d4ebffa1-e90b-41d9-84cd-881349c43110",
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "RBC",
+      "test_name_normalized": "RBC",
+      "loinc_code": null,
+      "value": 496106,
+      "value_type": "numeric",
+      "unit_raw": "x10^6/ul",
+      "unit_ucum": "x10^6/ul",
+      "reference_range_raw": "[N: 4.2-5.4]",
+      "reference_range": {
+        "low": 4.2,
+        "high": 5.4,
+        "unit_ucum": "x10^6/ul"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 496100.6,
+        "relative_to_upper": 91870.4815,
+        "unit_ucum": "x10^6/ul"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "e3749730-d99a-4cc5-8b6d-c3569731b2d8",
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "* MCV",
+      "test_name_normalized": "* MCV",
+      "loinc_code": null,
+      "value": 101.1,
+      "value_type": "numeric",
+      "unit_raw": "fl",
+      "unit_ucum": "fL",
+      "reference_range_raw": "[N: 80-100]",
+      "reference_range": {
+        "low": 80.0,
+        "high": 100.0,
+        "unit_ucum": "fL"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 1.1,
+        "relative_to_upper": 0.011,
+        "unit_ucum": "fL"
+      },
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    },
+    {
+      "observation_id": "15701469-042e-4f75-a023-f7d6cbc81e87",
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "HGB",
+      "test_name_normalized": "HGB",
+      "loinc_code": null,
+      "value": 15,
+      "value_type": "numeric",
+      "unit_raw": "g/dL",
+      "unit_ucum": "g/dL",
+      "reference_range_raw": "[N: 12.0-16.0]",
+      "reference_range": {
+        "low": 12.0,
+        "high": 16.0,
+        "unit_ucum": "g/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": null,
+      "page": 1,
+      "confidence": 1.0
+    }
+  ],
+  "review_items": [
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "QUIMICA SANGUINEA",
+      "test_name_raw": "URIC",
+      "value_raw": "5.0mg/dL",
+      "unit_raw": "mg/dL",
+      "reference_range_raw": "[N: 3.0-7.2]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "QUIMICA SANGUINEA",
+      "test_name_raw": "NA",
+      "value_raw": "139mmol/L",
+      "unit_raw": "mmol/L",
+      "reference_range_raw": "[N: 136-145]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "* MCT",
+      "value_raw": "49.5%",
+      "unit_raw": "%",
+      "reference_range_raw": "[N: 36.0-46.0]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "* PLT",
+      "value_raw": "490x10^3/ul",
+      "unit_raw": "x10^3/ul",
+      "reference_range_raw": "[N: 150-450]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "WBC",
+      "value_raw": "4.1x10^3/ul",
+      "unit_raw": "x10^3/ul",
+      "reference_range_raw": "[N: 4.5-11.0]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "RBC",
+      "value_raw": "4.96x10^6/ul",
+      "unit_raw": "x10^6/ul",
+      "reference_range_raw": "[N: 4.2-5.4]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "* MCV",
+      "value_raw": "101.1fl",
+      "unit_raw": "fl",
+      "reference_range_raw": "[N: 80-100]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    },
+    {
+      "stage": "normalization",
+      "reason": "unmapped_test_name",
+      "message": "Could not map the test name to a known canonical test or LOINC code.",
+      "page": 1,
+      "panel_raw": "BIOMETRIA HEMATICA",
+      "test_name_raw": "HGB",
+      "value_raw": "15.0g/dL",
+      "unit_raw": "g/dL",
+      "reference_range_raw": "[N: 12.0-16.0]",
+      "specimen_raw": null,
+      "confidence": 1.0
+    }
+  ],
+  "processing_issues": {
+    "extraction": [
+      {
+        "stage": "extraction",
+        "reason": "warning",
+        "message": "* = fuera de rango."
+      }
+    ],
+    "normalization": [
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "QUIMICA SANGUINEA",
+        "test_name_raw": "URIC",
+        "value_raw": "5.0mg/dL",
+        "unit_raw": "mg/dL",
+        "reference_range_raw": "[N: 3.0-7.2]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "QUIMICA SANGUINEA",
+        "test_name_raw": "NA",
+        "value_raw": "139mmol/L",
+        "unit_raw": "mmol/L",
+        "reference_range_raw": "[N: 136-145]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "BIOMETRIA HEMATICA",
+        "test_name_raw": "* MCT",
+        "value_raw": "49.5%",
+        "unit_raw": "%",
+        "reference_range_raw": "[N: 36.0-46.0]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "BIOMETRIA HEMATICA",
+        "test_name_raw": "* PLT",
+        "value_raw": "490x10^3/ul",
+        "unit_raw": "x10^3/ul",
+        "reference_range_raw": "[N: 150-450]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "BIOMETRIA HEMATICA",
+        "test_name_raw": "WBC",
+        "value_raw": "4.1x10^3/ul",
+        "unit_raw": "x10^3/ul",
+        "reference_range_raw": "[N: 4.5-11.0]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "BIOMETRIA HEMATICA",
+        "test_name_raw": "RBC",
+        "value_raw": "4.96x10^6/ul",
+        "unit_raw": "x10^6/ul",
+        "reference_range_raw": "[N: 4.2-5.4]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "BIOMETRIA HEMATICA",
+        "test_name_raw": "* MCV",
+        "value_raw": "101.1fl",
+        "unit_raw": "fl",
+        "reference_range_raw": "[N: 80-100]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      },
+      {
+        "stage": "normalization",
+        "reason": "unmapped_test_name",
+        "message": "Could not map the test name to a known canonical test or LOINC code.",
+        "page": 1,
+        "panel_raw": "BIOMETRIA HEMATICA",
+        "test_name_raw": "HGB",
+        "value_raw": "15.0g/dL",
+        "unit_raw": "g/dL",
+        "reference_range_raw": "[N: 12.0-16.0]",
+        "specimen_raw": null,
+        "confidence": 1.0
+      }
+    ],
+    "interpretation": []
+  },
+  "unmapped_items": [
+    "* MCT",
+    "* MCV",
+    "* PLT",
+    "HGB",
+    "NA",
+    "RBC",
+    "URIC",
+    "WBC"
+  ],
+  "warnings": [
+    "* = fuera de rango."
+  ],
+  "confidence": 0.67,
+  "requires_manual_review": true,
+  "extraction_profile": "digital_generic_lab",
+  "requires_ocr": false
+}

@@ -1,0 +1,109 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 5,
+    "abnormal_markers": [
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": "1/100 positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-CCP",
+        "loinc_code": "34505-9",
+        "value": 47.9,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": 20.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anti-Sm",
+        "loinc_code": null,
+        "value": "Positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Factor Reumatoide",
+        "loinc_code": "11572-5",
+        "value": 78.2,
+        "unit": "IU/mL",
+        "ref_low": null,
+        "ref_high": 14.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "VSG",
+        "loinc_code": null,
+        "value": 54.0,
+        "unit": "mm/h",
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Esclerosis sistémica",
+      "likelihood": "low",
+      "supporting_findings": [],
+      "missing_workup": [
+        "anti-Scl-70",
+        "anti-centromere"
+      ]
+    },
+    {
+      "condition": "Enfermedad de Lupus Eritematoso Sistémico (SLE)",
+      "likelihood": "moderate",
+      "supporting_findings": [
+        "Anti-Sm positivo",
+        "ANA positivo 1/100"
+      ],
+      "missing_workup": [
+        "anti-Ro/SSA",
+        "anti-La/SSB",
+        "C3",
+        "C4",
+        "proteinuria"
+      ]
+    },
+    {
+      "condition": "Artritis Reumatoide (RA)",
+      "likelihood": "high",
+      "supporting_findings": [
+        "Factor Reumatoide alto",
+        "Anti-CCP alto",
+        "VSG alto"
+      ],
+      "missing_workup": []
+    }
+  ],
+  "differential": [
+    "Artritis Reumatoide (RA)",
+    "Enfermedad de Lupus Eritematoso Sistémico (SLE)",
+    "Esclerosis sistémica"
+  ],
+  "recommended_followup": [
+    "Realizar análisis de complemento C3 y C4",
+    "Evaluación de proteinuria",
+    "Seguimiento de la hematuria microscópica",
+    "Estudios de anticuerpos específicos para SLE y esclerosis sistémica"
+  ],
+  "reasoning": "La paciente presenta factores reumatoide y anti-CCP altos, lo que apoya fuertemente el diagnóstico de artritis reumatoide. Además, la presencia de Anti-Sm positivo y ANA positivo sugieren posibilidad de SLE, aunque se requiere más trabajo de laboratorio para confirmar. La hematuria microscópica podría estar relacionada con la artritis reumatoide o SLE.",
+  "confidence": "moderate",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}

@@ -1,0 +1,81 @@
+{
+  "report_id": "labtest_048",
+  "template": "template_4_abbreviated",
+  "folio": "NHI-2026-42477",
+  "patient": {
+    "nombre": "Fernanda Sánchez Peña",
+    "edad": 54,
+    "sexo": "F",
+    "id": "FSP-714164-Y5"
+  },
+  "fecha_toma": "2026-04-05",
+  "fecha_reporte": "2026-04-06",
+  "medico_solicitante": "Dra. Silvia Rangel Ochoa",
+  "expected": [
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Bilirrubina Total",
+      "abrev": "TBIL",
+      "loinc": "1975-2",
+      "valor": "0.4",
+      "unidad": "mg/dL",
+      "rango_ref": "0.2-1.2",
+      "bandera": "",
+      "valor_unidad_messy": "0.4mg/dL",
+      "rango_messy": "N: 0.2-1.2",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "AST (TGO)",
+      "abrev": "AST",
+      "loinc": "1920-8",
+      "valor": "30",
+      "unidad": "U/L",
+      "rango_ref": "8-40",
+      "bandera": "",
+      "valor_unidad_messy": "30U/L",
+      "rango_messy": "N: 8-40",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "ALT (TGP)",
+      "abrev": "ALT",
+      "loinc": "1742-6",
+      "valor": "4",
+      "unidad": "U/L",
+      "rango_ref": "7-40",
+      "bandera": "L",
+      "valor_unidad_messy": "4U/L",
+      "rango_messy": "N: 7-40",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Hematocrito",
+      "abrev": "HCT",
+      "loinc": "4544-3",
+      "valor": "39.8",
+      "unidad": "%",
+      "rango_ref": "36.0-46.0",
+      "bandera": "",
+      "valor_unidad_messy": "39.8%",
+      "rango_messy": "N: 36.0-46.0",
+      "occluded": false
+    },
+    {
+      "panel": "Biometría Hemática",
+      "nombre": "Hemoglobina",
+      "abrev": "HGB",
+      "loinc": "718-7",
+      "valor": "11.1",
+      "unidad": "g/dL",
+      "rango_ref": "12.0-16.0",
+      "bandera": "L",
+      "valor_unidad_messy": "11.1g/dL",
+      "rango_messy": "N: 12.0-16.0",
+      "occluded": false
+    }
+  ]
+}

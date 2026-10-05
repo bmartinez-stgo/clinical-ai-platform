@@ -1,0 +1,133 @@
+{
+  "report_id": "labtest_088",
+  "template": "template_6_bilingual",
+  "folio": "NHI-2026-90862",
+  "patient": {
+    "nombre": "Ana Sofía Martínez Soto",
+    "edad": 27,
+    "sexo": "F",
+    "id": "ASM-813294-S2"
+  },
+  "fecha_toma": "2026-03-15",
+  "fecha_reporte": "2026-03-16",
+  "medico_solicitante": "Dra. Silvia Rangel Ochoa",
+  "expected": [
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Glucosa",
+      "abrev": "GLU",
+      "loinc": "2345-7",
+      "valor": "98",
+      "unidad": "mg/dL",
+      "rango_ref": "70-100",
+      "bandera": "",
+      "valor_unidad_messy": "98mg/dL",
+      "rango_messy": "N: 70-100",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Sodio",
+      "abrev": "NA",
+      "loinc": "2951-2",
+      "valor": "136",
+      "unidad": "mmol/L",
+      "rango_ref": "136-145",
+      "bandera": "",
+      "valor_unidad_messy": "136mmol/L",
+      "rango_messy": "N: 136-145",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Potasio",
+      "abrev": "K",
+      "loinc": "2823-3",
+      "valor": "3.8",
+      "unidad": "mmol/L",
+      "rango_ref": "3.5-5.1",
+      "bandera": "",
+      "valor_unidad_messy": "3.8mmol/L",
+      "rango_messy": "N: 3.5-5.1",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "LDL",
+      "abrev": "LDL",
+      "loinc": "13457-7",
+      "valor": "100",
+      "unidad": "mg/dL",
+      "rango_ref": "50-130",
+      "bandera": "",
+      "valor_unidad_messy": "100mg/dL",
+      "rango_messy": "N: 50-130",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil de Lípidos",
+      "nombre": "HDL",
+      "abrev": "HDL",
+      "loinc": "2085-9",
+      "valor": "41",
+      "unidad": "mg/dL",
+      "rango_ref": "40-60",
+      "bandera": "",
+      "valor_unidad_messy": "41mg/dL",
+      "rango_messy": "N: 40-60",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "ALT (TGP)",
+      "abrev": "ALT",
+      "loinc": "1742-6",
+      "valor": "2",
+      "unidad": "U/L",
+      "rango_ref": "7-40",
+      "bandera": "L",
+      "valor_unidad_messy": "2U/L",
+      "rango_messy": "N: 7-40",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Bilirrubina Total",
+      "abrev": "TBIL",
+      "loinc": "1975-2",
+      "valor": "1.1",
+      "unidad": "mg/dL",
+      "rango_ref": "0.2-1.2",
+      "bandera": "",
+      "valor_unidad_messy": "1.1mg/dL",
+      "rango_messy": "N: 0.2-1.2",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "T4 Libre",
+      "abrev": "FT4",
+      "loinc": "3024-7",
+      "valor": "1.5",
+      "unidad": "ng/dL",
+      "rango_ref": "0.8-1.8",
+      "bandera": "",
+      "valor_unidad_messy": "1.5ng/dL",
+      "rango_messy": "N: 0.8-1.8",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "TSH",
+      "abrev": "TSH",
+      "loinc": "3016-3",
+      "valor": "0.0",
+      "unidad": "uIU/mL",
+      "rango_ref": "0.4-4.5",
+      "bandera": "L",
+      "valor_unidad_messy": "0.0uIU/mL",
+      "rango_messy": "N: 0.4-4.5",
+      "occluded": false
+    }
+  ]
+}

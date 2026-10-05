@@ -1,0 +1,94 @@
+{
+  "report_id": "labtest_131",
+  "template": "template_9_portal",
+  "folio": "NHI-2026-97921",
+  "patient": {
+    "nombre": "María Elena Martínez Soto",
+    "edad": 82,
+    "sexo": "F",
+    "id": "MEM-899822-K7"
+  },
+  "fecha_toma": "2026-08-03",
+  "fecha_reporte": "2026-08-04",
+  "medico_solicitante": "Dra. Paulina Zamudio Elías",
+  "expected": [
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Bilirrubina Total",
+      "abrev": "TBIL",
+      "loinc": "1975-2",
+      "valor": "0.5",
+      "unidad": "mg/dL",
+      "rango_ref": "0.2-1.2",
+      "bandera": "",
+      "valor_unidad_messy": "0.5mg/dL",
+      "rango_messy": "N: 0.2-1.2",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "ALT (TGP)",
+      "abrev": "ALT",
+      "loinc": "1742-6",
+      "valor": "54",
+      "unidad": "U/L",
+      "rango_ref": "7-40",
+      "bandera": "H",
+      "valor_unidad_messy": "54U/L",
+      "rango_messy": "N: 7-40",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Fosfatasa Alcalina",
+      "abrev": "ALP",
+      "loinc": "6768-6",
+      "valor": "192",
+      "unidad": "U/L",
+      "rango_ref": "44-147",
+      "bandera": "H",
+      "valor_unidad_messy": "192U/L",
+      "rango_messy": "N: 44-147",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "AST (TGO)",
+      "abrev": "AST",
+      "loinc": "1920-8",
+      "valor": "46",
+      "unidad": "U/L",
+      "rango_ref": "8-40",
+      "bandera": "H",
+      "valor_unidad_messy": "46U/L",
+      "rango_messy": "N: 8-40",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "T3 Total",
+      "abrev": "T3",
+      "loinc": "3053-6",
+      "valor": "192",
+      "unidad": "ng/dL",
+      "rango_ref": "80-200",
+      "bandera": "",
+      "valor_unidad_messy": "192ng/dL",
+      "rango_messy": "N: 80-200",
+      "occluded": false
+    },
+    {
+      "panel": "Perfil Tiroideo",
+      "nombre": "TSH",
+      "abrev": "TSH",
+      "loinc": "3016-3",
+      "valor": "1.9",
+      "unidad": "uIU/mL",
+      "rango_ref": "0.4-4.5",
+      "bandera": "",
+      "valor_unidad_messy": "1.9uIU/mL",
+      "rango_messy": "N: 0.4-4.5",
+      "occluded": false
+    }
+  ]
+}

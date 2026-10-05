@@ -1,0 +1,120 @@
+{
+  "report_id": "labtest_093",
+  "template": "template_7_stamped",
+  "folio": "NHI-2026-78251",
+  "patient": {
+    "nombre": "Daniela López Torres",
+    "edad": 37,
+    "sexo": "F",
+    "id": "DLT-923691-K6"
+  },
+  "fecha_toma": "2026-06-06",
+  "fecha_reporte": "2026-06-07",
+  "medico_solicitante": "Dra. Paulina Zamudio Elías",
+  "expected": [
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Sodio",
+      "abrev": "NA",
+      "loinc": "2951-2",
+      "valor": "143",
+      "unidad": "mmol/L",
+      "rango_ref": "136-145",
+      "bandera": "",
+      "valor_unidad_messy": "143mmol/L",
+      "rango_messy": "N: 136-145",
+      "occluded": true
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Glucosa",
+      "abrev": "GLU",
+      "loinc": "2345-7",
+      "valor": "91",
+      "unidad": "mg/dL",
+      "rango_ref": "70-100",
+      "bandera": "",
+      "valor_unidad_messy": "91mg/dL",
+      "rango_messy": "N: 70-100",
+      "occluded": true
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Potasio",
+      "abrev": "K",
+      "loinc": "2823-3",
+      "valor": "4.0",
+      "unidad": "mmol/L",
+      "rango_ref": "3.5-5.1",
+      "bandera": "",
+      "valor_unidad_messy": "4.0mmol/L",
+      "rango_messy": "N: 3.5-5.1",
+      "occluded": true
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Ácido Úrico",
+      "abrev": "URIC",
+      "loinc": "3084-1",
+      "valor": "1.3",
+      "unidad": "mg/dL",
+      "rango_ref": "3.5-7.2",
+      "bandera": "L",
+      "valor_unidad_messy": "1.3mg/dL",
+      "rango_messy": "N: 3.5-7.2",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Creatinina",
+      "abrev": "CREA",
+      "loinc": "2160-0",
+      "valor": "0.6",
+      "unidad": "mg/dL",
+      "rango_ref": "0.6-1.1",
+      "bandera": "",
+      "valor_unidad_messy": "0.6mg/dL",
+      "rango_messy": "N: 0.6-1.1",
+      "occluded": false
+    },
+    {
+      "panel": "Química Sanguínea",
+      "nombre": "Urea",
+      "abrev": "BUN",
+      "loinc": "3094-0",
+      "valor": "12",
+      "unidad": "mg/dL",
+      "rango_ref": "7-20",
+      "bandera": "",
+      "valor_unidad_messy": "12mg/dL",
+      "rango_messy": "N: 7-20",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "Fosfatasa Alcalina",
+      "abrev": "ALP",
+      "loinc": "6768-6",
+      "valor": "136",
+      "unidad": "U/L",
+      "rango_ref": "44-147",
+      "bandera": "",
+      "valor_unidad_messy": "136U/L",
+      "rango_messy": "N: 44-147",
+      "occluded": false
+    },
+    {
+      "panel": "Pruebas de Función Hepática",
+      "nombre": "ALT (TGP)",
+      "abrev": "ALT",
+      "loinc": "1742-6",
+      "valor": "43",
+      "unidad": "U/L",
+      "rango_ref": "7-40",
+      "bandera": "H",
+      "valor_unidad_messy": "43U/L",
+      "rango_messy": "N: 7-40",
+      "occluded": false
+    }
+  ]
+}

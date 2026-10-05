@@ -1,0 +1,256 @@
+{
+  "document_id": "b06fb071-aa0f-4672-8776-a5a3895ef145",
+  "document_type": "lab_report",
+  "source": {
+    "filename": "labtest_042.pdf",
+    "content_type": "application/pdf",
+    "page_count": 1,
+    "language": "es-MX",
+    "response_language": "es",
+    "text_density": 505.0
+  },
+  "patient": {
+    "external_id": "MCV-873953-P2",
+    "name": "Mónica Cordero Vázquez",
+    "sex": null,
+    "date_of_birth": "69a"
+  },
+  "report": {
+    "laboratory_name": "Laboratorio Clínico Nahui",
+    "report_date": "2026-03-29",
+    "accession_number": "NHI-2026-42536"
+  },
+  "observation_count": 9,
+  "observations": [
+    {
+      "observation_id": "e832633d-0a22-4c69-a478-4666b4addcaf",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "AST (TGO)",
+      "test_name_normalized": "Aspartato aminotransferasa (AST)",
+      "loinc_code": "1920-8",
+      "value": 56,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "(8-40)",
+      "reference_range": {
+        "low": 8.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 16.0,
+        "relative_to_upper": 0.4,
+        "unit_ucum": "U/L"
+      },
+      "specimen": "H",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "21531a4d-37db-4076-857a-abae678c040f",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "Bilirrubina Total",
+      "test_name_normalized": "Bilirrubina total",
+      "loinc_code": "1975-2",
+      "value": 0.7,
+      "value_type": "numeric",
+      "unit_raw": "mg/dL",
+      "unit_ucum": "mg/dL",
+      "reference_range_raw": "(0.2-1.2)",
+      "reference_range": {
+        "low": 0.2,
+        "high": 1.2,
+        "unit_ucum": "mg/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "96b38605-9452-4277-9de1-66649f0163e1",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "Fosfatasa Alcalina",
+      "test_name_normalized": "Fosfatasa alcalina",
+      "loinc_code": "6768-6",
+      "value": 69,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "(44-147)",
+      "reference_range": {
+        "low": 44.0,
+        "high": 147.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "93964bdb-9b16-4df6-8f47-7a73e8b75892",
+      "panel_raw": "Pruebas de Función Hepática",
+      "test_name_raw": "ALT (TGP)",
+      "test_name_normalized": "Alanina aminotransferasa (ALT)",
+      "loinc_code": "1742-6",
+      "value": 55,
+      "value_type": "numeric",
+      "unit_raw": "U/L",
+      "unit_ucum": "U/L",
+      "reference_range_raw": "(7-40)",
+      "reference_range": {
+        "low": 7.0,
+        "high": 40.0,
+        "unit_ucum": "U/L"
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 15.0,
+        "relative_to_upper": 0.375,
+        "unit_ucum": "U/L"
+      },
+      "specimen": "H",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "0dac76be-54a8-486f-a9a8-9e7a497db96e",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Hemoglobina",
+      "test_name_normalized": "Hemoglobina",
+      "loinc_code": "718-7",
+      "value": 15.7,
+      "value_type": "numeric",
+      "unit_raw": "g/dL",
+      "unit_ucum": "g/dL",
+      "reference_range_raw": "(12.0-16.0)",
+      "reference_range": {
+        "low": 12.0,
+        "high": 16.0,
+        "unit_ucum": "g/dL"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "f65d5005-f721-4877-aa5a-5ab3bb09c01a",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Plaquetas",
+      "test_name_normalized": "Plaquetas",
+      "loinc_code": "777-3",
+      "value": 66,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/ul L",
+      "unit_ucum": "x10^3/ul L",
+      "reference_range_raw": "(150-450)",
+      "reference_range": {
+        "low": 150.0,
+        "high": 450.0,
+        "unit_ucum": null
+      },
+      "interpretation": "low",
+      "delta_from_range": {
+        "direction": "below",
+        "absolute": 84.0,
+        "relative_to_lower": 0.56,
+        "unit_ucum": null
+      },
+      "specimen": "",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "4a6093be-410b-4b80-8319-11ef9369b11d",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Eritrocitos",
+      "test_name_normalized": "Eritrocitos",
+      "loinc_code": "789-8",
+      "value": 5.36,
+      "value_type": "numeric",
+      "unit_raw": "x10^6/ul",
+      "unit_ucum": "x10^6/ul",
+      "reference_range_raw": "(4.2-5.4)",
+      "reference_range": {
+        "low": 4.2,
+        "high": 5.4,
+        "unit_ucum": null
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "21dfa9ab-e338-41ed-a791-646e8bdf1822",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Leucocitos",
+      "test_name_normalized": "Leucocitos",
+      "loinc_code": "6690-2",
+      "value": 14.2,
+      "value_type": "numeric",
+      "unit_raw": "x10^3/ul H",
+      "unit_ucum": "x10^3/ul H",
+      "reference_range_raw": "(4.5-11.0)",
+      "reference_range": {
+        "low": 4.5,
+        "high": 11.0,
+        "unit_ucum": null
+      },
+      "interpretation": "high",
+      "delta_from_range": {
+        "direction": "above",
+        "absolute": 3.2,
+        "relative_to_upper": 0.2909,
+        "unit_ucum": null
+      },
+      "specimen": "",
+      "page": 1,
+      "confidence": 0.9
+    },
+    {
+      "observation_id": "2b14d249-a16b-4e34-a8d8-89a01426214c",
+      "panel_raw": "Biometría Hemática",
+      "test_name_raw": "Hematocrito",
+      "test_name_normalized": "Hematocrito",
+      "loinc_code": "4544-3",
+      "value": 45.1,
+      "value_type": "numeric",
+      "unit_raw": "%",
+      "unit_ucum": "%",
+      "reference_range_raw": "(36.0-46.0)",
+      "reference_range": {
+        "low": 36.0,
+        "high": 46.0,
+        "unit_ucum": "%"
+      },
+      "interpretation": "normal",
+      "delta_from_range": null,
+      "specimen": "",
+      "page": 1,
+      "confidence": 0.9
+    }
+  ],
+  "review_items": [],
+  "processing_issues": {
+    "extraction": [],
+    "normalization": [],
+    "interpretation": []
+  },
+  "unmapped_items": [],
+  "warnings": [],
+  "confidence": 0.99,
+  "requires_manual_review": false,
+  "extraction_profile": "digital_tabular_lab",
+  "requires_ocr": false
+}

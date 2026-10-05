@@ -1,0 +1,76 @@
+{
+  "request_id": null,
+  "lab_abnormalities": {
+    "abnormal_count": 4,
+    "abnormal_markers": [
+      {
+        "test_name": "ANA",
+        "loinc_code": "5048-4",
+        "value": "1:80 positivo",
+        "unit": null,
+        "ref_low": null,
+        "ref_high": null,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anticardiolipina IgG",
+        "loinc_code": "16097-9",
+        "value": 63.7,
+        "unit": "U/mL",
+        "ref_low": null,
+        "ref_high": 10.0,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Anticoagulante lúpico (dRVVT-R)",
+        "loinc_code": "22599-7",
+        "value": 1.34,
+        "unit": null,
+        "ref_low": 0.8,
+        "ref_high": 1.2,
+        "direction": "high",
+        "report_date": "2024-01-01"
+      },
+      {
+        "test_name": "Plaquetas",
+        "loinc_code": null,
+        "value": 56.0,
+        "unit": "x10^3/uL",
+        "ref_low": 150.0,
+        "ref_high": 450.0,
+        "direction": "low",
+        "report_date": "2024-01-01"
+      }
+    ],
+    "correlations": []
+  },
+  "autoimmune_flags": [
+    {
+      "condition": "Síndrome antifósfolipídico (APS)",
+      "likelihood": "high",
+      "supporting_findings": [
+        "Anticoagulante lúpico (dRVVT-R) elevado",
+        "Anticardiolipina IgG elevado",
+        "Thrombocytopenia"
+      ],
+      "missing_workup": [
+        "Anti-β2-glicoproteína I"
+      ]
+    }
+  ],
+  "differential": [
+    "Síndrome antifósfolipídico (APS)",
+    "Infarto agudo de miocardio recurrente",
+    "Disfunción microvascular coronaria"
+  ],
+  "recommended_followup": [
+    "Estudios de imagen cardíaca para evaluar la función ventricular y arterias coronarias",
+    "Seguimiento de plaquetas y antifósfolipídicos",
+    "Evaluación de otros factores de riesgo cardiovascular"
+  ],
+  "reasoning": "El paciente presenta un infarto agudo de miocardio recurrente con evidencia de disfunción microvascular coronaria. Los hallazgos laboratoriales incluyen anticoagulante lúpico y anticardiolipina IgG elevados, junto con trombocitopenia, lo que apoya fuertemente el diagnóstico de síndrome antifósfolipídico (APS). Estos hallazgos son consistentes con la presencia de antifósfolipídicos y pueden explicar los eventos cardiovasculares recurrentes.",
+  "confidence": "high",
+  "disclaimer": "Este resultado es una herramienta de apoyo diagnóstico. El diagnóstico clínico definitivo es responsabilidad del médico tratante."
+}
