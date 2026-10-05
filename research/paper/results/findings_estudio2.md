@@ -12,17 +12,30 @@ nunca contiene el diagnóstico final.
 
 ## Resultado final (configuración desplegada a producción: RAG desactivado)
 
+Corrida inicial sin RAG (`without_rag/`, usada como referencia antes de
+empezar la investigación de RAG):
+
 | Métrica | Valor |
 |---|---|
 | Exactitud top-1 | 90% (18/20) |
 | Exactitud top-3 | 95% (19/20) |
 
-Las dos fallas son consistentes en las 4 corridas de este estudio:
-- **case_11** (Sjögren con acidosis tubular renal e hipopotasemia severa): el
-  modelo nunca prioriza Sjögren como causa raíz pese a anti-SSA/SSB
-  claramente positivos — el cuadro metabólico dramático domina su
-  razonamiento. Limitación real del modelo, no de RAG.
-- **case_14** (distractor, artritis paraneoplásica): ver sección dedicada abajo.
+Corrida final de confirmación, misma configuración, hecha después de
+desactivar RAG en producción (`final_state_rag_disabled/`) — ver hallazgo
+6b abajo:
+
+| Métrica | Valor |
+|---|---|
+| Exactitud top-1 | 85% (17/20) |
+| Exactitud top-3 | 90% (18/20) |
+
+`case_14` (distractor, artritis paraneoplásica) falla en las 4 corridas,
+sin excepción — ver sección dedicada abajo. `case_11` (Sjögren con
+acidosis tubular renal e hipopotasemia severa) falla siempre en top-1,
+pero su estatus en top-3 varía entre corridas de la misma configuración
+(ver hallazgo 6b): el modelo nunca prioriza Sjögren como causa raíz pese
+a anti-SSA/SSB claramente positivos, el cuadro metabólico dramático
+domina su razonamiento. Limitación real del modelo, no de RAG.
 
 ## Cronología de la investigación del RAG — incluye una autocorrección
 
@@ -78,6 +91,23 @@ de RAG útil) el modelo da respuestas distintas en corridas distintas para
 este caso límite. Se corrige aquí la interpretación original en vez de
 dejarla como estaba: es un ejemplo real de por qué una sola corrida no basta
 para atribuir causalidad en un sistema con muestreo estocástico.
+
+**6b. Segundo hallazgo, encontrado en la revisión de contenido del
+manuscrito del 2026-10-05 (no detectado antes):** en esa misma corrida
+final (RAG desactivado), `case_11` **también cambió** respecto a la
+corrida original `without_rag/`: Sjögren desaparece por completo de su
+lista de top-3 (antes aparecía en 2do lugar, ahora la lista solo tiene
+2 diagnósticos y ninguno es Sjögren). Esto significa que el resultado
+agregado de la corrida final de confirmación (RAG desactivado) es
+**top-1 85% (17/20), top-3 90% (18/20)** -- NO igual al baseline original
+de 90%/95% como se había asumido y reportado inicialmente en la Tabla 2
+del manuscrito (la fila "final state" copiaba el número del baseline sin
+volver a calificar la corrida real). Corregido en `score_diagnostic.py`
+(columnas `top1_final_disabled`/`top3_final_disabled`, regenera
+`results/summary_diagnostic.json`) y en `manuscript.md` (Abstract, §3.2,
+Tabla 2, §4.3, Conclusiones). El hallazgo refuerza, no debilita, el
+argumento metodológico: incluso la configuración "sin RAG", corrida dos
+veces de forma idéntica, no es perfectamente reproducible.
 
 ## Hallazgo secundario: el sistema no contempla malignidad como diferencial
 
