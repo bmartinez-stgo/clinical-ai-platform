@@ -14,3 +14,10 @@ paper/results/*_stdout.log
 paper/datasets/samples/
 
 paper/datasets/__pycache__/
+
+# The manuscript text and figures are kept local-only, not part of the
+# public reproducibility artifact. Code, data, protocol, and results
+# stay public; the submitted document itself does not, pending RMIB's
+# policy on preprints/blind review and to avoid tying the author's real
+# identity (this repo) to the manuscript before acceptance.
+paper/manuscript/
