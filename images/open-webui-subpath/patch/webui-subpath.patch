@@ -301,6 +301,19 @@ index 28a7135..0cc2a49 100644
  					loading="eager"
  					fetchpriority="high"
  					class="animate-pulse-fast"
+diff --git a/src/lib/components/NotificationToast.svelte b/src/lib/components/NotificationToast.svelte
+index c401e71..772598a 100644
+--- a/src/lib/components/NotificationToast.svelte
++++ b/src/lib/components/NotificationToast.svelte
+@@ -74,7 +74,7 @@
+ 			if (!$playingNotificationSound && $isLastActiveTab) {
+ 				playingNotificationSound.set(true);
+ 
+-				const audio = new Audio(`/audio/notification.mp3`);
++				const audio = new Audio(`${WEBUI_BASE_URL}/audio/notification.mp3`);
+ 				audio.play().finally(() => {
+ 					// Ensure the global state is reset after the sound finishes
+ 					playingNotificationSound.set(false);
 diff --git a/src/lib/components/admin/Analytics/Dashboard.svelte b/src/lib/components/admin/Analytics/Dashboard.svelte
 index 143db47..12a2632 100644
 --- a/src/lib/components/admin/Analytics/Dashboard.svelte
@@ -594,10 +607,25 @@ index ce4a18e..ffdd9c8 100644
  
  export const OLLAMA_API_BASE_URL = `${WEBUI_BASE_URL}/ollama`;
 diff --git a/src/routes/+layout.svelte b/src/routes/+layout.svelte
-index aaf4851..13f14c9 100644
+index aaf4851..1481e58 100644
 --- a/src/routes/+layout.svelte
 +++ b/src/routes/+layout.svelte
-@@ -182,7 +182,7 @@
+@@ -177,12 +177,21 @@
+ 	};
+ 
+ 	const setupSocket = async (enableWebsocket) => {
+-		const _socket = io(`${WEBUI_BASE_URL}` || undefined, {
++		// clinical-ai-platform patch: a bare path (e.g. "/webui") as io()'s
++		// first argument is interpreted by socket.io-client as a NAMESPACE to
++		// connect under, not just an origin/path prefix. The backend's @sio.on
++		// / sio.emit handlers are all registered on the default "/" namespace
++		// (socket/main.py never passes namespace=), so a client connected under
++		// "/webui" never receives any of them — the transport connects fine
++		// (confirmed via a raw handshake), but no app-level event ever arrives.
++		// Only `path` (the engine.io HTTP endpoint) needs the subpath; the
++		// connection URL itself must stay same-origin/default-namespace.
++		const _socket = io(undefined, {
+ 			reconnection: true,
  			reconnectionDelay: 1000,
  			reconnectionDelayMax: 5000,
  			randomizationFactor: 0.5,
@@ -606,6 +634,24 @@ index aaf4851..13f14c9 100644
  			transports: enableWebsocket ? ['websocket'] : ['polling', 'websocket'],
  			auth: (cb) => cb({ token: localStorage.token })
  		});
+@@ -794,7 +803,7 @@
+ 					) {
+ 						playingNotificationSound.set(true);
+ 
+-						const audio = new Audio(`/audio/notification.mp3`);
++						const audio = new Audio(`${WEBUI_BASE_URL}/audio/notification.mp3`);
+ 						audio.play().finally(() => {
+ 							// Ensure the global state is reset after the sound finishes
+ 							playingNotificationSound.set(false);
+@@ -1421,7 +1430,7 @@
+ 
+ 			document.getElementById('splash-screen')?.remove();
+ 
+-			const audio = new Audio(`/audio/greeting.mp3`);
++			const audio = new Audio(`${WEBUI_BASE_URL}/audio/greeting.mp3`);
+ 			const playAudio = () => {
+ 				audio.play();
+ 				document.removeEventListener('click', playAudio);
 diff --git a/svelte.config.js b/svelte.config.js
 index 80e37b4..ce08671 100644
 --- a/svelte.config.js

@@ -15,8 +15,26 @@ Used by `manifests/open-webui/deployment.yaml`
   SvelteKit's own routing/`%sveltekit.assets%` resolve correctly.
 - `src/app.html` — hardcoded `/static/...` and `/manifest.json` links
   (favicons, splash screen) prefixed via `%sveltekit.assets%`.
-- `src/routes/+layout.svelte` — the socket.io client's `path` option is
-  hardcoded and overrides the URL argument, so it needs the subpath too.
+- `src/routes/+layout.svelte` — two separate socket.io bugs:
+  - the client's `path` option is hardcoded and overrides the URL
+    argument, so it needs the subpath too.
+  - **the actual cause of "chat doesn't update live, only after a reload"**:
+    `io(WEBUI_BASE_URL, {...})` passed the subpath as socket.io-client's
+    first argument, which it treats as a *namespace* to connect under
+    (same-origin bare-path form), not an origin/path prefix — see
+    [socket.io's docs on same-origin namespaces](https://socket.io/docs/v4/client-initialization/).
+    The transport-level engine.io handshake still succeeds either way (so
+    it *looks* connected), but `backend/open_webui/socket/main.py` never
+    passes `namespace=` to any `@sio.on(...)` / `sio.emit(...)` call — every
+    handler is bound to the default `"/"` namespace. A client connected
+    under `/webui` therefore never receives a single app-level event
+    (search-status updates, streamed tokens, anything) even though the
+    socket shows as connected. The final answer still saves correctly
+    (that part doesn't go through the socket), so reloading — which
+    re-fetches the chat over plain REST — always "fixes" it, which is
+    what made this so easy to misdiagnose as a caching or timing issue.
+    Fix: pass `undefined` as the connection URL (default namespace,
+    same-origin) and let `path` alone carry the subpath.
 - `backend/open_webui/main.py` — wraps the fully-configured app under
   `WEBUI_SUBPATH` (read at runtime) via `outer.mount(subpath, inner)`. The
   outer app must reuse the inner app's `lifespan` *and* share its `.state`
