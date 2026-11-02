@@ -42,6 +42,22 @@ Used by `manifests/open-webui/deployment.yaml`
   so every call site is fixed at once. No-ops when no base/subpath is
   configured. The script hard-fails the build if its target strings aren't
   found verbatim, as a tripwire for a future `@sveltejs/kit` version bump.
+- ~18 components had an `onerror` handler on an `<img>` falling back to a
+  hardcoded `/favicon.png` or `/user.png` (model avatars, user avatars,
+  citation icons). Same root-relative problem as above, but for images
+  rather than navigation — these don't go through SvelteKit's router at
+  all, so the `patch-sveltekit.cjs` fix doesn't cover them. Worse than the
+  navigation bug: an unprefixed fallback 401s behind the gateway, its
+  `onerror` fires again, and since the handler unconditionally reassigned
+  the same broken URL, this looped indefinitely — observed in production
+  as 5000+ failed requests in a few seconds, pegging the main thread and
+  making the whole page look hung (reported as "chat doesn't show the
+  response until I reload"). Fixed by prefixing with `WEBUI_BASE_URL` and
+  clearing `onerror` before reassigning, so a still-broken fallback fails
+  once instead of looping. `backend/open_webui/main.py`'s
+  `get_manifest_json` (PWA install icons) and `swagger_ui_html` had the
+  same hardcoded-path problem server-side; prefixed with `WEBUI_SUBPATH`
+  the same way as the other backend routes.
 
 ## Rebuilding for a new upstream version
 

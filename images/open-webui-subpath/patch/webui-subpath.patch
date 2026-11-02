@@ -32,10 +32,69 @@ index c7fb201..0fe96c4 100644
      if [ "$USE_SLIM" = "true" ]; then find build -type f -name '*.map' -delete; fi
  
 diff --git a/backend/open_webui/main.py b/backend/open_webui/main.py
-index a1abf80..b51b34d 100644
+index a1abf80..982cec6 100644
 --- a/backend/open_webui/main.py
 +++ b/backend/open_webui/main.py
-@@ -3201,3 +3201,21 @@ if os.path.exists(FRONTEND_BUILD_DIR):
+@@ -3009,11 +3009,14 @@ async def get_manifest_json():
+         # including names, logos, manifests, metadata, and surrounding UI.
+         # Do not alter, remove, obscure, or replace it except as LICENSE permits:
+         # https://docs.openwebui.com/license.
++        # clinical-ai-platform patch: these were hardcoded root-relative,
++        # 401ing behind the gateway when served under WEBUI_SUBPATH.
++        _subpath = os.environ.get('WEBUI_SUBPATH', '').rstrip('/')
+         return {
+             'name': app.state.WEBUI_NAME,
+             'short_name': app.state.WEBUI_NAME,
+             'description': f'{app.state.WEBUI_NAME} is an open, extensible, user-friendly interface for AI that adapts to your workflow.',
+-            'start_url': '/',
++            'start_url': f'{_subpath}/',
+             'display': 'standalone',
+             'background_color': '#343541',
+             'icons': [
+@@ -3021,20 +3024,20 @@ async def get_manifest_json():
+                 # Do not alter, remove, obscure, or replace it except as LICENSE permits:
+                 # https://docs.openwebui.com/license.
+                 {
+-                    'src': '/static/logo.png',
++                    'src': f'{_subpath}/static/logo.png',
+                     'type': 'image/png',
+                     'sizes': '500x500',
+                     'purpose': 'any',
+                 },
+                 {
+-                    'src': '/static/logo.png',
++                    'src': f'{_subpath}/static/logo.png',
+                     'type': 'image/png',
+                     'sizes': '500x500',
+                     'purpose': 'maskable',
+                 },
+             ],
+             'share_target': {
+-                'action': '/',
++                'action': f'{_subpath}/',
+                 'method': 'GET',
+                 'params': {'text': 'shared'},
+             },
+@@ -3178,12 +3181,15 @@ async def serve_cache_file(
+ 
+ 
+ def swagger_ui_html(*args, **kwargs):
++    # clinical-ai-platform patch: prefix with WEBUI_SUBPATH, same as
++    # get_manifest_json above.
++    _subpath = os.environ.get('WEBUI_SUBPATH', '').rstrip('/')
+     return get_swagger_ui_html(
+         *args,
+         **kwargs,
+-        swagger_js_url='/static/swagger-ui/swagger-ui-bundle.js',
+-        swagger_css_url='/static/swagger-ui/swagger-ui.css',
+-        swagger_favicon_url='/static/swagger-ui/favicon.png',
++        swagger_js_url=f'{_subpath}/static/swagger-ui/swagger-ui-bundle.js',
++        swagger_css_url=f'{_subpath}/static/swagger-ui/swagger-ui.css',
++        swagger_favicon_url=f'{_subpath}/static/swagger-ui/favicon.png',
+     )
+ 
+ 
+@@ -3201,3 +3207,21 @@ if os.path.exists(FRONTEND_BUILD_DIR):
      )
  else:
      log.warning(f"Frontend build directory not found at '{FRONTEND_BUILD_DIR}'. Serving API only.")
@@ -242,6 +301,281 @@ index 28a7135..0cc2a49 100644
  					loading="eager"
  					fetchpriority="high"
  					class="animate-pulse-fast"
+diff --git a/src/lib/components/admin/Analytics/Dashboard.svelte b/src/lib/components/admin/Analytics/Dashboard.svelte
+index 143db47..12a2632 100644
+--- a/src/lib/components/admin/Analytics/Dashboard.svelte
++++ b/src/lib/components/admin/Analytics/Dashboard.svelte
+@@ -1,6 +1,7 @@
+ <script lang="ts">
+ 	import { onMount, getContext } from 'svelte';
+ 	import dayjs from 'dayjs';
++	import { WEBUI_BASE_URL } from '$lib/constants';
+ 	import { models, config } from '$lib/stores';
+ 	import {
+ 		getSummary,
+@@ -702,7 +703,7 @@
+ 															// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 															// https://docs.openwebui.com/license.
+ 															const image = e.currentTarget as HTMLImageElement;
+-															if (!image.src.endsWith('/favicon.png')) image.src = '/favicon.png';
++															if (!image.src.endsWith('/favicon.png')) image.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 														}}
+ 													/>
+ 													<span class="truncate max-w-[9.375rem]">{model.name}</span>
+@@ -863,7 +864,7 @@
+ 															class="size-5 rounded-full object-cover shrink-0"
+ 															on:error={(e) => {
+ 																const image = e.currentTarget as HTMLImageElement;
+-																if (!image.src.endsWith('/user.png')) image.src = '/user.png';
++																if (!image.src.endsWith('/user.png')) image.src = `${WEBUI_BASE_URL}/user.png`;
+ 															}}
+ 														/>
+ 													</ProfilePreview>
+diff --git a/src/lib/components/admin/Analytics/SessionDetail.svelte b/src/lib/components/admin/Analytics/SessionDetail.svelte
+index 9e2051c..d545b4f 100644
+--- a/src/lib/components/admin/Analytics/SessionDetail.svelte
++++ b/src/lib/components/admin/Analytics/SessionDetail.svelte
+@@ -226,7 +226,7 @@
+ 						loading="lazy"
+ 						on:error={(event) => {
+ 							const image = event.currentTarget as HTMLImageElement;
+-							if (!image.src.endsWith('/user.png')) image.src = '/user.png';
++							if (!image.src.endsWith('/user.png')) image.src = `${WEBUI_BASE_URL}/user.png`;
+ 						}}
+ 					/>
+ 					<span class="block max-w-28 truncate">{session.user_name || $i18n.t('User')}</span>
+diff --git a/src/lib/components/admin/Analytics/SessionExplorer.svelte b/src/lib/components/admin/Analytics/SessionExplorer.svelte
+index ced5994..910aae9 100644
+--- a/src/lib/components/admin/Analytics/SessionExplorer.svelte
++++ b/src/lib/components/admin/Analytics/SessionExplorer.svelte
+@@ -339,7 +339,7 @@
+ 													loading="lazy"
+ 													on:error={(event) => {
+ 														const image = event.currentTarget as HTMLImageElement;
+-														if (!image.src.endsWith('/user.png')) image.src = '/user.png';
++														if (!image.src.endsWith('/user.png')) image.src = `${WEBUI_BASE_URL}/user.png`;
+ 													}}
+ 												/>
+ 												<span class="block max-w-28 truncate"
+diff --git a/src/lib/components/admin/Evaluations/Leaderboard.svelte b/src/lib/components/admin/Evaluations/Leaderboard.svelte
+index 5427e54..c633275 100644
+--- a/src/lib/components/admin/Evaluations/Leaderboard.svelte
++++ b/src/lib/components/admin/Evaluations/Leaderboard.svelte
+@@ -225,7 +225,8 @@
+ 											// LICENSE covers this Open WebUI fallback logo.
+ 											// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 											// https://docs.openwebui.com/license.
+-											e.target.src = '/favicon.png';
++											e.target.onerror = null;
++												e.target.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 										}}
+ 									/>
+ 									<Tooltip content={`${model.name} (${model.id})`} placement="top-start">
+diff --git a/src/lib/components/admin/Settings/Models.svelte b/src/lib/components/admin/Settings/Models.svelte
+index 21bd779..a60d6c1 100644
+--- a/src/lib/components/admin/Settings/Models.svelte
++++ b/src/lib/components/admin/Settings/Models.svelte
+@@ -1064,7 +1064,8 @@
+ 														// LICENSE covers this Open WebUI fallback logo.
+ 														// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 														// https://docs.openwebui.com/license.
+-														e.target.src = '/favicon.png';
++														e.target.onerror = null;
++												e.target.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 													}}
+ 												/>
+ 											</div>
+diff --git a/src/lib/components/admin/Users/UserList.svelte b/src/lib/components/admin/Users/UserList.svelte
+index 3f43f62..2b11855 100644
+--- a/src/lib/components/admin/Users/UserList.svelte
++++ b/src/lib/components/admin/Users/UserList.svelte
+@@ -381,7 +381,8 @@
+ 											// LICENSE covers this Open WebUI fallback logo.
+ 											// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 											// https://docs.openwebui.com/license.
+-											e.currentTarget.src = '/favicon.png';
++											e.currentTarget.onerror = null;
++												e.currentTarget.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 										}}
+ 									/>
+ 								</ProfilePreview>
+diff --git a/src/lib/components/automations/ModelDropdown.svelte b/src/lib/components/automations/ModelDropdown.svelte
+index f5522fc..6fd6e35 100644
+--- a/src/lib/components/automations/ModelDropdown.svelte
++++ b/src/lib/components/automations/ModelDropdown.svelte
+@@ -112,7 +112,8 @@
+ 								// LICENSE covers this Open WebUI fallback logo.
+ 								// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 								// https://docs.openwebui.com/license.
+-								e.currentTarget.src = '/favicon.png';
++								e.currentTarget.onerror = null;
++												e.currentTarget.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 							}}
+ 						/>
+ 						<div class="truncate">
+diff --git a/src/lib/components/channel/MessageInput/MentionList.svelte b/src/lib/components/channel/MessageInput/MentionList.svelte
+index 47d8104..04a599f 100644
+--- a/src/lib/components/channel/MessageInput/MentionList.svelte
++++ b/src/lib/components/channel/MessageInput/MentionList.svelte
+@@ -253,7 +253,8 @@
+ 									// LICENSE covers this Open WebUI fallback logo.
+ 									// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 									// https://docs.openwebui.com/license.
+-									e.currentTarget.src = '/favicon.png';
++									e.currentTarget.onerror = null;
++												e.currentTarget.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 								}}
+ 							/>
+ 						{:else if item.type === 'user'}
+@@ -265,7 +266,8 @@
+ 									// LICENSE covers this Open WebUI fallback logo.
+ 									// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 									// https://docs.openwebui.com/license.
+-									e.currentTarget.src = '/favicon.png';
++									e.currentTarget.onerror = null;
++												e.currentTarget.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 								}}
+ 							/>
+ 						{/if}
+diff --git a/src/lib/components/channel/Messages/Message.svelte b/src/lib/components/channel/Messages/Message.svelte
+index fa62039..deded5b 100644
+--- a/src/lib/components/channel/Messages/Message.svelte
++++ b/src/lib/components/channel/Messages/Message.svelte
+@@ -364,7 +364,8 @@
+ 									// LICENSE covers this Open WebUI fallback logo.
+ 									// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 									// https://docs.openwebui.com/license.
+-									e.currentTarget.src = '/favicon.png';
++									e.currentTarget.onerror = null;
++												e.currentTarget.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 								}}
+ 							/>
+ 						{:else if message.reply_to_message.app_id}
+@@ -423,7 +424,8 @@
+ 									// LICENSE covers this Open WebUI fallback logo.
+ 									// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 									// https://docs.openwebui.com/license.
+-									e.currentTarget.src = '/favicon.png';
++									e.currentTarget.onerror = null;
++												e.currentTarget.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 								}}
+ 							/>
+ 						{:else if message.app_id}
+diff --git a/src/lib/components/chat/ChatPlaceholder.svelte b/src/lib/components/chat/ChatPlaceholder.svelte
+index a26e74d..3ed0369 100644
+--- a/src/lib/components/chat/ChatPlaceholder.svelte
++++ b/src/lib/components/chat/ChatPlaceholder.svelte
+@@ -92,7 +92,8 @@
+ 									// LICENSE covers this Open WebUI fallback logo.
+ 									// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 									// https://docs.openwebui.com/license.
+-									e.currentTarget.src = '/favicon.png';
++									e.currentTarget.onerror = null;
++												e.currentTarget.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 								}}
+ 							/>
+ 						</Tooltip>
+diff --git a/src/lib/components/chat/MessageInput/Commands/AtCommands.svelte b/src/lib/components/chat/MessageInput/Commands/AtCommands.svelte
+index 6e703b9..7bb071f 100644
+--- a/src/lib/components/chat/MessageInput/Commands/AtCommands.svelte
++++ b/src/lib/components/chat/MessageInput/Commands/AtCommands.svelte
+@@ -351,7 +351,8 @@
+ 							// LICENSE covers this Open WebUI fallback logo.
+ 							// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 							// https://docs.openwebui.com/license.
+-							(e.currentTarget as HTMLImageElement).src = '/favicon.png';
++							(e.currentTarget as HTMLImageElement).onerror = null;
++							(e.currentTarget as HTMLImageElement).src = `${WEBUI_BASE_URL}/favicon.png`;
+ 						}}
+ 					/>
+ 					<div class="min-w-0 truncate">
+diff --git a/src/lib/components/chat/MessageInput/Commands/Models.svelte b/src/lib/components/chat/MessageInput/Commands/Models.svelte
+index c607c4d..c0d0527 100644
+--- a/src/lib/components/chat/MessageInput/Commands/Models.svelte
++++ b/src/lib/components/chat/MessageInput/Commands/Models.svelte
+@@ -95,7 +95,8 @@
+ 							// LICENSE covers this Open WebUI fallback logo.
+ 							// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 							// https://docs.openwebui.com/license.
+-							e.currentTarget.src = '/favicon.png';
++							e.currentTarget.onerror = null;
++												e.currentTarget.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 						}}
+ 					/>
+ 					<div class="min-w-0 truncate">
+diff --git a/src/lib/components/chat/Messages/Citations.svelte b/src/lib/components/chat/Messages/Citations.svelte
+index d3392cc..f256cbf 100644
+--- a/src/lib/components/chat/Messages/Citations.svelte
++++ b/src/lib/components/chat/Messages/Citations.svelte
+@@ -192,7 +192,8 @@
+ 								// LICENSE covers this Open WebUI fallback logo.
+ 								// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 								// https://docs.openwebui.com/license.
+-								e.target.src = '/favicon.png';
++								e.target.onerror = null;
++												e.target.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 							}}
+ 						/>
+ 					{/each}
+diff --git a/src/lib/components/chat/ModelSelector/ModelItem.svelte b/src/lib/components/chat/ModelSelector/ModelItem.svelte
+index 4ff39f6..394d035 100644
+--- a/src/lib/components/chat/ModelSelector/ModelItem.svelte
++++ b/src/lib/components/chat/ModelSelector/ModelItem.svelte
+@@ -111,7 +111,8 @@
+ 							// LICENSE covers this Open WebUI fallback logo.
+ 							// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 							// https://docs.openwebui.com/license.
+-							e.currentTarget.src = '/favicon.png';
++							e.currentTarget.onerror = null;
++												e.currentTarget.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 						}}
+ 					/>
+ 				</Tooltip>
+diff --git a/src/lib/components/chat/Placeholder.svelte b/src/lib/components/chat/Placeholder.svelte
+index 3004665..8a80911 100644
+--- a/src/lib/components/chat/Placeholder.svelte
++++ b/src/lib/components/chat/Placeholder.svelte
+@@ -178,7 +178,11 @@
+ 												// LICENSE covers this Open WebUI fallback logo.
+ 												// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 												// https://docs.openwebui.com/license.
+-												e.currentTarget.src = '/favicon.png';
++												// clinical-ai-platform patch: prefix with the configured subpath
++												// (bare '/favicon.png' 401s behind the gateway) and clear the
++												// handler so a broken fallback can't retrigger this forever.
++												e.currentTarget.onerror = null;
++												e.currentTarget.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 											}}
+ 										/>
+ 									</button>
+diff --git a/src/lib/components/layout/Sidebar/PinnedModelItem.svelte b/src/lib/components/layout/Sidebar/PinnedModelItem.svelte
+index 8abd62d..e70b9d4 100644
+--- a/src/lib/components/layout/Sidebar/PinnedModelItem.svelte
++++ b/src/lib/components/layout/Sidebar/PinnedModelItem.svelte
+@@ -46,7 +46,8 @@
+ 						// LICENSE covers this Open WebUI fallback logo.
+ 						// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 						// https://docs.openwebui.com/license.
+-						e.currentTarget.src = '/favicon.png';
++						e.currentTarget.onerror = null;
++												e.currentTarget.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 					}}
+ 				/>
+ 			</div>
+diff --git a/src/lib/components/workspace/Models.svelte b/src/lib/components/workspace/Models.svelte
+index 1fe2d6f..457d4bb 100644
+--- a/src/lib/components/workspace/Models.svelte
++++ b/src/lib/components/workspace/Models.svelte
+@@ -788,7 +788,8 @@
+ 												// LICENSE covers this Open WebUI fallback logo.
+ 												// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 												// https://docs.openwebui.com/license.
+-												e.target.src = '/favicon.png';
++												e.target.onerror = null;
++												e.target.src = `${WEBUI_BASE_URL}/favicon.png`;
+ 											}}
+ 										/>
+ 									</div>
 diff --git a/src/lib/constants.ts b/src/lib/constants.ts
 index ce4a18e..ffdd9c8 100644
 --- a/src/lib/constants.ts
