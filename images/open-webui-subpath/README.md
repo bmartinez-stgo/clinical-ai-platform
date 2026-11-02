@@ -27,6 +27,21 @@ Used by `manifests/open-webui/deployment.yaml`
   `scope['path']` (only accumulates `root_path`), so the engine.io ASGI
   driver matches against the literal request path, which now carries the
   subpath prefix too.
+- `patch-sveltekit.cjs` (run from the Dockerfile right after `npm ci`,
+  against `node_modules/@sveltejs/kit`) — Open WebUI's own frontend source
+  has ~150 call sites written as plain root-relative strings:
+  `goto('/admin')`, `<a href="/admin">`, etc. Per the URL spec, resolving a
+  string starting with `/` against a base URL always discards the base's
+  own path, so every one of those silently drops the `/webui` prefix and
+  SvelteKit's router then treats the navigation as "external" (different
+  pathname than `base` expects) and does a full browser navigation to the
+  wrong, unprefixed URL — this is what produced the `/error` 401/500 dead
+  end. Patching every call site isn't practical or maintainable, so this
+  patches SvelteKit's own shared chokepoint instead (`resolve_url` and
+  `get_link_info` in `node_modules/@sveltejs/kit/src/runtime/client/utils.js`)
+  so every call site is fixed at once. No-ops when no base/subpath is
+  configured. The script hard-fails the build if its target strings aren't
+  found verbatim, as a tripwire for a future `@sveltejs/kit` version bump.
 
 ## Rebuilding for a new upstream version
 

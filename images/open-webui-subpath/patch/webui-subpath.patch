@@ -1,5 +1,5 @@
 diff --git a/Dockerfile b/Dockerfile
-index c7fb201..5dd69ce 100644
+index c7fb201..0fe96c4 100644
 --- a/Dockerfile
 +++ b/Dockerfile
 @@ -31,6 +31,10 @@ ARG BUILD_CHANNEL
@@ -13,7 +13,17 @@ index c7fb201..5dd69ce 100644
  
  # Set Node.js options (heap limit Allocation failed - JavaScript heap out of memory)
  # ENV NODE_OPTIONS="--max-old-space-size=4096"
-@@ -46,6 +50,7 @@ RUN npm ci --force
+@@ -43,9 +47,17 @@ RUN apk add --no-cache git
+ COPY package.json package-lock.json ./
+ RUN npm ci --force
+ 
++# clinical-ai-platform patch: SvelteKit's own goto()/anchor-click routing
++# drops the configured base path for root-relative strings (see
++# patch-sveltekit.cjs for why); Open WebUI's source has ~150 call sites
++# written that way, so this patches the shared SvelteKit chokepoint instead.
++COPY patch-sveltekit.cjs ./
++RUN node patch-sveltekit.cjs
++
  COPY . .
  ENV APP_BUILD_HASH=${BUILD_HASH}
  ENV APP_BUILD_CHANNEL=${BUILD_CHANNEL}
@@ -68,6 +78,89 @@ index 1338308..75f0dbe 100644
  )
  
  
+diff --git a/patch-sveltekit.cjs b/patch-sveltekit.cjs
+new file mode 100644
+index 0000000..75827a3
+--- /dev/null
++++ b/patch-sveltekit.cjs
+@@ -0,0 +1,77 @@
++// clinical-ai-platform patch: SvelteKit's client router resolves root-relative
++// strings ('/admin') and anchor hrefs against document.baseURI, but per the
++// URL spec an absolute-path reference ('/x') always discards baseURI's own
++// path — so a configured `base` (our WEBUI_SUBPATH, e.g. "/webui") never
++// survives goto('/x'), pushState/replaceState, or <a href="/x"> clicks.
++// Open WebUI's source has ~150 call sites written as plain root-relative
++// strings (it never officially supported subpath deployment), so patching
++// every call site isn't practical to apply or keep in sync with upstream.
++// This patches SvelteKit's own shared chokepoint instead — one file, two
++// functions — so every call site is fixed at once, with zero effect when
++// no base is configured (root deployment).
++//
++// Run against the exact @sveltejs/kit version pinned in package-lock.json.
++// If this throws, the version moved and the patch needs re-checking against
++// the new source of src/runtime/client/utils.js.
++
++const fs = require('fs');
++
++const path = 'node_modules/@sveltejs/kit/src/runtime/client/utils.js';
++let src = fs.readFileSync(path, 'utf8');
++
++function replaceOnce(haystack, needle, replacement, label) {
++	const count = haystack.split(needle).length - 1;
++	if (count !== 1) {
++		throw new Error(
++			`patch-sveltekit.cjs: expected exactly 1 match for "${label}", found ${count}. ` +
++				`@sveltejs/kit source has likely changed — re-check the patch against the new version.`
++		);
++	}
++	return haystack.replace(needle, replacement);
++}
++
++src = replaceOnce(
++	src,
++	`import { assets } from '$app/paths';`,
++	`import { assets, base } from '$app/paths';`,
++	'paths import'
++);
++
++src = replaceOnce(
++	src,
++	`export function resolve_url(url) {
++	if (url instanceof URL) return url;
++
++	let baseURI = document.baseURI;`,
++	`export function resolve_url(url) {
++	if (url instanceof URL) return url;
++
++	// clinical-ai-platform patch: prepend the configured base path to a
++	// root-relative string before it's resolved, otherwise it resolves
++	// against document.baseURI's origin only and the subpath is lost.
++	if (base && typeof url === 'string' && url.startsWith('/') && !url.startsWith('//')) {
++		if (url !== base && !url.startsWith(base + '/') && !url.startsWith(base + '?') && !url.startsWith(base + '#')) {
++			url = base + url;
++		}
++	}
++
++	let baseURI = document.baseURI;`,
++	'resolve_url body'
++);
++
++src = replaceOnce(
++	src,
++	`	try {
++		url = new URL(a instanceof SVGAElement ? a.href.baseVal : a.href, document.baseURI);`,
++	`	try {
++		// clinical-ai-platform patch: use the raw, unresolved href attribute
++		// (not the DOM \`.href\` property, which the browser has already
++		// resolved against document.baseURI, discarding any subpath) so
++		// resolve_url's base-prepending above applies to it too.
++		const raw_href = a instanceof SVGAElement ? a.href.baseVal : a.getAttribute('href');
++		url = resolve_url(raw_href ?? (a instanceof SVGAElement ? a.href.baseVal : a.href));`,
++	'get_link_info body'
++);
++
++fs.writeFileSync(path, src);
++console.log('patch-sveltekit.cjs: applied subpath patch to @sveltejs/kit client utils.js');
 diff --git a/src/app.html b/src/app.html
 index 28a7135..0cc2a49 100644
 --- a/src/app.html
