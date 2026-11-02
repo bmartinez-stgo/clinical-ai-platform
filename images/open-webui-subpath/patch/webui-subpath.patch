@@ -1,0 +1,214 @@
+diff --git a/Dockerfile b/Dockerfile
+index c7fb201..5dd69ce 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -31,6 +31,10 @@ ARG BUILD_CHANNEL
+ ARG USE_SLIM
+ ARG UID
+ ARG GID
++# clinical-ai-platform patch: reverse-proxy subpath (e.g. "/webui"), baked
++# into the static frontend build. See src/lib/constants.ts and
++# vite.config.ts for how it's consumed.
++ARG WEBUI_SUBPATH=""
+ 
+ # Set Node.js options (heap limit Allocation failed - JavaScript heap out of memory)
+ # ENV NODE_OPTIONS="--max-old-space-size=4096"
+@@ -46,6 +50,7 @@ RUN npm ci --force
+ COPY . .
+ ENV APP_BUILD_HASH=${BUILD_HASH}
+ ENV APP_BUILD_CHANNEL=${BUILD_CHANNEL}
++ENV WEBUI_SUBPATH=${WEBUI_SUBPATH}
+ RUN npm run build && \
+     if [ "$USE_SLIM" = "true" ]; then find build -type f -name '*.map' -delete; fi
+ 
+diff --git a/backend/open_webui/main.py b/backend/open_webui/main.py
+index a1abf80..b51b34d 100644
+--- a/backend/open_webui/main.py
++++ b/backend/open_webui/main.py
+@@ -3201,3 +3201,21 @@ if os.path.exists(FRONTEND_BUILD_DIR):
+     )
+ else:
+     log.warning(f"Frontend build directory not found at '{FRONTEND_BUILD_DIR}'. Serving API only.")
++
++# --- Subpath support (clinical-ai-platform patch) ---
++# Wraps the fully-configured app under WEBUI_SUBPATH so it can be served
++# behind a reverse proxy path prefix (e.g. /webui) without colliding with
++# sibling services on the same domain. Must stay last in this file: it
++# needs every route/mount above to already be attached to `app`.
++_webui_subpath = os.environ.get('WEBUI_SUBPATH', '').rstrip('/')
++if _webui_subpath:
++    _inner_app = app
++    # Route handlers read e.g. `app.state.WEBUI_NAME` off the module-global
++    # `app` name, which this rebinds to the outer wrapper. Hundreds of
++    # `app.state.X = ...` assignments above already ran against the ORIGINAL
++    # app's State object, so the outer app must share that same object
++    # (not get a fresh empty one from `FastAPI()`) for those reads to work,
++    # in addition to reusing `lifespan` for async-initialized state.
++    app = FastAPI(lifespan=lifespan)
++    app.state = _inner_app.state
++    app.mount(_webui_subpath, _inner_app)
+diff --git a/backend/open_webui/socket/main.py b/backend/open_webui/socket/main.py
+index 1338308..75f0dbe 100644
+--- a/backend/open_webui/socket/main.py
++++ b/backend/open_webui/socket/main.py
+@@ -436,9 +436,15 @@ async def periodic_usage_pool_cleanup():
+             await asyncio.sleep(retry_delay)
+ 
+ 
++import os as _os
++
++# clinical-ai-platform patch: Starlette's Mount doesn't rewrite scope['path']
++# on mount (only accumulates root_path), so this ASGI app always sees the
++# full original request path. When served behind a reverse-proxy subpath
++# (WEBUI_SUBPATH, see main.py), that path gains the subpath prefix too.
+ app = socketio.ASGIApp(
+     sio,
+-    socketio_path='/ws/socket.io',
++    socketio_path=f"{_os.environ.get('WEBUI_SUBPATH', '').rstrip('/')}/ws/socket.io",
+ )
+ 
+ 
+diff --git a/src/app.html b/src/app.html
+index 28a7135..0cc2a49 100644
+--- a/src/app.html
++++ b/src/app.html
+@@ -6,28 +6,28 @@
+ 		visual, textual, symbolic identifiers, metadata, and surrounding UI.
+ 		Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 		https://docs.openwebui.com/license. -->
+-		<link rel="icon" type="image/png" href="/static/favicon.png" crossorigin="use-credentials" />
++		<link rel="icon" type="image/png" href="%sveltekit.assets%/static/favicon.png" crossorigin="use-credentials" />
+ 		<link
+ 			rel="icon"
+ 			type="image/png"
+-			href="/static/favicon-96x96.png"
++			href="%sveltekit.assets%/static/favicon-96x96.png"
+ 			sizes="96x96"
+ 			crossorigin="use-credentials"
+ 		/>
+ 		<link
+ 			rel="icon"
+ 			type="image/svg+xml"
+-			href="/static/favicon.svg"
++			href="%sveltekit.assets%/static/favicon.svg"
+ 			crossorigin="use-credentials"
+ 		/>
+-		<link rel="shortcut icon" href="/static/favicon.ico" crossorigin="use-credentials" />
++		<link rel="shortcut icon" href="%sveltekit.assets%/static/favicon.ico" crossorigin="use-credentials" />
+ 		<link
+ 			rel="apple-touch-icon"
+ 			sizes="180x180"
+-			href="/static/apple-touch-icon.png"
++			href="%sveltekit.assets%/static/apple-touch-icon.png"
+ 			crossorigin="use-credentials"
+ 		/>
+-		<link rel="manifest" href="/manifest.json" crossorigin="use-credentials" />
++		<link rel="manifest" href="%sveltekit.assets%/manifest.json" crossorigin="use-credentials" />
+ 		<meta
+ 			name="viewport"
+ 			content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, interactive-widget=resizes-content"
+@@ -35,8 +35,8 @@
+ 		<meta name="theme-color" content="#171717" />
+ 		<meta name="robots" content="noindex,nofollow" />
+ 
+-		<script src="/static/loader.js" defer crossorigin="use-credentials"></script>
+-		<link rel="stylesheet" href="/static/custom.css" crossorigin="use-credentials" />
++		<script src="%sveltekit.assets%/static/loader.js" defer crossorigin="use-credentials"></script>
++		<link rel="stylesheet" href="%sveltekit.assets%/static/custom.css" crossorigin="use-credentials" />
+ 
+ 		<script>
+ 			function resizeIframe(obj) {
+@@ -79,8 +79,8 @@
+ 				// Do not alter, remove, obscure, or replace them except as LICENSE permits:
+ 				// https://docs.openwebui.com/license.
+ 				const preloadHref = document.documentElement.classList.contains('dark')
+-					? '/static/splash-dark.png'
+-					: '/static/splash.png';
++					? '%sveltekit.assets%/static/splash-dark.png'
++					: '%sveltekit.assets%/static/splash.png';
+ 				const preload = document.createElement('link');
+ 				preload.rel = 'preload';
+ 				preload.as = 'image';
+@@ -112,7 +112,9 @@
+ 				// LICENSE covers this Open WebUI splash logo.
+ 				// Do not alter, remove, obscure, or replace it except as LICENSE permits:
+ 				// https://docs.openwebui.com/license.
+-				logo.src = isDarkMode ? '/static/splash-dark.png' : '/static/splash.png';
++				logo.src = isDarkMode
++					? '%sveltekit.assets%/static/splash-dark.png'
++					: '%sveltekit.assets%/static/splash.png';
+ 				logo.alt = '';
+ 
+ 				document.addEventListener('DOMContentLoaded', function () {
+@@ -165,7 +167,7 @@
+ 					id="logo-her"
+ 					alt=""
+ 					style="width: auto; height: 13rem"
+-					src="/static/splash.png"
++					src="%sveltekit.assets%/static/splash.png"
+ 					loading="eager"
+ 					fetchpriority="high"
+ 					class="animate-pulse-fast"
+diff --git a/src/lib/constants.ts b/src/lib/constants.ts
+index ce4a18e..ffdd9c8 100644
+--- a/src/lib/constants.ts
++++ b/src/lib/constants.ts
+@@ -7,7 +7,11 @@
+ export const APP_NAME = 'Open WebUI';
+ 
+ export const WEBUI_HOSTNAME = '';
+-export const WEBUI_BASE_URL = '';
++// clinical-ai-platform patch: WEBUI_SUBPATH is injected at build time via
++// vite.config.ts's `define`, so this stays '' (root) unless a subpath build
++// was requested.
++// @ts-ignore
++export const WEBUI_BASE_URL = typeof WEBUI_SUBPATH !== 'undefined' ? WEBUI_SUBPATH : '';
+ export const WEBUI_API_BASE_URL = `${WEBUI_BASE_URL}/api/v1`;
+ 
+ export const OLLAMA_API_BASE_URL = `${WEBUI_BASE_URL}/ollama`;
+diff --git a/src/routes/+layout.svelte b/src/routes/+layout.svelte
+index aaf4851..13f14c9 100644
+--- a/src/routes/+layout.svelte
++++ b/src/routes/+layout.svelte
+@@ -182,7 +182,7 @@
+ 			reconnectionDelay: 1000,
+ 			reconnectionDelayMax: 5000,
+ 			randomizationFactor: 0.5,
+-			path: '/ws/socket.io',
++			path: `${WEBUI_BASE_URL}/ws/socket.io`,
+ 			transports: enableWebsocket ? ['websocket'] : ['polling', 'websocket'],
+ 			auth: (cb) => cb({ token: localStorage.token })
+ 		});
+diff --git a/svelte.config.js b/svelte.config.js
+index 80e37b4..ce08671 100644
+--- a/svelte.config.js
++++ b/svelte.config.js
+@@ -17,6 +17,11 @@ const config = {
+ 			assets: 'build',
+ 			fallback: 'index.html'
+ 		}),
++		// clinical-ai-platform patch: reverse-proxy subpath, matches
++		// WEBUI_SUBPATH baked into src/lib/constants.ts via vite.config.ts.
++		paths: {
++			base: process.env.WEBUI_SUBPATH || ''
++		},
+ 		// poll for new version name every 60 seconds (to trigger reload mechanic in +layout.svelte)
+ 		version: {
+ 			name: (() => {
+diff --git a/vite.config.ts b/vite.config.ts
+index 5216d38..ca7b6d6 100644
+--- a/vite.config.ts
++++ b/vite.config.ts
+@@ -30,7 +30,11 @@ export default defineConfig({
+ 	define: {
+ 		APP_VERSION: JSON.stringify(process.env.npm_package_version),
+ 		APP_BUILD_HASH: JSON.stringify(buildInfo.hash),
+-		APP_BUILD_CHANNEL: JSON.stringify(buildInfo.channel)
++		APP_BUILD_CHANNEL: JSON.stringify(buildInfo.channel),
++		// clinical-ai-platform patch: bakes the reverse-proxy subpath (e.g.
++		// "/webui") into the frontend so every API/asset URL derived from
++		// WEBUI_BASE_URL in src/lib/constants.ts is correctly prefixed.
++		WEBUI_SUBPATH: JSON.stringify(process.env.WEBUI_SUBPATH || '')
+ 	},
+ 	build: {
+ 		sourcemap: true
