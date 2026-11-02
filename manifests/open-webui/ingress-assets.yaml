@@ -47,6 +47,13 @@ spec:
                 name: open-webui
                 port:
                   number: 8080
+          - path: /c/
+            pathType: Prefix
+            backend:
+              service:
+                name: open-webui
+                port:
+                  number: 8080
           - path: /workspace
             pathType: Prefix
             backend:
