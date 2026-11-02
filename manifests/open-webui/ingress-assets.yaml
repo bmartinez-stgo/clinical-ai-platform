@@ -103,6 +103,48 @@ spec:
                 name: open-webui
                 port:
                   number: 8080
+          - path: /automations
+            pathType: Prefix
+            backend:
+              service:
+                name: open-webui
+                port:
+                  number: 8080
+          - path: /calendar
+            pathType: Prefix
+            backend:
+              service:
+                name: open-webui
+                port:
+                  number: 8080
+          - path: /folders
+            pathType: Prefix
+            backend:
+              service:
+                name: open-webui
+                port:
+                  number: 8080
+          - path: /home
+            pathType: Prefix
+            backend:
+              service:
+                name: open-webui
+                port:
+                  number: 8080
+          - path: /watch
+            pathType: Prefix
+            backend:
+              service:
+                name: open-webui
+                port:
+                  number: 8080
+          - path: /error
+            pathType: Prefix
+            backend:
+              service:
+                name: open-webui
+                port:
+                  number: 8080
           - path: /s/
             pathType: Prefix
             backend:
