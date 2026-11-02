@@ -6,6 +6,18 @@ subpath (`/webui`). Upstream has no official support for this.
 Used by `manifests/open-webui/deployment.yaml`
 (`registry:5000/open-webui-subpath:v0.12.5`).
 
+This image also carries one unrelated patch (`backend/open_webui/routers/retrieval.py`):
+when a web-search result page's plain-HTTP fetch comes back too sparse (under
+`WEB_LOADER_SPARSE_FALLBACK_CHARS`, default 250 chars — typical of pages that
+render prices/scores client-side via JS after load), it retries just that
+page through headless-browser rendering via `WEB_LOADER_PLAYWRIGHT_WS_URL`,
+pointed at the `browserless` service (`manifests/browserless/`, the official
+`mcr.microsoft.com/playwright` image running Playwright's own `run-server`
+CLI, version-pinned to match the `playwright` package in
+`backend/requirements.txt`). Pages that fetch fine never pay the rendering
+cost. It's bundled in this same image only because both patches touch this
+one custom build; it isn't part of the subpath work.
+
 ## What the patch does
 
 - `Dockerfile` — adds `ARG WEBUI_SUBPATH` and bakes it into the frontend build.

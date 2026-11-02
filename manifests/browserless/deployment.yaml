@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: browserless
+  namespace: cap-prod-browserless
+  labels:
+    app: browserless
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: browserless
+  template:
+    metadata:
+      labels:
+        app: browserless
+    spec:
+      containers:
+        - name: browserless
+          image: mcr.microsoft.com/playwright:v1.60.0-noble
+          # Official Playwright CLI subcommand for running a long-lived
+          # remote browser server; pinned to the exact playwright version
+          # Open WebUI's backend is built against (requirements.txt), since
+          # client/server protocol versions must match.
+          command:
+            - npx
+            - "-y"
+            - "playwright@1.60.0"
+            - run-server
+            - --port=3000
+            - --host=0.0.0.0
+          ports:
+            - containerPort: 3000
+          readinessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 3000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 2Gi

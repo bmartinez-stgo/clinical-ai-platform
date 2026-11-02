@@ -116,6 +116,70 @@ index a1abf80..982cec6 100644
 +    app = FastAPI(lifespan=lifespan)
 +    app.state = _inner_app.state
 +    app.mount(_webui_subpath, _inner_app)
+diff --git a/backend/open_webui/routers/retrieval.py b/backend/open_webui/routers/retrieval.py
+index d2a6857..3ee040e 100644
+--- a/backend/open_webui/routers/retrieval.py
++++ b/backend/open_webui/routers/retrieval.py
+@@ -115,7 +115,7 @@ from open_webui.retrieval.web.serpstack import search_serpstack
+ from open_webui.retrieval.web.sougou import search_sougou
+ from open_webui.retrieval.web.staan import search_staan
+ from open_webui.retrieval.web.tavily import search_tavily
+-from open_webui.retrieval.web.utils import get_web_loader
++from open_webui.retrieval.web.utils import SafePlaywrightURLLoader, get_web_loader
+ from open_webui.retrieval.web.yacy import search_yacy
+ from open_webui.retrieval.web.yandex import search_yandex
+ from open_webui.retrieval.web.ydc import search_youcom
+@@ -2708,6 +2708,50 @@ async def process_web_search(request: Request, form_data: SearchForm, user=Depen
+             loader = get_web_loader(urls, config)
+             docs = await loader.aload()
+ 
++            # clinical-ai-platform patch: fall back to headless-browser
++            # rendering for any page whose plain-HTTP fetch came back too
++            # sparse to be useful (e.g. prices/scores rendered client-side
++            # via JS after load, never present in the raw HTML we fetched).
++            # Only pages that actually need it pay the rendering cost -
++            # everything else still uses the fast plain fetch.
++            _pw_ws_url = os.environ.get('WEB_LOADER_PLAYWRIGHT_WS_URL', '')
++            if _pw_ws_url:
++                _sparse_chars = int(os.environ.get('WEB_LOADER_SPARSE_FALLBACK_CHARS', '250'))
++                sparse_urls = [
++                    doc.metadata.get('source')
++                    for doc in docs
++                    if doc.metadata.get('source')
++                    and len(doc.page_content.strip()) < _sparse_chars
++                ]
++                if sparse_urls:
++                    log.info(
++                        f'web loader: {len(sparse_urls)} page(s) came back sparse, '
++                        f'retrying with headless rendering: {sparse_urls}'
++                    )
++                    try:
++                        pw_timeout = config.get('web.loader.playwright_timeout')
++                        rendered_loader = SafePlaywrightURLLoader(
++                            web_paths=sparse_urls,
++                            verify_ssl=config['web.loader.ssl_verification'],
++                            requests_per_second=config['web.loader.concurrent_requests'],
++                            continue_on_failure=True,
++                            trust_env=config['web.search.trust_env'],
++                            playwright_ws_url=_pw_ws_url,
++                            playwright_timeout=int(pw_timeout) if pw_timeout else 15000,
++                        )
++                        rendered_docs = await rendered_loader.aload()
++                        rendered_by_url = {
++                            d.metadata.get('source'): d
++                            for d in rendered_docs
++                            if d.metadata.get('source') and d.page_content.strip()
++                        }
++                        docs = [
++                            rendered_by_url.get(doc.metadata.get('source'), doc)
++                            for doc in docs
++                        ]
++                    except Exception as e:
++                        log.warning(f'web loader: headless rendering fallback failed, keeping original fetch: {e}')
++
+         urls = [
+             doc.metadata.get('source') for doc in docs if doc.metadata.get('source')
+         ]  # only keep the urls returned by the loader
 diff --git a/backend/open_webui/socket/main.py b/backend/open_webui/socket/main.py
 index 1338308..75f0dbe 100644
 --- a/backend/open_webui/socket/main.py

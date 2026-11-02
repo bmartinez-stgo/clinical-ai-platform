@@ -38,6 +38,8 @@ spec:
               value: "user"
             - name: DATA_DIR
               value: "/app/backend/data"
+            - name: WEB_LOADER_PLAYWRIGHT_WS_URL
+              value: "ws://browserless.cap-prod-browserless.svc.cluster.local:3000/"
           volumeMounts:
             - name: data
               mountPath: /app/backend/data
