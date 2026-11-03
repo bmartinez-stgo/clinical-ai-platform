@@ -365,6 +365,47 @@ index 28a7135..0cc2a49 100644
  					loading="eager"
  					fetchpriority="high"
  					class="animate-pulse-fast"
+diff --git a/src/lib/apis/auths/index.ts b/src/lib/apis/auths/index.ts
+index 57f72fb..666126a 100644
+--- a/src/lib/apis/auths/index.ts
++++ b/src/lib/apis/auths/index.ts
+@@ -1,4 +1,4 @@
+-import { WEBUI_API_BASE_URL } from '$lib/constants';
++import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
+ 
+ export const getAdminDetails = async (token: string) => {
+ 	let error = null;
+@@ -408,14 +408,18 @@ export const userSignOut = async () => {
+ };
+ 
+ export const getLogoutRedirectUrl = (redirectUrl?: string | null) => {
+-	const logoutUrl = new URL('/auth?state=logout', window.location.origin);
+-	const postLogoutUrl = new URL('/auth', window.location.origin);
++	// clinical-ai-platform patch: raw `new URL(...)` / `location.href` here
++	// never goes through SvelteKit's router, so the subpath patch in
++	// @sveltejs/kit (patch-sveltekit.cjs) doesn't apply - prefix explicitly.
++	const authPath = `${WEBUI_BASE_URL}/auth`;
++	const logoutUrl = new URL(`${authPath}?state=logout`, window.location.origin);
++	const postLogoutUrl = new URL(authPath, window.location.origin);
+ 	if (!redirectUrl) {
+ 		return logoutUrl.href;
+ 	}
+ 
+ 	const url = new URL(redirectUrl, window.location.origin);
+-	if (url.origin === window.location.origin && url.pathname === '/auth') {
++	if (url.origin === window.location.origin && url.pathname === authPath) {
+ 		url.searchParams.set('state', 'logout');
+ 		return url.href;
+ 	}
+@@ -425,7 +429,7 @@ export const getLogoutRedirectUrl = (redirectUrl?: string | null) => {
+ 		const configuredPostLogoutUrl = new URL(postLogoutRedirectUri, window.location.origin);
+ 		if (
+ 			configuredPostLogoutUrl.origin === window.location.origin &&
+-			configuredPostLogoutUrl.pathname === '/auth'
++			configuredPostLogoutUrl.pathname === authPath
+ 		) {
+ 			url.searchParams.set('state', 'logout');
+ 		}
 diff --git a/src/lib/components/NotificationToast.svelte b/src/lib/components/NotificationToast.svelte
 index c401e71..772598a 100644
 --- a/src/lib/components/NotificationToast.svelte
@@ -448,6 +489,44 @@ index 5427e54..c633275 100644
  										}}
  									/>
  									<Tooltip content={`${model.name} (${model.id})`} placement="top-start">
+diff --git a/src/lib/components/admin/Settings/Authentication.svelte b/src/lib/components/admin/Settings/Authentication.svelte
+index 2c80436..4f1f586 100644
+--- a/src/lib/components/admin/Settings/Authentication.svelte
++++ b/src/lib/components/admin/Settings/Authentication.svelte
+@@ -1,4 +1,5 @@
+ <script lang="ts">
++	import { WEBUI_BASE_URL } from '$lib/constants';
+ 	import { getBackendConfig } from '$lib/apis';
+ 	import {
+ 		getAdminConfig,
+@@ -95,7 +96,7 @@
+ 		});
+ 		if (res?.sessions_revoked) {
+ 			localStorage.removeItem('token');
+-			window.location.href = '/auth?state=logout&form=signin';
++			window.location.href = `${WEBUI_BASE_URL}/auth?state=logout&form=signin`;
+ 			return false;
+ 		}
+ 		if (res) {
+diff --git a/src/lib/components/admin/Settings/General.svelte b/src/lib/components/admin/Settings/General.svelte
+index 6207fd5..1526479 100644
+--- a/src/lib/components/admin/Settings/General.svelte
++++ b/src/lib/components/admin/Settings/General.svelte
+@@ -1,4 +1,5 @@
+ <script lang="ts">
++	import { WEBUI_BASE_URL } from '$lib/constants';
+ 	import DOMPurify from 'dompurify';
+ 	import { v4 as uuidv4 } from 'uuid';
+ 
+@@ -92,7 +93,7 @@
+ 			if (!res) throw new Error($i18n.t('Failed to update settings'));
+ 			if (res.sessions_revoked) {
+ 				localStorage.removeItem('token');
+-				window.location.href = '/auth?state=logout&form=signin';
++				window.location.href = `${WEBUI_BASE_URL}/auth?state=logout&form=signin`;
+ 				return;
+ 			}
+ 			await updateI18n(res.I18N ?? cleaned);
 diff --git a/src/lib/components/admin/Settings/Models.svelte b/src/lib/components/admin/Settings/Models.svelte
 index 21bd779..a60d6c1 100644
 --- a/src/lib/components/admin/Settings/Models.svelte
@@ -625,6 +704,44 @@ index 3004665..8a80911 100644
  											}}
  										/>
  									</button>
+diff --git a/src/lib/components/chat/Settings/Account/Mfa.svelte b/src/lib/components/chat/Settings/Account/Mfa.svelte
+index 32f37e7..cbbec15 100644
+--- a/src/lib/components/chat/Settings/Account/Mfa.svelte
++++ b/src/lib/components/chat/Settings/Account/Mfa.svelte
+@@ -1,4 +1,5 @@
+ <script lang="ts">
++	import { WEBUI_BASE_URL } from '$lib/constants';
+ 	import UserSettingRow from '../UserSettingRow.svelte';
+ 	import UserSettingSection from '../UserSettingSection.svelte';
+ 	import { onMount, getContext } from 'svelte';
+@@ -25,7 +26,7 @@
+ 	});
+ 	const signIn = () => {
+ 		localStorage.removeItem('token');
+-		window.location.href = '/auth?state=logout&form=signin';
++		window.location.href = `${WEBUI_BASE_URL}/auth?state=logout&form=signin`;
+ 	};
+ 	const manage = async (replace: boolean) => {
+ 		if (busy) return;
+diff --git a/src/lib/components/layout/Overlay/AccountPending.svelte b/src/lib/components/layout/Overlay/AccountPending.svelte
+index f3074b3..52a9809 100644
+--- a/src/lib/components/layout/Overlay/AccountPending.svelte
++++ b/src/lib/components/layout/Overlay/AccountPending.svelte
+@@ -1,4 +1,5 @@
+ <script lang="ts">
++	import { WEBUI_BASE_URL } from '$lib/constants';
+ 	import DOMPurify from 'dompurify';
+ 	import { marked } from 'marked';
+ 
+@@ -61,7 +62,7 @@
+ 					<button
+ 						class="relative z-20 flex px-5 py-2 rounded-full bg-white border border-gray-100 dark:border-none hover:bg-gray-100 text-gray-700 transition font-normal text-sm"
+ 						on:click={async () => {
+-							location.href = '/';
++							location.href = `${WEBUI_BASE_URL}/`;
+ 						}}
+ 					>
+ 						{$i18n.t('Check Again')}
 diff --git a/src/lib/components/layout/Sidebar/PinnedModelItem.svelte b/src/lib/components/layout/Sidebar/PinnedModelItem.svelte
 index 8abd62d..e70b9d4 100644
 --- a/src/lib/components/layout/Sidebar/PinnedModelItem.svelte
@@ -671,7 +788,7 @@ index ce4a18e..ffdd9c8 100644
  
  export const OLLAMA_API_BASE_URL = `${WEBUI_BASE_URL}/ollama`;
 diff --git a/src/routes/+layout.svelte b/src/routes/+layout.svelte
-index aaf4851..1481e58 100644
+index aaf4851..5c72ad6 100644
 --- a/src/routes/+layout.svelte
 +++ b/src/routes/+layout.svelte
 @@ -177,12 +177,21 @@
@@ -707,6 +824,15 @@ index aaf4851..1481e58 100644
  						audio.play().finally(() => {
  							// Ensure the global state is reset after the sound finishes
  							playingNotificationSound.set(false);
+@@ -1330,7 +1339,7 @@
+ 			if (error?.authRedirect) {
+ 				// Forward-auth proxy is redirecting to an external login page.
+ 				// Full-page navigation lets the browser follow the redirect natively.
+-				window.location.href = '/';
++				window.location.href = `${WEBUI_BASE_URL}/`;
+ 				return;
+ 			}
+ 			console.error('Error loading backend config:', error);
 @@ -1421,7 +1430,7 @@
  
  			document.getElementById('splash-screen')?.remove();
@@ -716,6 +842,38 @@ index aaf4851..1481e58 100644
  			const playAudio = () => {
  				audio.play();
  				document.removeEventListener('click', playAudio);
+diff --git a/src/routes/auth/+page.svelte b/src/routes/auth/+page.svelte
+index b07c721..9e0d3c6 100644
+--- a/src/routes/auth/+page.svelte
++++ b/src/routes/auth/+page.svelte
+@@ -267,7 +267,7 @@
+ 							onComplete={setSessionUser}
+ 							onCancel={() => {
+ 								mfaChallenge = null;
+-								window.location.href = '/auth?state=logout&form=signin';
++								window.location.href = `${WEBUI_BASE_URL}/auth?state=logout&form=signin`;
+ 							}}
+ 						/>
+ 					</div>
+diff --git a/src/routes/error/+page.svelte b/src/routes/error/+page.svelte
+index a4bb08e..0167f75 100644
+--- a/src/routes/error/+page.svelte
++++ b/src/routes/error/+page.svelte
+@@ -1,4 +1,5 @@
+ <script>
++	import { WEBUI_BASE_URL } from '$lib/constants';
+ 	import { goto } from '$app/navigation';
+ 	import { WEBUI_NAME, config } from '$lib/stores';
+ 	import { onMount, getContext } from 'svelte';
+@@ -47,7 +48,7 @@
+ 						<button
+ 							class="relative z-20 flex px-5 py-2 rounded-full bg-gray-100 hover:bg-gray-200 transition font-normal text-sm text-black"
+ 							on:click={() => {
+-								location.href = '/';
++								location.href = `${WEBUI_BASE_URL}/`;
+ 							}}
+ 						>
+ 							{$i18n.t('Check Again')}
 diff --git a/svelte.config.js b/svelte.config.js
 index 80e37b4..ce08671 100644
 --- a/svelte.config.js

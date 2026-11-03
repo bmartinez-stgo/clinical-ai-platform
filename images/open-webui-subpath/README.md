@@ -88,6 +88,15 @@ one custom build; it isn't part of the subpath work.
   `get_manifest_json` (PWA install icons) and `swagger_ui_html` had the
   same hardcoded-path problem server-side; prefixed with `WEBUI_SUBPATH`
   the same way as the other backend routes.
+- A third category, found when logout landed on a bare unprefixed
+  `/workspace`: raw `window.location.href = '/auth?...'` / `location.href =
+  new URL('/auth', ...)` assignments (logout, the error page's "Check
+  Again" button, the stale-version reload). These bypass SvelteKit's
+  router entirely — they're plain browser navigation, not `goto()` or an
+  `<a>` click — so neither the `patch-sveltekit.cjs` fix nor anything else
+  above touches them; each needed `WEBUI_BASE_URL` prefixed in by hand.
+  `getLogoutRedirectUrl()` (`src/lib/apis/auths/index.ts`), used by the
+  actual "sign out" button, was the highest-impact one.
 
 ## Rebuilding for a new upstream version
 
