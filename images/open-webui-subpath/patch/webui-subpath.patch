@@ -486,9 +486,18 @@ index 143db47..12a2632 100644
  														/>
  													</ProfilePreview>
 diff --git a/src/lib/components/admin/Analytics/SessionDetail.svelte b/src/lib/components/admin/Analytics/SessionDetail.svelte
-index 9e2051c..d545b4f 100644
+index 9e2051c..505e813 100644
 --- a/src/lib/components/admin/Analytics/SessionDetail.svelte
 +++ b/src/lib/components/admin/Analytics/SessionDetail.svelte
+@@ -1,7 +1,7 @@
+ <script lang="ts">
+ 	import { getContext, onMount, onDestroy, tick } from 'svelte';
+ 	import dayjs from 'dayjs';
+-	import { WEBUI_API_BASE_URL } from '$lib/constants';
++	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL} from '$lib/constants';
+ 	import ProfilePreview from '$lib/components/channel/Messages/Message/ProfilePreview.svelte';
+ 	import Spinner from '$lib/components/common/Spinner.svelte';
+ 	import ChevronLeft from '$lib/components/icons/ChevronLeft.svelte';
 @@ -226,7 +226,7 @@
  						loading="lazy"
  						on:error={(event) => {
@@ -499,9 +508,18 @@ index 9e2051c..d545b4f 100644
  					/>
  					<span class="block max-w-28 truncate">{session.user_name || $i18n.t('User')}</span>
 diff --git a/src/lib/components/admin/Analytics/SessionExplorer.svelte b/src/lib/components/admin/Analytics/SessionExplorer.svelte
-index ced5994..910aae9 100644
+index ced5994..568fc02 100644
 --- a/src/lib/components/admin/Analytics/SessionExplorer.svelte
 +++ b/src/lib/components/admin/Analytics/SessionExplorer.svelte
+@@ -1,7 +1,7 @@
+ <script lang="ts">
+ 	import { getContext, onMount, onDestroy, tick } from 'svelte';
+ 	import dayjs from 'dayjs';
+-	import { WEBUI_API_BASE_URL } from '$lib/constants';
++	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL} from '$lib/constants';
+ 	import ProfilePreview from '$lib/components/channel/Messages/Message/ProfilePreview.svelte';
+ 	import Spinner from '$lib/components/common/Spinner.svelte';
+ 	import Modal from '$lib/components/common/Modal.svelte';
 @@ -339,7 +339,7 @@
  													loading="lazy"
  													on:error={(event) => {
@@ -512,9 +530,18 @@ index ced5994..910aae9 100644
  												/>
  												<span class="block max-w-28 truncate"
 diff --git a/src/lib/components/admin/Evaluations/Leaderboard.svelte b/src/lib/components/admin/Evaluations/Leaderboard.svelte
-index 5427e54..c633275 100644
+index 5427e54..99cab82 100644
 --- a/src/lib/components/admin/Evaluations/Leaderboard.svelte
 +++ b/src/lib/components/admin/Evaluations/Leaderboard.svelte
+@@ -9,7 +9,7 @@
+ 	import XMark from '$lib/components/icons/XMark.svelte';
+ 	import ChevronUp from '$lib/components/icons/ChevronUp.svelte';
+ 	import ChevronDown from '$lib/components/icons/ChevronDown.svelte';
+-	import { WEBUI_API_BASE_URL } from '$lib/constants';
++	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL} from '$lib/constants';
+ 
+ 	const i18n: any = getContext('i18n');
+ 
 @@ -225,7 +225,8 @@
  											// LICENSE covers this Open WebUI fallback logo.
  											// Do not alter, remove, obscure, or replace it except as LICENSE permits:
@@ -564,9 +591,18 @@ index 6207fd5..1526479 100644
  			}
  			await updateI18n(res.I18N ?? cleaned);
 diff --git a/src/lib/components/admin/Settings/Models.svelte b/src/lib/components/admin/Settings/Models.svelte
-index 21bd779..a60d6c1 100644
+index 21bd779..370a481 100644
 --- a/src/lib/components/admin/Settings/Models.svelte
 +++ b/src/lib/components/admin/Settings/Models.svelte
+@@ -60,7 +60,7 @@
+ 	import PinSlash from '$lib/components/icons/PinSlash.svelte';
+ 	import GlobeAlt from '$lib/components/icons/GlobeAlt.svelte';
+ 	import LockClosed from '$lib/components/icons/LockClosed.svelte';
+-	import { WEBUI_API_BASE_URL } from '$lib/constants';
++	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL} from '$lib/constants';
+ 	import { goto } from '$app/navigation';
+ 
+ 	import Dropdown from '$lib/components/common/Dropdown.svelte';
 @@ -1064,7 +1064,8 @@
  														// LICENSE covers this Open WebUI fallback logo.
  														// Do not alter, remove, obscure, or replace it except as LICENSE permits:
@@ -578,9 +614,16 @@ index 21bd779..a60d6c1 100644
  												/>
  											</div>
 diff --git a/src/lib/components/admin/Users/UserList.svelte b/src/lib/components/admin/Users/UserList.svelte
-index 3f43f62..2b11855 100644
+index 3f43f62..33bbb14 100644
 --- a/src/lib/components/admin/Users/UserList.svelte
 +++ b/src/lib/components/admin/Users/UserList.svelte
+@@ -1,5 +1,5 @@
+ <script lang="ts">
+-	import { WEBUI_API_BASE_URL } from '$lib/constants';
++	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL} from '$lib/constants';
+ 	import { adminUserCount, config, user } from '$lib/stores';
+ 	import { getContext, onDestroy } from 'svelte';
+ 
 @@ -381,7 +381,8 @@
  											// LICENSE covers this Open WebUI fallback logo.
  											// Do not alter, remove, obscure, or replace it except as LICENSE permits:
@@ -592,9 +635,18 @@ index 3f43f62..2b11855 100644
  									/>
  								</ProfilePreview>
 diff --git a/src/lib/components/automations/ModelDropdown.svelte b/src/lib/components/automations/ModelDropdown.svelte
-index f5522fc..6fd6e35 100644
+index f5522fc..3a0faa8 100644
 --- a/src/lib/components/automations/ModelDropdown.svelte
 +++ b/src/lib/components/automations/ModelDropdown.svelte
+@@ -2,7 +2,7 @@
+ 	import { getContext } from 'svelte';
+ 
+ 	import { models } from '$lib/stores';
+-	import { WEBUI_API_BASE_URL } from '$lib/constants';
++	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL} from '$lib/constants';
+ 
+ 	import Dropdown from '$lib/components/common/Dropdown.svelte';
+ 	import Search from '$lib/components/icons/Search.svelte';
 @@ -112,7 +112,8 @@
  								// LICENSE covers this Open WebUI fallback logo.
  								// Do not alter, remove, obscure, or replace it except as LICENSE permits:
@@ -605,6 +657,27 @@ index f5522fc..6fd6e35 100644
  							}}
  						/>
  						<div class="truncate">
+diff --git a/src/lib/components/channel/Channel.svelte b/src/lib/components/channel/Channel.svelte
+index a5bccf4..c2be354 100644
+--- a/src/lib/components/channel/Channel.svelte
++++ b/src/lib/components/channel/Channel.svelte
+@@ -3,6 +3,7 @@
+ 
+ 	import { onDestroy, onMount, tick } from 'svelte';
+ 	import { goto } from '$app/navigation';
++	import { WEBUI_BASE_URL } from '$lib/constants';
+ 	import { page } from '$app/stores';
+ 	import { v4 as uuidv4 } from 'uuid';
+ 	import type { Socket } from 'socket.io-client';
+@@ -107,7 +108,7 @@
+ 	$: if (channel && $page.url.searchParams.get('thread')) {
+ 		threadId = $page.url.searchParams.get('thread');
+ 		if (!$page.url.searchParams.has('message')) {
+-			window.history.replaceState(history.state, '', `/channels/${id}`);
++			window.history.replaceState(history.state, '', `${WEBUI_BASE_URL}/channels/${id}`);
+ 		}
+ 	}
+ 
 diff --git a/src/lib/components/channel/MessageInput/MentionList.svelte b/src/lib/components/channel/MessageInput/MentionList.svelte
 index 47d8104..04a599f 100644
 --- a/src/lib/components/channel/MessageInput/MentionList.svelte
@@ -653,6 +726,37 @@ index fa62039..deded5b 100644
  								}}
  							/>
  						{:else if message.app_id}
+diff --git a/src/lib/components/chat/Chat.svelte b/src/lib/components/chat/Chat.svelte
+index 438c173..ae3eecd 100644
+--- a/src/lib/components/chat/Chat.svelte
++++ b/src/lib/components/chat/Chat.svelte
+@@ -2756,7 +2756,7 @@
+ 		await showArtifacts.set(false);
+ 
+ 		if (!embedded && $page.url.pathname.includes('/c/')) {
+-			window.history.replaceState(window.history.state, '', `/`);
++			window.history.replaceState(window.history.state, '', `${WEBUI_BASE_URL}/`);
+ 		}
+ 
+ 		autoScroll = true;
+@@ -4581,7 +4581,7 @@
+ 					if (!$temporaryChatEnabled && !embedded) {
+ 						// Carry the picks made on the new-chat page over to this chat
+ 						saveDraft(getChatInputDraft(), res.chat_id, false);
+-						window.history.replaceState(window.history.state, '', `/c/${res.chat_id}`);
++						window.history.replaceState(window.history.state, '', `${WEBUI_BASE_URL}/c/${res.chat_id}`);
+ 						await refreshChatList(localStorage.token);
+ 
+ 						// Persist chat-level params (system prompt, advanced
+@@ -4851,7 +4851,7 @@
+ 
+ 			if (!embedded) {
+ 				saveDraft(getChatInputDraft(), _chatId, false);
+-				window.history.replaceState(window.history.state, '', `/c/${_chatId}`);
++				window.history.replaceState(window.history.state, '', `${WEBUI_BASE_URL}/c/${_chatId}`);
+ 			}
+ 
+ 			await tick();
 diff --git a/src/lib/components/chat/ChatPlaceholder.svelte b/src/lib/components/chat/ChatPlaceholder.svelte
 index a26e74d..3ed0369 100644
 --- a/src/lib/components/chat/ChatPlaceholder.svelte
@@ -668,9 +772,18 @@ index a26e74d..3ed0369 100644
  							/>
  						</Tooltip>
 diff --git a/src/lib/components/chat/MessageInput/Commands/AtCommands.svelte b/src/lib/components/chat/MessageInput/Commands/AtCommands.svelte
-index 6e703b9..7bb071f 100644
+index 6e703b9..e19efb5 100644
 --- a/src/lib/components/chat/MessageInput/Commands/AtCommands.svelte
 +++ b/src/lib/components/chat/MessageInput/Commands/AtCommands.svelte
+@@ -11,7 +11,7 @@
+ 		terminalServers,
+ 		user
+ 	} from '$lib/stores';
+-	import { WEBUI_API_BASE_URL } from '$lib/constants';
++	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL} from '$lib/constants';
+ 	import { getFolders } from '$lib/apis/folders';
+ 	import { searchKnowledgeBases, searchKnowledgeFiles } from '$lib/apis/knowledge';
+ 	import { searchFiles, filesystemFile } from '$lib/apis/terminal';
 @@ -351,7 +351,8 @@
  							// LICENSE covers this Open WebUI fallback logo.
  							// Do not alter, remove, obscure, or replace it except as LICENSE permits:
@@ -696,10 +809,16 @@ index c607c4d..c0d0527 100644
  					/>
  					<div class="min-w-0 truncate">
 diff --git a/src/lib/components/chat/Messages/Citations.svelte b/src/lib/components/chat/Messages/Citations.svelte
-index d3392cc..f256cbf 100644
+index d3392cc..82cc498 100644
 --- a/src/lib/components/chat/Messages/Citations.svelte
 +++ b/src/lib/components/chat/Messages/Citations.svelte
-@@ -192,7 +192,8 @@
+@@ -1,4 +1,5 @@
+ <script lang="ts">
++	import { WEBUI_BASE_URL } from '$lib/constants';
+ 	import { getContext } from 'svelte';
+ 	import { embed, showControls, showEmbeds } from '$lib/stores';
+ 	import { isValidHttpUrl } from '$lib/utils';
+@@ -192,7 +193,8 @@
  								// LICENSE covers this Open WebUI fallback logo.
  								// Do not alter, remove, obscure, or replace it except as LICENSE permits:
  								// https://docs.openwebui.com/license.
@@ -793,9 +912,18 @@ index 8abd62d..e70b9d4 100644
  				/>
  			</div>
 diff --git a/src/lib/components/workspace/Models.svelte b/src/lib/components/workspace/Models.svelte
-index 1fe2d6f..457d4bb 100644
+index 1fe2d6f..a8ee914 100644
 --- a/src/lib/components/workspace/Models.svelte
 +++ b/src/lib/components/workspace/Models.svelte
+@@ -25,7 +25,7 @@
+ 		workspaceActions,
+ 		workspaceCounts
+ 	} from '$lib/stores';
+-	import { WEBUI_API_BASE_URL } from '$lib/constants';
++	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL} from '$lib/constants';
+ 	import {
+ 		exportModels,
+ 		importModels,
 @@ -788,7 +788,8 @@
  												// LICENSE covers this Open WebUI fallback logo.
  												// Do not alter, remove, obscure, or replace it except as LICENSE permits:
