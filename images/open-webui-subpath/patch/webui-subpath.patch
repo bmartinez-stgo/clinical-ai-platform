@@ -419,6 +419,42 @@ index c401e71..772598a 100644
  				audio.play().finally(() => {
  					// Ensure the global state is reset after the sound finishes
  					playingNotificationSound.set(false);
+diff --git a/src/lib/components/OnBoarding.svelte b/src/lib/components/OnBoarding.svelte
+index e315791..95d7611 100644
+--- a/src/lib/components/OnBoarding.svelte
++++ b/src/lib/components/OnBoarding.svelte
+@@ -1,5 +1,6 @@
+ <script>
+ 	import { getContext } from 'svelte';
++	import { WEBUI_BASE_URL } from '$lib/constants';
+ 	import { WEBUI_NAME } from '$lib/stores';
+ 	const i18n = getContext('i18n');
+ 
+@@ -47,7 +48,7 @@
+ 			<img
+ 				id="logo"
+ 				crossorigin="anonymous"
+-				src="/static/favicon.png"
++				src="{WEBUI_BASE_URL}/static/favicon.png"
+ 				class="size-6 rounded-full"
+ 				alt="{$WEBUI_NAME} logo"
+ 			/>
+@@ -56,13 +57,13 @@
+ 		<video
+ 			bind:this={videoElement}
+ 			class="absolute inset-0 h-full w-full object-cover"
+-			src="/assets/welcome.mp4"
++			src="{WEBUI_BASE_URL}/assets/welcome.mp4"
+ 			autoplay
+ 			muted
+ 			loop
+ 			playsinline
+ 			preload="auto"
+-			poster="/assets/welcome.webp"
++			poster="{WEBUI_BASE_URL}/assets/welcome.webp"
+ 			aria-hidden="true"
+ 		></video>
+ 
 diff --git a/src/lib/components/admin/Analytics/Dashboard.svelte b/src/lib/components/admin/Analytics/Dashboard.svelte
 index 143db47..12a2632 100644
 --- a/src/lib/components/admin/Analytics/Dashboard.svelte
@@ -788,7 +824,7 @@ index ce4a18e..ffdd9c8 100644
  
  export const OLLAMA_API_BASE_URL = `${WEBUI_BASE_URL}/ollama`;
 diff --git a/src/routes/+layout.svelte b/src/routes/+layout.svelte
-index aaf4851..5c72ad6 100644
+index aaf4851..5a177f6 100644
 --- a/src/routes/+layout.svelte
 +++ b/src/routes/+layout.svelte
 @@ -177,12 +177,21 @@
@@ -842,6 +878,15 @@ index aaf4851..5c72ad6 100644
  			const playAudio = () => {
  				audio.play();
  				document.removeEventListener('click', playAudio);
+@@ -1492,7 +1501,7 @@
+ 		rel="search"
+ 		type="application/opensearchdescription+xml"
+ 		title={$WEBUI_NAME}
+-		href="/opensearch.xml"
++		href="{WEBUI_BASE_URL}/opensearch.xml"
+ 		crossorigin="use-credentials"
+ 	/>
+ </svelte:head>
 diff --git a/src/routes/auth/+page.svelte b/src/routes/auth/+page.svelte
 index b07c721..9e0d3c6 100644
 --- a/src/routes/auth/+page.svelte
