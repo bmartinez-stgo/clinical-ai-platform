@@ -132,25 +132,66 @@ async def apply_second_opinion_verification(result: dict, document_payload: dict
     )
 
     async def _verify(observation: dict) -> None:
-        page = images_by_page.get(observation.get("page"))
+        test_name = observation.get("test_name_raw")
+        page_number = observation.get("page")
+        page = images_by_page.get(page_number)
         if page is None:
+            logger.warning(
+                "second-opinion skipped: no page image for observation",
+                extra={
+                    "document_id": result.get("document_id"),
+                    "test_name_raw": test_name,
+                    "observation_page": page_number,
+                    "available_pages": list(images_by_page.keys()),
+                },
+            )
+            observation["verification"] = {"status": "no_page_image", "second_value_raw": None}
             return
-        response = await verify_observation_value(
-            {
-                "document_id": result.get("document_id"),
-                "page_number": page["page_number"],
-                "mime_type": page["mime_type"],
-                "image_base64": page["image_base64"],
-                "test_name_raw": observation["test_name_raw"],
-                "panel_raw": observation.get("panel_raw"),
-            }
+
+        logger.info(
+            "second-opinion: calling verify endpoint",
+            extra={"document_id": result.get("document_id"), "test_name_raw": test_name, "page_number": page_number},
         )
+        try:
+            response = await verify_observation_value(
+                {
+                    "document_id": result.get("document_id"),
+                    "page_number": page["page_number"],
+                    "mime_type": page["mime_type"],
+                    "image_base64": page["image_base64"],
+                    "test_name_raw": observation["test_name_raw"],
+                    "panel_raw": observation.get("panel_raw"),
+                }
+            )
+        except Exception:
+            logger.exception(
+                "second-opinion: unexpected exception calling verify endpoint",
+                extra={"document_id": result.get("document_id"), "test_name_raw": test_name},
+            )
+            observation["verification"] = {"status": "exception", "second_value_raw": None}
+            return
+
         if response is None:
+            logger.warning(
+                "second-opinion: verify endpoint returned no response",
+                extra={"document_id": result.get("document_id"), "test_name_raw": test_name},
+            )
             observation["verification"] = {"status": "failed", "second_value_raw": None}
             return
 
         second_value = _parse_second_opinion_value(response.get("value_raw"))
         agrees = second_value is not None and second_value == observation["value"]
+        logger.info(
+            "second-opinion: result",
+            extra={
+                "document_id": result.get("document_id"),
+                "test_name_raw": test_name,
+                "first_value": observation["value"],
+                "second_value_raw": response.get("value_raw"),
+                "second_value_parsed": second_value,
+                "agrees": agrees,
+            },
+        )
         observation["verification"] = {
             "status": "agrees" if agrees else "disagrees",
             "second_value_raw": response.get("value_raw"),
