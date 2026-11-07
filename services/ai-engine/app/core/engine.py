@@ -15,7 +15,7 @@ from PIL import Image
 from transformers import pipeline
 
 from app.core.config import get_settings
-from app.core.schema import ExtractionInput, ExtractionOutput
+from app.core.schema import ExtractionInput, ExtractionOutput, VerifyValueInput, VerifyValueOutput
 
 settings = get_settings()
 _PIPELINE = None
@@ -110,6 +110,27 @@ Rules:
 - Do not include patient or report metadata.
 - If a field is missing, use null.
 - Extract only what is visible on this page.
+""".strip()
+
+# Used for a focused second pass on a single analyte already found by the
+# first extraction, for observations flagged as clinically significant
+# (abnormal, or at risk of a digit-order OCR error -- see
+# document-reader's check_decade_crossing_risk). Deliberately narrow: one
+# analyte, no JSON schema, no other context to anchor on -- an independent
+# re-read of the same image rather than a repeat of the same extraction.
+VERIFY_VALUE_INSTRUCTION_TEXT_TEMPLATE = """
+This is a clinical laboratory report image. Find the row for this specific analyte: "{test_name_raw}"{panel_hint}
+
+Read ONLY that row's result value and unit, exactly as printed. Return just this JSON object, nothing else:
+{{
+  "value_raw": string or null,
+  "unit_raw": string or null
+}}
+
+Rules:
+- If you cannot find this exact analyte on this page, return {{"value_raw": null, "unit_raw": null}}.
+- Preserve the value exactly as printed, including commas, decimals, and any flags.
+- Return one JSON object only. No markdown fences. No text outside JSON.
 """.strip()
 
 
@@ -404,6 +425,43 @@ def _run_vllm_inference(images: list[Image.Image], instruction_text: str) -> str
         resp = client.post(f"{settings.vllm_url}/v1/chat/completions", json=body)
         resp.raise_for_status()
     return resp.json()["choices"][0]["message"]["content"]
+
+
+def run_verification(payload: VerifyValueInput) -> VerifyValueOutput:
+    """Independent, focused re-read of a single analyte's value from its page
+    image. Used by document-reader as a second opinion for observations
+    flagged as clinically significant (out of range, or at risk of a
+    digit-order OCR error) -- not a repeat of the full extraction, so it
+    can't just echo the same mistake back.
+    """
+    if settings.engine_backend != "vllm":
+        raise ValueError("value verification is only supported with engine_backend=vllm")
+
+    logger.info(
+        "starting value verification",
+        extra={"document_id": payload.document_id, "test_name_raw": payload.test_name_raw},
+    )
+    image_bytes = base64.b64decode(payload.image_base64)
+    image = Image.open(BytesIO(image_bytes)).convert("RGB")
+    panel_hint = f" (in panel/section: \"{payload.panel_raw}\")" if payload.panel_raw else ""
+    instruction_text = VERIFY_VALUE_INSTRUCTION_TEXT_TEMPLATE.format(
+        test_name_raw=payload.test_name_raw,
+        panel_hint=panel_hint,
+    )
+    try:
+        generated_text = _run_vllm_inference([image], instruction_text)
+        parsed = _extract_json(generated_text)
+    except Exception as exc:
+        logger.exception(
+            "value verification failed",
+            extra={"document_id": payload.document_id, "test_name_raw": payload.test_name_raw},
+        )
+        raise ValueError(f"failed to verify value: {exc}") from exc
+
+    return VerifyValueOutput(
+        value_raw=parsed.get("value_raw"),
+        unit_raw=parsed.get("unit_raw"),
+    )
 
 
 def run_extraction(payload: ExtractionInput) -> ExtractionOutput:

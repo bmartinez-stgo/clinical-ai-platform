@@ -38,3 +38,17 @@ class ExtractionOutput(BaseModel):
     report: dict
     observations: list[RawObservation]
     warnings: list[str] = Field(default_factory=list)
+
+
+class VerifyValueInput(BaseModel):
+    document_id: str
+    page_number: int = Field(..., ge=1)
+    mime_type: str
+    image_base64: str
+    test_name_raw: str
+    panel_raw: str | None = None
+
+
+class VerifyValueOutput(BaseModel):
+    value_raw: str | None = None
+    unit_raw: str | None = None

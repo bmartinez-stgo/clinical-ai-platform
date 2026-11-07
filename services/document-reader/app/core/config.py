@@ -18,8 +18,17 @@ class Settings:
         "AI_ENGINE_URL",
         "http://ai-engine.cap-prod-ai-engine.svc.cluster.local:8090/extract/lab-report",
     )
+    ai_engine_verify_url: str = os.getenv(
+        "AI_ENGINE_VERIFY_URL",
+        "http://ai-engine.cap-prod-ai-engine.svc.cluster.local:8090/verify/value",
+    )
     ai_engine_timeout_seconds: int = int(os.getenv("AI_ENGINE_TIMEOUT_SECONDS", "120"))
     ai_engine_page_batch_size: int = int(os.getenv("AI_ENGINE_PAGE_BATCH_SIZE", "1"))
+    # Second-opinion re-verification for observations flagged as clinically
+    # significant (out of reference range, or at decade-crossing risk --
+    # see lab_normalization.check_decade_crossing_risk). Only applies to
+    # the ai-engine/vllm backend, which is what exposes /verify/value.
+    second_opinion_enabled: bool = os.getenv("SECOND_OPINION_ENABLED", "true").lower() == "true"
     ocr_backend: str = os.getenv("OCR_BACKEND", "ai-engine")
     ocr_engine_url: str = os.getenv(
         "OCR_ENGINE_URL",

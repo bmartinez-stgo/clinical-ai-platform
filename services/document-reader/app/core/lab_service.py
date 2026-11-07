@@ -5,8 +5,13 @@ import logging
 
 from app.core.config import get_settings
 from app.core.document_profile import detect_document_profile
-from app.core.lab_normalization import build_normalized_response, extract_deterministic_report_fields
-from app.core.vision_client import extract_laboratory_observations
+from app.core.lab_normalization import (
+    build_normalized_response,
+    extract_deterministic_report_fields,
+    needs_second_opinion,
+    parse_value,
+)
+from app.core.vision_client import extract_laboratory_observations, verify_observation_value
 
 settings = get_settings()
 logger = logging.getLogger(__name__)
@@ -82,6 +87,80 @@ async def _extract_batch(document_payload: dict, batch: list[dict], batch_index:
     return result
 
 
+async def apply_second_opinion_verification(result: dict, document_payload: dict) -> None:
+    """Re-reads, independently, the observations flagged by
+    needs_second_opinion (out of range, or at decade-crossing risk).
+    Mutates `result` in place: sets each checked observation's
+    `verification` field, and keeps requires_manual_review set unless the
+    second read agrees with the first.
+    """
+    if settings.ocr_backend != "ai-engine" or not settings.second_opinion_enabled:
+        return
+
+    images_by_page = {page["page_number"]: page for page in document_payload.get("pages", [])}
+    observations = result.get("observations", [])
+    targets = [
+        obs
+        for obs in observations
+        if obs.get("value_type") == "numeric"
+        and needs_second_opinion(obs.get("interpretation"), obs.get("decade_crossing_risk", False))
+    ]
+    if not targets:
+        return
+
+    logger.info(
+        "running second-opinion verification",
+        extra={"document_id": result.get("document_id"), "flagged_count": len(targets)},
+    )
+
+    async def _verify(observation: dict) -> None:
+        page = images_by_page.get(observation.get("page"))
+        if page is None:
+            return
+        response = await verify_observation_value(
+            {
+                "document_id": result.get("document_id"),
+                "page_number": page["page_number"],
+                "mime_type": page["mime_type"],
+                "image_base64": page["image_base64"],
+                "test_name_raw": observation["test_name_raw"],
+                "panel_raw": observation.get("panel_raw"),
+            }
+        )
+        if response is None:
+            observation["verification"] = {"status": "failed", "second_value_raw": None}
+            return
+
+        second_value, _ = parse_value(response.get("value_raw"))
+        agrees = second_value is not None and second_value == observation["value"]
+        observation["verification"] = {
+            "status": "agrees" if agrees else "disagrees",
+            "second_value_raw": response.get("value_raw"),
+        }
+        if not agrees:
+            result["review_items"].append(
+                {
+                    "stage": "interpretation",
+                    "reason": "second_opinion_disagreement",
+                    "message": (
+                        f"Independent re-read of this value disagreed with the first extraction: "
+                        f"{observation['value']!r} vs {response.get('value_raw')!r}."
+                    ),
+                    "page": observation.get("page"),
+                    "panel_raw": observation.get("panel_raw"),
+                    "test_name_raw": observation.get("test_name_raw"),
+                    "value_raw": observation["value"],
+                    "unit_raw": observation.get("unit_raw"),
+                    "reference_range_raw": observation.get("reference_range_raw"),
+                    "specimen_raw": observation.get("specimen"),
+                    "confidence": observation.get("confidence", 0.0),
+                }
+            )
+            result["requires_manual_review"] = True
+
+    await asyncio.gather(*[_verify(obs) for obs in targets])
+
+
 async def normalize_lab_document(document_payload: dict, language: str = "en") -> dict:
     profile = detect_document_profile(document_payload)
     logger.info(
@@ -118,6 +197,8 @@ async def normalize_lab_document(document_payload: dict, language: str = "en") -
 
     extraction_payload = merge_extraction_payloads(document_payload["document_id"], extraction_payloads)
     result = build_normalized_response(document_payload, extraction_payload, language=language)
+
+    await apply_second_opinion_verification(result, document_payload)
 
     # Override determinístico de fecha de reporte / folio a partir del texto
     # embebido del PDF, cuando existe uno confiable (documento no-escaneado).

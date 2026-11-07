@@ -269,6 +269,55 @@ def determine_interpretation(value: Any, reference_range: dict[str, Any] | None)
     return None
 
 
+def check_decade_crossing_risk(value: Any, reference_range: dict[str, Any] | None) -> bool:
+    """Flags values at risk of a dropped/added trailing-zero OCR error --
+    found empirically comparing RolmOCR backends: a value like 270 misread
+    as 27 still looks like a plausible, in-range result (e.g. "Normal <20"),
+    so neither the model's own confidence nor a plain out-of-range check
+    catches it. Checks whether reading one decade up or down would flip the
+    value across the reference range boundary.
+
+    Deliberately scoped to single-bound ranges only ("Normal <20", ">0.5" --
+    the common format for titers and qualitative/autoimmune markers, which
+    is where this failure mode was observed). Tried this against two-bound
+    physiological ranges (e.g. "70-100") first and it over-triggered badly:
+    a x10/x0.1 reading almost always lands outside a narrow band regardless
+    of whether the original value was right, so it flagged nearly every
+    observation with a reference range, not just the risky ones. Two-bound
+    ranges still get a second opinion when the value is genuinely out of
+    range -- see needs_second_opinion -- just not from this check.
+    """
+    if reference_range is None or not isinstance(value, (int, float)) or value == 0:
+        return False
+
+    low = reference_range.get("low")
+    high = reference_range.get("high")
+    if (low is None) == (high is None):
+        return False
+
+    def crosses_boundary(candidate: float) -> bool:
+        below_now = low is not None and value < low
+        above_now = high is not None and value > high
+        below_candidate = low is not None and candidate < low
+        above_candidate = high is not None and candidate > high
+        in_range_now = not below_now and not above_now
+        in_range_candidate = not below_candidate and not above_candidate
+        return in_range_now != in_range_candidate
+
+    return crosses_boundary(value * 10) or crosses_boundary(value / 10)
+
+
+def needs_second_opinion(interpretation: str | None, decade_crossing_risk: bool) -> bool:
+    """Scope for the second-pass verification call to ai-engine: values that
+    already carry clinical weight (out of the printed reference range) or
+    that could be hiding an out-of-range result behind a dropped/added
+    digit. Skips normal-looking results, which keeps the extra model call
+    bounded to a minority of observations per document rather than doubling
+    cost across the whole report.
+    """
+    return interpretation in ("low", "high") or decade_crossing_risk
+
+
 def build_review_issue(
     *,
     stage: str,
@@ -313,6 +362,9 @@ def normalize_observation(raw_observation: dict[str, Any], language: str = "en")
     else:
         canonical = raw_observation.get("test_name_raw")
 
+    interpretation = determine_interpretation(raw_value, reference_range)
+    decade_crossing_risk = check_decade_crossing_risk(raw_value, reference_range)
+
     normalized = {
         "observation_id": str(uuid4()),
         "panel_raw": raw_observation.get("panel_raw"),
@@ -325,14 +377,26 @@ def normalize_observation(raw_observation: dict[str, Any], language: str = "en")
         "unit_ucum": unit_ucum,
         "reference_range_raw": raw_observation.get("reference_range_raw"),
         "reference_range": reference_range,
-        "interpretation": determine_interpretation(raw_value, reference_range),
+        "interpretation": interpretation,
         "delta_from_range": calculate_range_delta(raw_value, reference_range),
         "specimen": raw_observation.get("specimen_raw"),
         "page": raw_observation.get("page"),
         "confidence": raw_observation.get("confidence", 0.0),
+        "decade_crossing_risk": decade_crossing_risk,
+        "verification": None,
     }
 
     review_items: list[dict[str, Any]] = []
+
+    if decade_crossing_risk:
+        review_items.append(
+            build_review_issue(
+                stage="interpretation",
+                reason="decade_crossing_risk",
+                message="Reading this value one decade up or down would flip it across the reference range -- a dropped or added trailing digit can't be ruled out. Pending second-opinion verification.",
+                raw_observation=raw_observation,
+            )
+        )
 
     if normalized["loinc_code"] is None:
         review_items.append(
