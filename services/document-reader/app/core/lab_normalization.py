@@ -63,7 +63,7 @@ RANGE_PATTERN = re.compile(
     r"(?P<low>-?[\d,]+(?:\.\d+)?)\s*[-–]\s*(?P<high>-?[\d,]+(?:\.\d+)?)\s*(?P<unit>[A-Za-z/{}\._0-9^%µ ]+)?"
 )
 BOUND_PATTERN = re.compile(
-    r"^(?P<op>>|<)\s*(?P<bound>-?\d+(?:\.\d+)?)\s*(?P<unit>[A-Za-z/{}\._0-9^%µ ]+)?$"
+    r"(?P<op>>|<)\s*(?P<bound>-?\d+(?:\.\d+)?)\s*(?P<unit>[A-Za-z/{}\._0-9^%µ]+)?"
 )
 NUMERIC_PATTERN = re.compile(r"^-?\d+(?:\.\d+)?$")
 

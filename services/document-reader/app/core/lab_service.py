@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 
 from app.core.config import get_settings
 from app.core.document_profile import detect_document_profile
@@ -17,6 +18,23 @@ settings = get_settings()
 logger = logging.getLogger(__name__)
 
 _extraction_semaphore = asyncio.Semaphore(3)
+
+# The verify prompt asks ai-engine for value_raw and unit_raw separately, but
+# a model occasionally glues them together anyway (e.g. "147mmol/L"). Pulling
+# just the leading numeric run before parsing sidesteps parse_value's
+# OCR o/O->0 correction mangling a unit's letters (e.g. the "o" in "mmol")
+# into a false digit, which would otherwise read as a value mismatch that
+# isn't really there.
+_LEADING_NUMERIC = re.compile(r"^\s*(-?[\d,]+(?:\.\d+)?)")
+
+
+def _parse_second_opinion_value(value_raw: str | None):
+    if value_raw is None:
+        return None
+    match = _LEADING_NUMERIC.match(value_raw)
+    token = match.group(1) if match else value_raw
+    value, _ = parse_value(token)
+    return value
 
 
 def chunk_pages(pages: list[dict], batch_size: int) -> list[list[dict]]:
@@ -131,7 +149,7 @@ async def apply_second_opinion_verification(result: dict, document_payload: dict
             observation["verification"] = {"status": "failed", "second_value_raw": None}
             return
 
-        second_value, _ = parse_value(response.get("value_raw"))
+        second_value = _parse_second_opinion_value(response.get("value_raw"))
         agrees = second_value is not None and second_value == observation["value"]
         observation["verification"] = {
             "status": "agrees" if agrees else "disagrees",
